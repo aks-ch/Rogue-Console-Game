@@ -16,6 +16,9 @@ public class MenuScreen : IScreen
         gameWidth = 15;
         gameHeight = 20;
         enemyCount = 3;
+        
+        throw new NotImplementedException();
+        
     }
 
     /// <summary>
@@ -37,7 +40,7 @@ public class MenuScreen : IScreen
     /// </summary>
     public void MenuOptions()
     {
-
+        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -45,7 +48,7 @@ public class MenuScreen : IScreen
     /// </summary>
     public void CustomGameOptions()
     {
-        
+        throw new NotImplementedException();
     }
     
 }

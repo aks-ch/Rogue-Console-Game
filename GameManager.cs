@@ -14,8 +14,10 @@ public class GameManager
     
     private int minEnemyCount { get; }
     private int maxEnemyCount { get; }
-
-    public GameManager(string[]? args)
+    
+    private bool isRunning { get; set; }
+    
+    public GameManager()
     {
         
         minGameWidth = 15;
@@ -25,9 +27,23 @@ public class GameManager
         minEnemyCount = 3;
         maxEnemyCount = 10;
 
-        if (args.Length > 0)
+        throw new NotImplementedException();
+
+    }
+    
+    /// <summary>
+    /// Run the game in this instance of the game manager.
+    /// </summary>
+    public void Run()
+    {
+        
+        isRunning = true;
+        
+        while (isRunning)
         {
-            // Handle arguments if any planned to handle.
+
+            throw new NotImplementedException();
+
         }
         
     }
@@ -37,7 +53,7 @@ public class GameManager
     /// </summary>
     public static void DrawGuide()
     {
-        Console.WriteLine("Incomplete function.");
+        throw new NotImplementedException();
     }
 
     /// <summary>

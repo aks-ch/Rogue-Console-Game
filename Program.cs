@@ -1,3 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using RogueConsoleGame;
 
-Console.WriteLine("Hello, World!");
+GameManager game = new GameManager();
+game.Run();
