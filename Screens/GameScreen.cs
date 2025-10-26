@@ -2,21 +2,16 @@
 
 namespace RogueConsoleGame.Screens;
 
-public class GameScreen : IScreen
+public class GameScreen(GameManager gameManager) : IScreen
 {
 
-    public GameScreen()
-    {
-        throw new NotImplementedException();
-    }
-
     /// <summary>
-    /// Draw the game.
+    /// Draw & execute the game.
     /// </summary>
     public void Draw()
     {
         
-        throw new NotImplementedException();
+        throw new NotImplementedException("Game Screen not implemented");
         
     }
     

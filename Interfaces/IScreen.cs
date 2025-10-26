@@ -4,7 +4,7 @@ public interface IScreen
 {
     
     /// <summary>
-    /// Output the screen.
+    /// Execute the screen.
     /// </summary>
     void Draw();
     

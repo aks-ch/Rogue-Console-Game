@@ -2,23 +2,15 @@
 
 namespace RogueConsoleGame.Screens;
 
-public class DefeatScreen : IScreen
+public class DefeatScreen(GameManager gameManager) : IScreen
 {
 
-    public DefeatScreen()
-    {
-        
-        throw new NotImplementedException();
-        
-    }
-
     /// <summary>
-    /// Draw the Defeat Screen
+    /// Draw & execute the defeat screen.
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
     public void Draw()
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Defeat Screen not implemented");
     }
     
 }

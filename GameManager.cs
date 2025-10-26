@@ -1,33 +1,49 @@
-﻿namespace RogueConsoleGame;
+﻿using RogueConsoleGame.Enums;
+using RogueConsoleGame.Screens;
+
+namespace RogueConsoleGame;
 
 /// <summary>
 /// Create and manage an instance of the game.
 /// </summary>
 public class GameManager
 {
+
+    public bool IsRunning;
     
-    private int minGameWidth { get; }
-    private int maxGameWidth { get; }
+    public int MinGameWidth { get; }
+    public int MaxGameWidth { get; }
     
-    private int minGameHeight { get; }
-    private int maxGameHeight { get; }
+    public int MinGameHeight { get; }
+    public int MaxGameHeight { get; }
     
-    private int minEnemyCount { get; }
-    private int maxEnemyCount { get; }
+    public int MinEnemyCount { get; }
+    public int MaxEnemyCount { get; }
+
+    public MenuScreen MenuS { get; }
+    public GameScreen GameS { get; }
+    public VictoryScreen VictoryS { get; }
+    public DefeatScreen DefeatS { get; }
     
-    private bool isRunning { get; set; }
+    public Screen CurrentScreen { get; set; }
     
+    /// <summary>
+    /// Initialize this game manager's game.
+    /// </summary>
     public GameManager()
     {
         
-        minGameWidth = 15;
-        maxGameWidth = 24;
-        minGameHeight = 20;
-        maxGameHeight = 40;
-        minEnemyCount = 3;
-        maxEnemyCount = 10;
+        MinGameWidth = 15;
+        MaxGameWidth = 24;
+        MinGameHeight = 20;
+        MaxGameHeight = 40;
+        MinEnemyCount = 3;
+        MaxEnemyCount = 10;
 
-        throw new NotImplementedException();
+        MenuS = new MenuScreen(this);
+        GameS = new GameScreen(this);
+        VictoryS = new VictoryScreen(this);
+        DefeatS = new DefeatScreen(this);
 
     }
     
@@ -37,12 +53,32 @@ public class GameManager
     public void Run()
     {
         
-        isRunning = true;
+        IsRunning = true;
+        CurrentScreen = Screen.Menu;
         
-        while (isRunning)
+        while (IsRunning)
         {
 
-            throw new NotImplementedException();
+            Console.Clear();
+            switch (CurrentScreen)
+            {
+                
+                case Screen.Menu:
+                    MenuS.Draw();
+                    break;
+                case Screen.Game:
+                    GameS.Draw();
+                    break;
+                case Screen.Victory:
+                    VictoryS.Draw();
+                    break;
+                case Screen.Defeat:
+                    DefeatS.Draw();
+                    break;
+                default:
+                    throw new Exception("An impossible error became possible! Invalid screen!");
+                
+            }
 
         }
         
@@ -53,7 +89,7 @@ public class GameManager
     /// </summary>
     public static void DrawGuide()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException("Guide not implemented");
     }
 
     /// <summary>

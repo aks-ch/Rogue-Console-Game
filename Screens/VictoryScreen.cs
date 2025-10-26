@@ -2,23 +2,15 @@
 
 namespace RogueConsoleGame.Screens;
 
-public class VictoryScreen : IScreen
+public class VictoryScreen(GameManager gameManager) : IScreen
 {
 
-    public VictoryScreen()
-    {
-        
-        throw new NotImplementedException();
-        
-    }
-
     /// <summary>
-    /// Draw the Victory Screen
+    /// Draw & execute the victory screen.
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
     public void Draw()
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Victory Screen not implemented");
     }
     
 }
