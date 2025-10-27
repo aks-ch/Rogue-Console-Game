@@ -1,4 +1,5 @@
-﻿using RogueConsoleGame.Enums;
+﻿using System.Runtime.CompilerServices;
+using RogueConsoleGame.Enums;
 using RogueConsoleGame.Screens;
 
 namespace RogueConsoleGame;
@@ -10,6 +11,12 @@ public class GameManager
 {
 
     public bool IsRunning;
+
+    public int GameWidth;
+    public int GameHeight;
+    public int EnemyCount;
+    
+    public Random Seed = new Random();
     
     public int MinGameWidth { get; }
     public int MaxGameWidth { get; }
@@ -20,12 +27,12 @@ public class GameManager
     public int MinEnemyCount { get; }
     public int MaxEnemyCount { get; }
 
-    public MenuScreen MenuS { get; }
-    public GameScreen GameS { get; }
-    public VictoryScreen VictoryS { get; }
-    public DefeatScreen DefeatS { get; }
+    private MenuScreen MenuS { get; }
+    private GameScreen GameS { get; }
+    private VictoryScreen VictoryS { get; }
+    private DefeatScreen DefeatS { get; }
     
-    public Screen CurrentScreen { get; set; }
+    public ScreenType CurrentScreenType { get; set; }
     
     /// <summary>
     /// Initialize this game manager's game.
@@ -39,6 +46,10 @@ public class GameManager
         MaxGameHeight = 40;
         MinEnemyCount = 3;
         MaxEnemyCount = 10;
+        
+        GameWidth = MaxGameWidth;
+        GameHeight = MaxGameHeight;
+        EnemyCount = MaxEnemyCount;
 
         MenuS = new MenuScreen(this);
         GameS = new GameScreen(this);
@@ -54,25 +65,25 @@ public class GameManager
     {
         
         IsRunning = true;
-        CurrentScreen = Screen.Menu;
+        CurrentScreenType = ScreenType.Menu;
         
         while (IsRunning)
         {
 
             Console.Clear();
-            switch (CurrentScreen)
+            switch (CurrentScreenType)
             {
                 
-                case Screen.Menu:
+                case ScreenType.Menu:
                     MenuS.Draw();
                     break;
-                case Screen.Game:
+                case ScreenType.Game:
                     GameS.Draw();
                     break;
-                case Screen.Victory:
+                case ScreenType.Victory:
                     VictoryS.Draw();
                     break;
-                case Screen.Defeat:
+                case ScreenType.Defeat:
                     DefeatS.Draw();
                     break;
                 default:
@@ -89,7 +100,9 @@ public class GameManager
     /// </summary>
     public static void DrawGuide()
     {
-        //throw new NotImplementedException("Guide not implemented");
+        Console.WriteLine();
+        ColorConsoleWriteLine(ConsoleColor.Cyan, "Incomplete Guide.");
+        // throw new NotImplementedException("Guide not implemented");
     }
 
     /// <summary>
