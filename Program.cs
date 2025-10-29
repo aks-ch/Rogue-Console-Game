@@ -1,4 +1,10 @@
-﻿using RogueConsoleGame;
+﻿namespace RogueConsoleGame;
 
-GameManager game = new GameManager();
-game.Run();
+internal class Program
+{
+    public static void Main(string[] args)
+    {
+        GameManager game = new GameManager();
+        game.Run();
+    }
+}

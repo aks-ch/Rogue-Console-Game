@@ -1,6 +1,6 @@
 ﻿namespace RogueConsoleGame.Enums;
 
-public enum ScreenType
+public enum GameState
 {
     Menu,
     Game,

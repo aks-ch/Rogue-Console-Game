@@ -1,16 +1,15 @@
-﻿using RogueConsoleGame.Interfaces;
+﻿using RogueConsoleGame.Enums;
+using RogueConsoleGame.Interfaces;
 
 namespace RogueConsoleGame.Screens;
 
-public class VictoryScreen(GameManager gameManager) : IScreen
+public class EndScreen(GameManager gameManager) : IScreen
 {
-
     /// <summary>
-    /// Draw & execute the victory screen.
+    /// Draw & execute the end screen.
     /// </summary>
     public void Draw()
     {
         throw new NotImplementedException("Victory Screen not implemented");
     }
-    
 }

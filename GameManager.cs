@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using RogueConsoleGame.Enums;
+﻿using RogueConsoleGame.Enums;
 using RogueConsoleGame.Screens;
 
 namespace RogueConsoleGame;
@@ -9,90 +8,79 @@ namespace RogueConsoleGame;
 /// </summary>
 public class GameManager
 {
-
     public bool IsRunning;
 
     public int GameWidth;
     public int GameHeight;
     public int EnemyCount;
-    
+
     public Random Seed = new Random();
-    
+
     public int MinGameWidth { get; }
     public int MaxGameWidth { get; }
-    
+
     public int MinGameHeight { get; }
     public int MaxGameHeight { get; }
-    
+
     public int MinEnemyCount { get; }
     public int MaxEnemyCount { get; }
 
-    private MenuScreen MenuS { get; }
-    private GameScreen GameS { get; }
-    private VictoryScreen VictoryS { get; }
-    private DefeatScreen DefeatS { get; }
-    
-    public ScreenType CurrentScreenType { get; set; }
-    
+    private MenuScreen MenuScreen { get; }
+    private GameScreen GameScreen { get; }
+    private EndScreen EndScreen { get; }
+
+    public GameState CurrentGameState { get; set; }
+
     /// <summary>
     /// Initialize this game manager's game.
     /// </summary>
     public GameManager()
     {
-        
         MinGameWidth = 15;
         MaxGameWidth = 24;
         MinGameHeight = 20;
         MaxGameHeight = 40;
         MinEnemyCount = 3;
         MaxEnemyCount = 10;
-        
+
         GameWidth = MaxGameWidth;
         GameHeight = MaxGameHeight;
         EnemyCount = MaxEnemyCount;
 
-        MenuS = new MenuScreen(this);
-        GameS = new GameScreen(this);
-        VictoryS = new VictoryScreen(this);
-        DefeatS = new DefeatScreen(this);
-
+        MenuScreen = new MenuScreen(this);
+        GameScreen = new GameScreen(this);
+        EndScreen = new EndScreen(this);
     }
-    
+
     /// <summary>
     /// Run the game in this instance of the game manager.
     /// </summary>
     public void Run()
     {
-        
         IsRunning = true;
-        CurrentScreenType = ScreenType.Menu;
-        
+        CurrentGameState = GameState.Menu;
+
         while (IsRunning)
         {
-
             Console.Clear();
-            switch (CurrentScreenType)
+            switch (CurrentGameState)
             {
-                
-                case ScreenType.Menu:
-                    MenuS.Draw();
+                case GameState.Menu:
+                    MenuScreen.Draw();
                     break;
-                case ScreenType.Game:
-                    GameS.Draw();
+                case GameState.Game:
+                    GameScreen.Draw();
                     break;
-                case ScreenType.Victory:
-                    VictoryS.Draw();
+                case GameState.Victory:
+                    EndScreen.Draw();
                     break;
-                case ScreenType.Defeat:
-                    DefeatS.Draw();
+                case GameState.Defeat:
+                    EndScreen.Draw();
                     break;
                 default:
-                    throw new Exception("An impossible error became possible! Invalid screen!");
-                
+                    throw new Exception("Invalid Game State!");
             }
-
         }
-        
     }
 
     /// <summary>
@@ -128,5 +116,4 @@ public class GameManager
         Console.WriteLine(text);
         Console.ResetColor();
     }
-    
 }
