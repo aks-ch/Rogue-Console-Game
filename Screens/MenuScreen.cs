@@ -10,9 +10,6 @@ public class MenuScreen(GameManager gameManager) : IScreen
     
     private MenuOption _currentOption = MenuOption.None;
 
-    /// <summary>
-    /// Draw & execute the menu.
-    /// </summary>
     public void Draw()
     {
         GameManager.ColorConsoleWriteLine(ConsoleColor.Magenta, "Welcome to RogueConsoleGame!");
