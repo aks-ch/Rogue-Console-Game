@@ -35,6 +35,7 @@ public abstract class Character : IDamageable, IAttacker
         Game = game;
         GameManager = game.GameManager;
         
+        Position = new Vector2(0, 0);
         RandomizePosition();
     }
     
@@ -57,8 +58,8 @@ public abstract class Character : IDamageable, IAttacker
         {
             Position = new Vector2(GameManager.Seed.Next(0, GameManager.GameWidth),
                 GameManager.Seed.Next(0, GameManager.GameHeight));
-        } while (Game.OccupiedPositions.Contains(Position));
-        Index = Game.OccupiedPositions.Count;
-        Game.OccupiedPositions.Add(Position);
+        } while (Game.CharactersByPosition.ContainsKey(Position));
+        Index = Game.CharactersByPosition.Count;
+        Game.CharactersByPosition.Add(Position, this);
     }
 }

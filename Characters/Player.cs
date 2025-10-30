@@ -19,7 +19,7 @@ public class Player : Character
         switch (key)
         {
             case ConsoleKey.UpArrow:
-                ProcessMove(new Vector2(Position.X, Position.Y - 1));
+                ProcessMove(Position with { Y = Position.Y - 1 });
                 break;
         }
     }
@@ -38,6 +38,6 @@ public class Player : Character
             return;
         }
         
-        
+        if ()
     }
 }

@@ -8,8 +8,7 @@ public class GameScreen(GameManager gameManager) : IScreen
 {
     public GameManager GameManager = gameManager;
     
-    public List<Vector2> OccupiedPositions { get; private set; }
-    public List<Character> Characters { get; private set; }
+    public Dictionary<Vector2, Character> CharactersByPosition;
     
     private bool _initialized;
     private char[,] _map;
