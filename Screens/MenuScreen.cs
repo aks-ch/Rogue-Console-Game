@@ -105,21 +105,7 @@ public class MenuScreen(GameManager gameManager) : IScreen
     /// </summary>
     private void RandomGameOptions()
     {
-        Console.Write("Please enter a seed (Leave empty for random seed): ");
-        var input = Console.ReadLine();
-
-        if (input == null)
-        {
-            gameManager.Seed = new Random();
-        }
-        else if (int.TryParse(input, out var convertedInput))
-        {
-            gameManager.Seed = new Random(convertedInput);
-        }
-        else
-        {
-            gameManager.Seed = new Random(input.GetHashCode());
-        }
+        gameManager.Seed = new Random();
 
         gameManager.GameWidth = gameManager.Seed.Next(gameManager.MinGameWidth, gameManager.MaxGameWidth + 1);
         gameManager.GameHeight = gameManager.Seed.Next(gameManager.MinGameHeight, gameManager.MaxGameHeight + 1);
@@ -133,19 +119,35 @@ public class MenuScreen(GameManager gameManager) : IScreen
     /// </summary>
     private void CustomGameOptions()
     {
+        // custom seed
+        Console.Write("Please enter a seed (Leave empty for random seed): ");
+        var input = Console.ReadLine();
+        if (string.IsNullOrEmpty(input))
+        {
+            gameManager.Seed = new Random();
+        }
+        else if (int.TryParse(input, out var convertedInput))
+        {
+            gameManager.Seed = new Random(convertedInput);
+        }
+        else
+        {
+            gameManager.Seed = new Random(convertedInput.GetHashCode());
+        }
+        
         // game width
         string prompt =
-            $"Please enter the width of the game [{gameManager.MinGameWidth}, {gameManager.MaxGameWidth}] (Default: {gameManager.MaxGameWidth}):";
+            $"Please enter the width of the game [{gameManager.MinGameWidth}, {gameManager.MaxGameWidth}] (Leave empty to randomize):";
         gameManager.GameWidth = GetIntInput(prompt, gameManager.MinGameWidth, gameManager.MaxGameWidth);
 
         // game height
         prompt =
-            $"Please enter the height of the game [{gameManager.MinGameHeight}, {gameManager.MaxGameHeight}] (Default: {gameManager.MaxGameHeight}):";
+            $"Please enter the height of the game [{gameManager.MinGameHeight}, {gameManager.MaxGameHeight}] (Leave empty to randomize):";
         gameManager.GameHeight = GetIntInput(prompt, gameManager.MinGameHeight, gameManager.MaxGameHeight);
 
         // enemy count
         prompt =
-            $"Please enter the number of enemies [{gameManager.MinEnemyCount}, {gameManager.MaxEnemyCount}] (Default: {gameManager.MaxEnemyCount}):";
+            $"Please enter the number of enemies [{gameManager.MinEnemyCount}, {gameManager.MaxEnemyCount}] (Leave empty to randomize):";
         gameManager.GameHeight = GetIntInput(prompt, gameManager.MinEnemyCount, gameManager.MaxEnemyCount);
         
         gameManager.CurrentGameState = GameState.Game;
@@ -170,7 +172,7 @@ public class MenuScreen(GameManager gameManager) : IScreen
 
             if (string.IsNullOrEmpty(input))
             {
-                convertedInput = maxValue;
+                convertedInput = gameManager.Seed.Next(minValue, maxValue + 1);
             }
             else if (!int.TryParse(input, out convertedInput) || convertedInput < minValue || convertedInput > maxValue)
             {
