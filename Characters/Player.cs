@@ -37,7 +37,5 @@ public class Player : Character
         {
             return;
         }
-        
-        if ()
     }
 }

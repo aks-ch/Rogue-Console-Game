@@ -60,6 +60,5 @@ public abstract class Character : IDamageable, IAttacker
                 GameManager.Seed.Next(0, GameManager.GameHeight));
         } while (Game.CharactersByPosition.ContainsKey(Position));
         Index = Game.CharactersByPosition.Count;
-        Game.CharactersByPosition.Add(Position, this);
     }
 }
