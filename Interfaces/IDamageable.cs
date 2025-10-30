@@ -15,5 +15,6 @@ public interface IDamageable
     /// <summary>
     /// Take damage.
     /// </summary>
-    public void TakeDamage();
+    /// <param name="damage">The damage to take.</param>
+    public void TakeDamage(float damage);
 }

@@ -5,10 +5,10 @@ public interface IAttacker
     /// <summary>
     /// The strength of the attacker.
     /// </summary>
-    protected float Strength { get; }
+    public float Strength { get; }
 
     /// <summary>
-    /// Attack a damagable.
+    /// Attack a damageable.
     /// </summary>
     public void Attack(IDamageable damageable);
 }

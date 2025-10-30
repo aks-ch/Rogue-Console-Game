@@ -14,6 +14,8 @@ public class GameManager
     public int GameHeight;
     public int EnemyCount;
 
+    public char PlayerChar = '☻';
+
     public Random Seed = new Random();
 
     public int MinGameWidth { get; }
