@@ -1,5 +1,5 @@
-﻿using RogueConsoleGame.Screens;
-using RogueConsoleGame.Structures;
+﻿using RogueConsoleGame.Records;
+using RogueConsoleGame.Screens;
 
 namespace RogueConsoleGame.Characters;
 
