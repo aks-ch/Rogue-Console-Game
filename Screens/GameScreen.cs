@@ -1,6 +1,7 @@
 ﻿using RogueConsoleGame.Characters;
 using RogueConsoleGame.Interfaces;
 using RogueConsoleGame.Records;
+using Enemy = RogueConsoleGame.Characters.Enemy;
 
 namespace RogueConsoleGame.Screens;
 
@@ -8,7 +9,7 @@ public class GameScreen(GameManager gameManager) : IScreen
 {
     public readonly GameManager GameManager = gameManager;
     
-    public Dictionary<Vector2, Character> Enemies = new();
+    public Dictionary<Vector2, Enemy> Enemies = new();
     public Player? Player { get; private set; }
     public Vector2? PlayerPosition { get; private set; }
     
@@ -26,13 +27,40 @@ public class GameScreen(GameManager gameManager) : IScreen
     /// </summary>
     private void Initialize()
     {
-        _map = new char[GameManager.GameHeight, GameManager.GameWidth];
-        
-        // Player Initialization
+        // Player initialization
         GameManager.ColorConsoleWrite(ConsoleColor.Cyan, "Please enter your name: ");
         string? name = Console.ReadLine();
         name = string.IsNullOrEmpty(name) ? "Player" : name;
         Player = new Player(this, name, GameManager.PlayerChar, 10, 1);
         PlayerPosition = Player.Position;
+        
+        // Enemy initialization
+        int enemyCount = GameManager.EnemyCount;
+        Random random = new Random();
+        
+        while (enemyCount > 0)
+        {
+            int r = random.Next(0, GameManager.Enemies.Length);
+            Enemy newEnemy = new Enemy(this, GameManager.Enemies[r].Symbol, GameManager.Enemies[r].MaxHealth, GameManager.Enemies[r].Strength);
+            Enemies.Add(newEnemy.Position, newEnemy);
+            enemyCount--;
+        }
+        
+        // Define map
+        _map = new char[GameManager.GameHeight, GameManager.GameWidth];
+        
+        for (int i = 0; i < GameManager.GameHeight; i++)
+        {
+            for (int j = 0; j < GameManager.GameWidth; j++)
+            {
+                _map[i, j] = GameManager.EmptyChar;
+            }
+        }
+        
+        _map[PlayerPosition.Y, PlayerPosition.X] = Player.Symbol;
+        foreach (var enemyPair in Enemies)
+        {
+            _map[enemyPair.Key.Y, enemyPair.Key.X] = enemyPair.Value.Symbol;
+        }
     }
 }

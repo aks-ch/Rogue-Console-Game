@@ -17,6 +17,7 @@ public class GameManager
     public int EnemyCount;
 
     public char PlayerChar = '☻';
+    public char EmptyChar = '·';
     public Enemy[] Enemies;
 
     public Random Seed = new Random();
