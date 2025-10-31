@@ -63,4 +63,56 @@ public class GameScreen(GameManager gameManager) : IScreen
             _map[enemyPair.Key.Y, enemyPair.Key.X] = enemyPair.Value.Symbol;
         }
     }
+
+    /// <summary>
+    /// Output the game as it is right now.
+    /// </summary>
+    private void OutputGame()
+    {
+        ConsoleColor borderColor;
+        
+        if (Player == null) throw new NullReferenceException("Player doesn't exist!");
+        
+        // Border color based on player health and healing status
+        if (Player.Health == Player.MaxHealth) borderColor = ConsoleColor.Blue;
+        else if (Player.IsHealing) borderColor = ConsoleColor.Yellow;
+        else if (Player.Health < 5) borderColor = ConsoleColor.Red;
+        else borderColor = ConsoleColor.Green;
+        
+        // Output map
+        string borderHorizontal = "";
+        for (int i = 0; i < GameManager.GameWidth; i++)
+        {
+            borderHorizontal += "═";
+        }
+        
+        // Top border
+        GameManager.ColorConsoleWrite(borderColor, "╔");
+        GameManager.ColorConsoleWrite(borderColor, borderHorizontal);
+        GameManager.ColorConsoleWriteLine(borderColor, "╗");
+        
+        // Middle
+        for (int i = 0; i < GameManager.GameHeight; i++)
+        {
+            GameManager.ColorConsoleWrite(borderColor, "║");
+            
+            for (int j = 0; j < GameManager.GameWidth; j++)
+            {
+                Console.Write(_map[i, j]);
+            }
+            
+            GameManager.ColorConsoleWriteLine(borderColor, "║");
+        }
+        
+        // Bottom border
+        GameManager.ColorConsoleWrite(borderColor, "╚");
+        GameManager.ColorConsoleWrite(borderColor, borderHorizontal);
+        GameManager.ColorConsoleWriteLine(borderColor, "╝");
+        
+        // Output details
+        Console.WriteLine();
+        Console.WriteLine($"{Player.Name}:");
+        Console.WriteLine($"Health        - {Player.Health}/{Player.MaxHealth}");
+        Console.WriteLine($"Attack Damage - {Player.Strength}");
+    }
 }
