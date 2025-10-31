@@ -32,9 +32,9 @@ public class Player : Character
     {
         var newPosition = key switch
         {
-            ConsoleKey.UpArrow    => Position with { Y = Position.Y - 1 },
-            ConsoleKey.DownArrow  => Position with { Y = Position.Y + 1 },
-            ConsoleKey.LeftArrow  => Position with { X = Position.X - 1 },
+            ConsoleKey.UpArrow => Position with { Y = Position.Y - 1 },
+            ConsoleKey.DownArrow => Position with { Y = Position.Y + 1 },
+            ConsoleKey.LeftArrow => Position with { X = Position.X - 1 },
             ConsoleKey.RightArrow => Position with { X = Position.X + 1 },
     
             _ => Position
