@@ -27,6 +27,17 @@ public class Player : Character
             case ConsoleKey.UpArrow:
                 ProcessMove(Position with { Y = Position.Y - 1 });
                 break;
+            case ConsoleKey.DownArrow:
+                ProcessMove(Position with { Y = Position.Y + 1 });
+                break;
+            case ConsoleKey.LeftArrow:
+                ProcessMove(Position with { X = Position.X - 1 });
+                break;
+            case ConsoleKey.RightArrow:
+                ProcessMove(Position with { X = Position.X + 1 });
+                break;
+            default:
+                break;
         }
     }
 
@@ -42,6 +53,16 @@ public class Player : Character
             newPosition.X >= Game.GameManager.GameHeight)
         {
             return;
+        }
+
+        if (Game.CharactersByPosition.ContainsKey(newPosition))
+        {
+            Attack(Game.CharactersByPosition[newPosition]);
+        }
+        else
+        {
+            Game.CharactersByPosition.Remove(Position);
+            Game.CharactersByPosition.Add(newPosition, this);
         }
     }
 }
