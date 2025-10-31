@@ -1,4 +1,6 @@
-﻿using RogueConsoleGame.Enums;
+﻿using System.Text.Json;
+using RogueConsoleGame.Enums;
+using RogueConsoleGame.Records;
 using RogueConsoleGame.Screens;
 
 namespace RogueConsoleGame;
@@ -15,6 +17,7 @@ public class GameManager
     public int EnemyCount;
 
     public char PlayerChar = '☻';
+    public Enemy[] Enemies;
 
     public Random Seed = new Random();
 
@@ -38,6 +41,18 @@ public class GameManager
     /// </summary>
     public GameManager()
     {
+        // Enemies checked first
+        try
+        {
+            string enemyJson = File.ReadAllText("./Data/Enemies.json");
+            Enemies = JsonSerializer.Deserialize<Enemy[]>(enemyJson);
+            if (Enemies == null || Enemies.Length == 0) throw new Exception("No enemies found!");
+        }
+        catch
+        {
+            throw new Exception("An error occured when reading the Data/Enemies.json file!");
+        }
+        
         MinGameWidth = 15;
         MaxGameWidth = 24;
         MinGameHeight = 20;
