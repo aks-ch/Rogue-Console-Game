@@ -84,4 +84,25 @@ public class Enemy : Character
             Position = newPosition;
         }
     }
+
+    /// <summary>
+    /// Enemy modified implementation of randomizing the position.
+    /// </summary>
+    protected override void RandomizePosition()
+    {
+        bool playerTooClose;
+        do
+        {
+            playerTooClose = true;
+            // Get a new position
+            Position = new Vector2(GameManager.Seed.Next(0, GameManager.GameWidth),
+                GameManager.Seed.Next(0, GameManager.GameHeight));
+            
+            // Check if player not too close
+            if (Game.PlayerPosition == null) throw new NullReferenceException("The player position doesn't exist!");
+            if (Math.Abs(Game.PlayerPosition.X - Position.X) > 2 &&
+                Math.Abs(Game.PlayerPosition.Y - Position.Y) > 2) playerTooClose = false;
+            
+        } while (Game.Enemies.ContainsKey(Position) || playerTooClose);
+    }
 }

@@ -53,7 +53,7 @@ public abstract class Character : IDamageable, IAttacker
     /// <summary>
     /// Randomize the position of the character so that it is not in a space already occupied.
     /// </summary>
-    protected void RandomizePosition()
+    protected virtual void RandomizePosition()
     {
         do
         {
