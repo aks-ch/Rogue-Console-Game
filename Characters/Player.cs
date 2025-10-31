@@ -30,23 +30,21 @@ public class Player : Character
     /// <returns>True if the key input was valid and processed (even if nothing changed with the player). Else False.</returns>
     public bool CheckKey(ConsoleKey key)
     {
-        switch (key)
+        var newPosition = key switch
         {
-            case ConsoleKey.UpArrow:
-                ProcessMove(Position with { Y = Position.Y - 1 });
-                break;
-            case ConsoleKey.DownArrow:
-                ProcessMove(Position with { Y = Position.Y + 1 });
-                break;
-            case ConsoleKey.LeftArrow:
-                ProcessMove(Position with { X = Position.X - 1 });
-                break;
-            case ConsoleKey.RightArrow:
-                ProcessMove(Position with { X = Position.X + 1 });
-                break;
-            default:
-                return false;
-        }
+            ConsoleKey.UpArrow    => Position with { Y = Position.Y - 1 },
+            ConsoleKey.DownArrow  => Position with { Y = Position.Y + 1 },
+            ConsoleKey.LeftArrow  => Position with { X = Position.X - 1 },
+            ConsoleKey.RightArrow => Position with { X = Position.X + 1 },
+    
+            _ => Position
+        };
+
+        // invalid key
+        if (newPosition == Position) return false;
+
+        // valid key
+        ProcessMove(newPosition);
         return true;
     }
 

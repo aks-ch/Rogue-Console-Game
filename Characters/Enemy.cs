@@ -29,40 +29,36 @@ public class Enemy : Character
         
         bool random = new Random().Next(0, 2) == 1;
         
-        switch (direction)
+        // movement
+        var newPosition = direction switch
         {
-            // Linear direction
-            case Direction.North:
-                ProcessMove(Position with { Y = Position.Y - 1 });
-                break;
-            case Direction.South:
-                ProcessMove(Position with { Y = Position.Y + 1 });
-                break;
-            case Direction.East:
-                ProcessMove(Position with { X = Position.X + 1 });
-                break;
-            case Direction.West:
-                ProcessMove(Position with { X = Position.X - 1 });
-                break;
-            
-            // Diagonal direction
-            case Direction.North | Direction.East:
-                if (random) ProcessMove(Position with { Y = Position.Y - 1 });
-                else ProcessMove(Position with { X = Position.X + 1 });
-                break;
-            case Direction.South | Direction.East:
-                if (random) ProcessMove(Position with { Y = Position.Y + 1 });
-                else ProcessMove(Position with { X = Position.X + 1 });
-                break;
-            case Direction.South | Direction.West:
-                if (random) ProcessMove(Position with { Y = Position.Y + 1 });
-                else ProcessMove(Position with { X = Position.X - 1 });
-                break;
-            case Direction.North | Direction.West:
-                if (random) ProcessMove(Position with { Y = Position.Y - 1 });
-                else ProcessMove(Position with { X = Position.X - 1 });
-                break;
-        }
+            // Linear directions
+            Direction.North => Position with { Y = Position.Y - 1 },
+            Direction.South => Position with { Y = Position.Y + 1 },
+            Direction.East  => Position with { X = Position.X + 1 },
+            Direction.West  => Position with { X = Position.X - 1 },
+
+            // Your diagonal "random choice" logic
+            Direction.North | Direction.East => random
+                ? Position with { Y = Position.Y - 1 } // North
+                : Position with { X = Position.X + 1 }, // East
+
+            Direction.South | Direction.East => random
+                ? Position with { Y = Position.Y + 1 } // South
+                : Position with { X = Position.X + 1 }, // East
+
+            Direction.South | Direction.West => random
+                ? Position with { Y = Position.Y + 1 } // South
+                : Position with { X = Position.X - 1 }, // West
+
+            Direction.North | Direction.West => random
+                ? Position with { Y = Position.Y - 1 } // North
+                : Position with { X = Position.X - 1 }, // West
+    
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        ProcessMove(newPosition);
     }
     
     /// <summary>
