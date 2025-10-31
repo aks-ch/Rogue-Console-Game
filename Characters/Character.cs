@@ -7,7 +7,6 @@ namespace RogueConsoleGame.Characters;
 public abstract class Character : IDamageable, IAttacker
 {
     public Vector2 Position;
-    protected int Index;
     
     public float Health { get; set; }
     public float MaxHealth { get; }
@@ -59,6 +58,5 @@ public abstract class Character : IDamageable, IAttacker
             Position = new Vector2(GameManager.Seed.Next(0, GameManager.GameWidth),
                 GameManager.Seed.Next(0, GameManager.GameHeight));
         } while (Game.CharactersByPosition.ContainsKey(Position));
-        Index = Game.CharactersByPosition.Count;
     }
 }
