@@ -5,9 +5,15 @@ namespace RogueConsoleGame.Characters;
 
 public class Player : Character
 {
-    public Player(GameScreen game, char symbol, float maxHealth, float strength) : base(game, symbol,
+    /// <summary>
+    /// Name of the player.
+    /// </summary>
+    public string Name;
+    
+    public Player(GameScreen game, string name, char symbol, float maxHealth, float strength) : base(game, symbol,
         maxHealth, strength)
     {
+        Name = name;
     }
 
     /// <summary>

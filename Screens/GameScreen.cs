@@ -22,7 +22,10 @@ public class GameScreen(GameManager gameManager) : IScreen
     {
         _map = new char[GameManager.GameHeight, GameManager.GameWidth];
         
-        Character newCharacter = new Player(this, GameManager.PlayerChar, 10, 1);
+        GameManager.ColorConsoleWrite(ConsoleColor.Cyan, "Please enter your name: ");
+        string? name = Console.ReadLine();
+        name = string.IsNullOrEmpty(name) ? "Player" : name;
+        Character newCharacter = new Player(this, name, GameManager.PlayerChar, 10, 1);
         CharactersByPosition.Add(newCharacter.Position, newCharacter);
     }
 }
