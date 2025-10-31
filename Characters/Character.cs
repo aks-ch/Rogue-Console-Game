@@ -61,4 +61,21 @@ public abstract class Character : IDamageable, IAttacker
                 GameManager.Seed.Next(0, GameManager.GameHeight));
         } while (Game.Enemies.ContainsKey(Position) || Position == Game.PlayerPosition);
     }
+
+    /// <summary>
+    /// Checks if a position is out of the map or not.
+    /// </summary>
+    /// <param name="position">The position to check.</param>
+    /// <returns>True if outside map. False if inside.</returns>
+    protected bool PositionOutOfBounds(Vector2 position)
+    {
+        if (position.X < 0 ||
+            position.X >= Game.GameManager.GameWidth ||
+            position.Y < 0 ||
+            position.X >= Game.GameManager.GameHeight)
+        {
+            return true;
+        }
+        return false;
+    }
 }

@@ -79,13 +79,7 @@ public class Player : Character
     private void ProcessMove(Vector2 newPosition)
     {
         // new location outside map
-        if (newPosition.X < 0 ||
-            newPosition.X >= Game.GameManager.GameWidth ||
-            newPosition.Y < 0 ||
-            newPosition.X >= Game.GameManager.GameHeight)
-        {
-            return;
-        }
+        if (PositionOutOfBounds(newPosition)) return;
 
         // enemy in new location
         if (Game.Enemies.ContainsKey(newPosition))
