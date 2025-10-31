@@ -10,8 +10,9 @@ public class Player : Character
     /// </summary>
     public string Name;
     
-    private bool _interacted = false;
+    public bool IsHealing = false;
     
+    private bool _interacted = false;
     private int _healCooldownMax = 5;
     private int _healCooldown;
     private float _healFactor = 0.2F;
@@ -57,6 +58,7 @@ public class Player : Character
         {
             _healCooldown = _healCooldownMax;
             _interacted = false;
+            IsHealing = false;
             return;
         }
 
@@ -64,9 +66,14 @@ public class Player : Character
         {
             _healCooldown--;
         }
+        else if (Health < MaxHealth)
+        {
+            IsHealing = true;
+            Health = (Health + _healFactor > MaxHealth) ? MaxHealth : Health + _healFactor;
+        }
         else
         {
-            Health = (Health + _healFactor > MaxHealth) ? MaxHealth : Health + _healFactor;
+            IsHealing = false;
         }
     }
 
