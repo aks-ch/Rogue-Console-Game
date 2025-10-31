@@ -57,6 +57,6 @@ public abstract class Character : IDamageable, IAttacker
         {
             Position = new Vector2(GameManager.Seed.Next(0, GameManager.GameWidth),
                 GameManager.Seed.Next(0, GameManager.GameHeight));
-        } while (Game.CharactersByPosition.ContainsValue(Position));
+        } while (Game.CharactersByPosition.ContainsKey(Position));
     }
 }

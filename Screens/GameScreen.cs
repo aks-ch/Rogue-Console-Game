@@ -8,7 +8,7 @@ public class GameScreen(GameManager gameManager) : IScreen
 {
     public GameManager GameManager = gameManager;
     
-    public Dictionary<Character, Vector2> CharactersByPosition = new Dictionary<Character, Vector2>();
+    public Dictionary<Vector2, Character> CharactersByPosition = new Dictionary<Vector2, Character>();
     
     private bool _initialized = false;
     private char[,] _map = new char[0, 0];
@@ -26,6 +26,6 @@ public class GameScreen(GameManager gameManager) : IScreen
         string? name = Console.ReadLine();
         name = string.IsNullOrEmpty(name) ? "Player" : name;
         Character newCharacter = new Player(this, name, GameManager.PlayerChar, 10, 1);
-        CharactersByPosition.Add(newCharacter, newCharacter.Position);
+        CharactersByPosition.Add(newCharacter.Position, newCharacter);
     }
 }
