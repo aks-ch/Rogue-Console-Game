@@ -20,7 +20,8 @@ public class Player : Character
     /// Check if input key is relevant.
     /// </summary>
     /// <param name="key">The input key.</param>
-    public void CheckKey(ConsoleKey key)
+    /// <returns>True if the key input was valid and processed (even if nothing changed with the player). Else False.</returns>
+    public bool CheckKey(ConsoleKey key)
     {
         switch (key)
         {
@@ -37,8 +38,9 @@ public class Player : Character
                 ProcessMove(Position with { X = Position.X + 1 });
                 break;
             default:
-                break;
+                return false;
         }
+        return true;
     }
 
     /// <summary>
@@ -55,14 +57,9 @@ public class Player : Character
             return;
         }
 
-        if (Game.CharactersByPosition.ContainsKey(newPosition))
+        if (Game.Enemies.ContainsKey(newPosition))
         {
-            Attack(Game.CharactersByPosition[newPosition]);
-        }
-        else
-        {
-            Game.CharactersByPosition.Remove(Position);
-            Game.CharactersByPosition.Add(newPosition, this);
+            Attack(Game.Enemies[newPosition]);
         }
     }
 }
