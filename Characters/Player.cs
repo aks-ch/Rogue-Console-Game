@@ -68,7 +68,7 @@ public class Player : Character
         }
         else
         {
-            Health += _healFactor;
+            Health = (Health + _healFactor > MaxHealth) ? MaxHealth : Health + _healFactor;
         }
     }
 
