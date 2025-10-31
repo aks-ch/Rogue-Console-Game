@@ -10,10 +10,17 @@ public class Player : Character
     /// </summary>
     public string Name;
     
+    private bool _interacted = false;
+    
+    private int _healCooldownMax = 5;
+    private int _healCooldown;
+    private float _healFactor = 0.2F;
+    
     public Player(GameScreen game, string name, char symbol, float maxHealth, float strength) : base(game, symbol,
         maxHealth, strength)
     {
         Name = name;
+        _healCooldown = _healCooldownMax;
     }
 
     /// <summary>
@@ -44,6 +51,28 @@ public class Player : Character
     }
 
     /// <summary>
+    /// Check if healing possible or to reduce/reset the heal cooldown.
+    /// </summary>
+    public void Heal()
+    {
+        if (_interacted)
+        {
+            _healCooldown = _healCooldownMax;
+            _interacted = false;
+            return;
+        }
+
+        if (_healCooldown > 0)
+        {
+            _healCooldown--;
+        }
+        else
+        {
+            Health += _healFactor;
+        }
+    }
+
+    /// <summary>
     /// Process what to do about moving to a new position.
     /// </summary>
     /// <param name="newPosition">The new position.</param>
@@ -60,6 +89,17 @@ public class Player : Character
         if (Game.Enemies.ContainsKey(newPosition))
         {
             Attack(Game.Enemies[newPosition]);
+            _interacted = true;
         }
+        else
+        {
+            Position = newPosition;
+        }
+    }
+
+    public virtual void TakeDamage(int damage)
+    {
+        base.TakeDamage(damage);
+        _interacted = true;
     }
 }
