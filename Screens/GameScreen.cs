@@ -15,6 +15,7 @@ public class GameScreen(GameManager gameManager) : IScreen
     private bool _initialized = false;
     private char[,] _map = new char[0, 0];
     
+    // Execute the screen
     public void Draw()
     {
         if (!_initialized) Initialize();

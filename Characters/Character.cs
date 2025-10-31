@@ -38,11 +38,13 @@ public abstract class Character : IDamageable, IAttacker
         RandomizePosition();
     }
     
+    // Take Damage
     public void TakeDamage(float damage)
     {
         Health = (Health - damage) < 0 ? 0 : Health - damage;
     }
 
+    // Attack another damageable
     public void Attack(IDamageable damageable)
     {
         damageable.TakeDamage(Strength);

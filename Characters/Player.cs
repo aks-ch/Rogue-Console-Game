@@ -100,7 +100,11 @@ public class Player : Character
         }
     }
 
-    public virtual void TakeDamage(int damage)
+    /// <summary>
+    /// Take damage.
+    /// </summary>
+    /// <param name="damage">The amount of damage to take.</param>
+    public void TakeDamage(int damage)
     {
         base.TakeDamage(damage);
         _interacted = true;

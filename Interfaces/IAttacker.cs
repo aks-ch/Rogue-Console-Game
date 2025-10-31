@@ -10,5 +10,6 @@ public interface IAttacker
     /// <summary>
     /// Attack a damageable.
     /// </summary>
+    /// <param name="damageable">The damageable to attack.</param>
     public void Attack(IDamageable damageable);
 }

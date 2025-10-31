@@ -10,16 +10,18 @@ public class MenuScreen(GameManager gameManager) : IScreen
     
     private MenuOption _currentOption = MenuOption.None;
 
+    // Execute the screen.
     public void Draw()
     {
+        // Basic information
         GameManager.ColorConsoleWriteLine(ConsoleColor.Magenta, "Welcome to RogueConsoleGame!");
-
         string menuLine1 = "Please choose one of the listed options by entering the corresponding number:";
         string menuLine2 = "\t1. Start a new game with random settings.";
         string menuLine3 = "\t2. Start a new game with custom settings.";
         string menuLine4 = $"\t3. {(_viewGuide ? "Hide" : "View")} the guide.";
         string menuLine5 = "\t4. Exit.";
 
+        // Highlight options if selected
         if (_currentOption == MenuOption.None)
         {
             Console.WriteLine(menuLine1 + "\n" + menuLine2 + "\n" + menuLine3 + "\n" + menuLine4 + "\n" + menuLine5);
@@ -56,15 +58,18 @@ public class MenuScreen(GameManager gameManager) : IScreen
             }
         }
 
+        // The Guide
         if (_viewGuide) GameManager.DrawGuide();
         Console.WriteLine();
 
+        // Invalid input
         if (_invalidInput)
         {
             GameManager.ColorConsoleWriteLine(ConsoleColor.Red, "Invalid input. Please try again.");
             _invalidInput = false;
         }
 
+        // Process Option
         if (_currentOption == MenuOption.None)
         {
             switch (Console.ReadKey(true).Key)
