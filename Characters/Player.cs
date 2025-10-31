@@ -78,6 +78,7 @@ public class Player : Character
     /// <param name="newPosition">The new position.</param>
     private void ProcessMove(Vector2 newPosition)
     {
+        // new location outside map
         if (newPosition.X < 0 ||
             newPosition.X >= Game.GameManager.GameWidth ||
             newPosition.Y < 0 ||
@@ -86,11 +87,13 @@ public class Player : Character
             return;
         }
 
+        // enemy in new location
         if (Game.Enemies.ContainsKey(newPosition))
         {
             Attack(Game.Enemies[newPosition]);
             _interacted = true;
         }
+        // move to location
         else
         {
             Position = newPosition;

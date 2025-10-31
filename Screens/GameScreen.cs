@@ -27,6 +27,7 @@ public class GameScreen(GameManager gameManager) : IScreen
     {
         _map = new char[GameManager.GameHeight, GameManager.GameWidth];
         
+        // Player Initialization
         GameManager.ColorConsoleWrite(ConsoleColor.Cyan, "Please enter your name: ");
         string? name = Console.ReadLine();
         name = string.IsNullOrEmpty(name) ? "Player" : name;

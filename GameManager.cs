@@ -62,6 +62,7 @@ public class GameManager
         IsRunning = true;
         CurrentGameState = GameState.Menu;
 
+        // Execute the applicable screen
         while (IsRunning)
         {
             Console.Clear();
