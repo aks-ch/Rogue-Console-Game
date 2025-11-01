@@ -13,9 +13,9 @@ public class Player : Character
     public bool IsHealing = false;
     
     private bool _interacted = false;
-    private int _healCooldownMax = 5;
     private int _healCooldown;
-    private double _healFactor = 0.2;
+    private readonly int _healCooldownMax = 5;
+    private readonly double _healFactor = 0.2;
     
     public Player(GameScreen game, string name, char symbol, float maxHealth, float strength) : base(game, symbol,
         maxHealth, strength)
@@ -27,7 +27,6 @@ public class Player : Character
     /// <summary>
     /// Check if input key is relevant.
     /// </summary>
-    /// <param name="key">The input key.</param>
     /// <returns>True if the key input was valid and processed (even if nothing changed with the player). Else False.</returns>
     public bool CheckKey()
     {

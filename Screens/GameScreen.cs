@@ -101,7 +101,7 @@ public class GameScreen(GameManager gameManager) : IScreen
         
         while (enemyCount > 0)
         {
-            int r = gameManager.Seed.Next(0, GameManager.Enemies.Length);
+            int r = GameManager.Seed.Next(0, GameManager.Enemies.Length);
             Enemy newEnemy = new Enemy(this, GameManager.Enemies[r].Symbol, GameManager.Enemies[r].MaxHealth, GameManager.Enemies[r].Strength);
             Enemies.Add(newEnemy.Position, newEnemy);
             enemyCount--;
