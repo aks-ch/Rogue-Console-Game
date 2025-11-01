@@ -20,7 +20,13 @@ public class GameScreen(GameManager gameManager) : IScreen
     // Execute the screen
     public void Draw()
     {
-        if (!_initialized) Initialize();
+        
+        if (!_initialized)
+        {
+            Initialize();
+            return;
+        }
+        
         if (Player == null) throw new NullReferenceException("Player doesn't exist!");
         
         OutputGame();
@@ -29,7 +35,9 @@ public class GameScreen(GameManager gameManager) : IScreen
         if (!Player.CheckKey(Console.ReadKey().Key)) return;
         
         // Player position
+        _map[PlayerPosition.Y, PlayerPosition.X] = GameManager.EmptyChar;
         PlayerPosition = Player.Position;
+        _map[PlayerPosition.Y, PlayerPosition.X] = Player.Symbol;
             
         // Enemies
         List<Enemy> localEnemies = new();
@@ -41,6 +49,7 @@ public class GameScreen(GameManager gameManager) : IScreen
         
         foreach (var enemy in localEnemies)
         {
+            _map[enemy.Position.Y, enemy.Position.X] = GameManager.EmptyChar;
             // Remove if dead
             if (enemy.Health <= 0)
             {
@@ -55,6 +64,7 @@ public class GameScreen(GameManager gameManager) : IScreen
                 Enemies.Remove(position);
                 Enemies.Add(enemy.Position, enemy);
             }
+            _map[enemy.Position.Y, enemy.Position.X] = enemy.Symbol;
         }
         
         // Checking Victory/Defeat
@@ -112,6 +122,8 @@ public class GameScreen(GameManager gameManager) : IScreen
         {
             _map[enemyPair.Key.Y, enemyPair.Key.X] = enemyPair.Value.Symbol;
         }
+        
+        _initialized = true;
     }
 
     /// <summary>

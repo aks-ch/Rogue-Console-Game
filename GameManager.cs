@@ -16,7 +16,7 @@ public class GameManager
     public int GameHeight;
     public int EnemyCount;
 
-    public char PlayerChar = '☻';
+    public char PlayerChar = 'P';
     public char EmptyChar = '·';
     public Enemy[] Enemies;
 
@@ -55,12 +55,12 @@ public class GameManager
             throw;
         }
         
-        MinGameWidth = 15;
-        MaxGameWidth = 24;
-        MinGameHeight = 20;
-        MaxGameHeight = 40;
+        MinGameWidth = 20;
+        MaxGameWidth = 40;
+        MinGameHeight = 15;
+        MaxGameHeight = 24;
         MinEnemyCount = 3;
-        MaxEnemyCount = 10;
+        MaxEnemyCount = 6;
 
         GameWidth = MaxGameWidth;
         GameHeight = MaxGameHeight;

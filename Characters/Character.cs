@@ -39,7 +39,7 @@ public abstract class Character : IDamageable, IAttacker
     }
     
     // Take Damage
-    public void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage)
     {
         Health = (Health - damage) < 0 ? 0 : Health - damage;
     }
@@ -72,7 +72,7 @@ public abstract class Character : IDamageable, IAttacker
         if (position.X < 0 ||
             position.X >= Game.GameManager.GameWidth ||
             position.Y < 0 ||
-            position.X >= Game.GameManager.GameHeight)
+            position.Y >= Game.GameManager.GameHeight)
         {
             return true;
         }

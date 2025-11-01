@@ -1,16 +1,16 @@
 ﻿[
   {
-    "Symbol": "♟",
+    "Symbol": "S",
     "MaxHealth": 3,
     "Strength": 0.2
   },
   {
-    "Symbol": "♞",
+    "Symbol": "K",
     "MaxHealth": 5,
     "Strength": 0.5
   },
   {
-    "Symbol": "♛",
+  "Symbol": "Q",
     "MaxHealth": 8,
     "Strength": 1
   }

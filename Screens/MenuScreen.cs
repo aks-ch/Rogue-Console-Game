@@ -153,7 +153,7 @@ public class MenuScreen(GameManager gameManager) : IScreen
         // enemy count
         prompt =
             $"Please enter the number of enemies [{gameManager.MinEnemyCount}, {gameManager.MaxEnemyCount}] (Leave empty to randomize):";
-        gameManager.GameHeight = GetIntInput(prompt, gameManager.MinEnemyCount, gameManager.MaxEnemyCount);
+        gameManager.EnemyCount = GetIntInput(prompt, gameManager.MinEnemyCount, gameManager.MaxEnemyCount);
         
         gameManager.CurrentGameState = GameState.Game;
     }
