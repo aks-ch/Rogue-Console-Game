@@ -27,7 +27,7 @@ public class GameScreen(GameManager gameManager) : IScreen
             return;
         }
         
-        if (Player == null) throw new NullReferenceException("Player doesn't exist!");
+        if (Player == null || PlayerPosition == null) throw new NullReferenceException("Player doesn't exist!");
         
         OutputGame();
         
