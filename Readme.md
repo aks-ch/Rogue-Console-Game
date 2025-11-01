@@ -11,6 +11,12 @@ To heal, the player must not interact with an enemy for `HealCooldown` turns.
 After the `HealCooldown` reaches `0`, the player will heal `HealFactor` health every turn.
 Interacting with an enemy resets the cooldown.
 
+The game border changes color depending on player health status.
+- Blue: Health is full.
+- Green: Health is less than full.
+- Red: Health is less than 50% of maximum.
+- Yellow: Player is healing.
+
 # Additional Information
 The game offers 2 options to play:
 1. Random Settings
@@ -39,7 +45,8 @@ There must be a minimum of `1` enemy defined.
 There is no hardcore limit on the amount of enemies that can be defined.
 Each enemy declaration must be complete with the three fields as shown.
 The `Symbol` field may not include more than one character.
-You can declare negative numbers for `MaxHealth` and `Strength` though it can lead to unintended behavior.
+You can declare negative numbers for number inputs, though it can lead to unintended behavior.
+This is deliberate in order to allow freedom to play "crazy".
 
 The player stats can also be modified using `Data/Player.json`.
 However, there can only be one player so the declaration can only contain one object.
