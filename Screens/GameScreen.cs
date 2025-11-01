@@ -14,7 +14,7 @@ public class GameScreen(GameManager gameManager) : IScreen
     public Player? Player { get; private set; }
     public Vector2? PlayerPosition { get; private set; }
     
-    private bool _initialized = false;
+    private bool _initialized;
     private char[,] _map = new char[0, 0];
     
     // Execute the screen
@@ -32,7 +32,7 @@ public class GameScreen(GameManager gameManager) : IScreen
         OutputGame();
         
         // Processing if input valid
-        if (!Player.CheckKey(Console.ReadKey().Key)) return;
+        if (!Player.CheckKey()) return;
         
         // Player position
         _map[PlayerPosition.Y, PlayerPosition.X] = GameManager.EmptyChar;
@@ -70,13 +70,13 @@ public class GameScreen(GameManager gameManager) : IScreen
         // Checking Victory/Defeat
         if (Player.Health <= 0)
         {
-            _initialized = false;
+            Clear();
             GameManager.CurrentGameState = GameState.Defeat;
             return;
         }
         if (Enemies.Count == 0)
         {
-            _initialized = false;
+            Clear();
             GameManager.CurrentGameState = GameState.Victory;
             return;
         }
@@ -98,11 +98,10 @@ public class GameScreen(GameManager gameManager) : IScreen
         
         // Enemy initialization
         int enemyCount = GameManager.EnemyCount;
-        Random random = new Random();
         
         while (enemyCount > 0)
         {
-            int r = random.Next(0, GameManager.Enemies.Length);
+            int r = gameManager.Seed.Next(0, GameManager.Enemies.Length);
             Enemy newEnemy = new Enemy(this, GameManager.Enemies[r].Symbol, GameManager.Enemies[r].MaxHealth, GameManager.Enemies[r].Strength);
             Enemies.Add(newEnemy.Position, newEnemy);
             enemyCount--;
@@ -178,5 +177,17 @@ public class GameScreen(GameManager gameManager) : IScreen
         Console.WriteLine($"{Player.Name}:");
         Console.WriteLine($"Health        - {Player.Health}/{Player.MaxHealth}");
         Console.WriteLine($"Attack Damage - {Player.Strength}");
+    }
+
+    /// <summary>
+    /// Clear everything.
+    /// </summary>
+    private void Clear()
+    {
+        Enemies.Clear();
+        _map = new char[0, 0];
+        Player = null;
+        PlayerPosition = null;
+        _initialized = false;
     }
 }

@@ -8,9 +8,9 @@ public abstract class Character : IDamageable, IAttacker
 {
     public Vector2 Position;
     
-    public float Health { get; set; }
-    public float MaxHealth { get; }
-    public float Strength { get; }
+    public double Health { get; set; }
+    public double MaxHealth { get; }
+    public double Strength { get; }
     
     public char Symbol { get; }
     
@@ -39,9 +39,9 @@ public abstract class Character : IDamageable, IAttacker
     }
     
     // Take Damage
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(double damage)
     {
-        Health = (Health - damage) < 0 ? 0 : Health - damage;
+        Health = (Health - damage) < 0 ? 0 : Math.Round(Health - damage, 1);
     }
 
     // Attack another damageable

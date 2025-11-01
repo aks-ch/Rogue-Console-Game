@@ -15,7 +15,7 @@ public class Player : Character
     private bool _interacted = false;
     private int _healCooldownMax = 5;
     private int _healCooldown;
-    private float _healFactor = 0.2F;
+    private double _healFactor = 0.2;
     
     public Player(GameScreen game, string name, char symbol, float maxHealth, float strength) : base(game, symbol,
         maxHealth, strength)
@@ -29,20 +29,22 @@ public class Player : Character
     /// </summary>
     /// <param name="key">The input key.</param>
     /// <returns>True if the key input was valid and processed (even if nothing changed with the player). Else False.</returns>
-    public bool CheckKey(ConsoleKey key)
+    public bool CheckKey()
     {
-        var newPosition = key switch
-        {
-            ConsoleKey.UpArrow => Position with { Y = Position.Y - 1 },
-            ConsoleKey.DownArrow => Position with { Y = Position.Y + 1 },
-            ConsoleKey.LeftArrow => Position with { X = Position.X - 1 },
-            ConsoleKey.RightArrow => Position with { X = Position.X + 1 },
-    
-            _ => Position
-        };
+        Vector2 newPosition;
 
-        // invalid key
-        if (newPosition == Position) return false;
+        do
+        {
+            newPosition = Console.ReadKey(true).Key switch
+            {
+                ConsoleKey.UpArrow => Position with { Y = Position.Y - 1 },
+                ConsoleKey.DownArrow => Position with { Y = Position.Y + 1 },
+                ConsoleKey.LeftArrow => Position with { X = Position.X - 1 },
+                ConsoleKey.RightArrow => Position with { X = Position.X + 1 },
+     
+                _ => Position
+            };
+        } while (newPosition == Position);
 
         // valid key
         ProcessMove(newPosition);
@@ -69,9 +71,9 @@ public class Player : Character
         else if (Health < MaxHealth)
         {
             IsHealing = true;
-            Health = (Health + _healFactor > MaxHealth) ? MaxHealth : Health + _healFactor;
+            Health = (Health + _healFactor > MaxHealth) ? MaxHealth : Math.Round(Health + _healFactor, 1);
         }
-        else
+        else 
         {
             IsHealing = false;
         }
@@ -103,7 +105,7 @@ public class Player : Character
     /// Take damage.
     /// </summary>
     /// <param name="damage">The amount of damage to take.</param>
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(double damage)
     {
         base.TakeDamage(damage);
         _interacted = true;
