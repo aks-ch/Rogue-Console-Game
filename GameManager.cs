@@ -49,9 +49,10 @@ public class GameManager
             Enemies = JsonSerializer.Deserialize<Enemy[]>(enemyJson);
             if (Enemies == null || Enemies.Length == 0) throw new Exception("No enemies found!");
         }
-        catch
+        catch (Exception e)
         {
-            throw new Exception("An error occured when reading the Data/Enemies.json file!");
+            Console.WriteLine("An error occured when reading the Data/Enemies.json file!");
+            throw;
         }
         
         MinGameWidth = 15;
