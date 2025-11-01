@@ -1,4 +1,5 @@
 ﻿using RogueConsoleGame.Characters;
+using RogueConsoleGame.Enums;
 using RogueConsoleGame.Interfaces;
 using RogueConsoleGame.Records;
 using Enemy = RogueConsoleGame.Characters.Enemy;
@@ -20,6 +21,55 @@ public class GameScreen(GameManager gameManager) : IScreen
     public void Draw()
     {
         if (!_initialized) Initialize();
+        if (Player == null) throw new NullReferenceException("Player doesn't exist!");
+        
+        OutputGame();
+        
+        // Processing if input valid
+        if (!Player.CheckKey(Console.ReadKey().Key)) return;
+        
+        // Player position
+        PlayerPosition = Player.Position;
+            
+        // Enemies
+        List<Enemy> localEnemies = new();
+        
+        foreach (var enemyPair in Enemies)
+        {
+            localEnemies.Add(enemyPair.Value);
+        }
+        
+        foreach (var enemy in localEnemies)
+        {
+            // Remove if dead
+            if (enemy.Health <= 0)
+            {
+                _map[enemy.Position.Y, enemy.Position.X] = GameManager.EmptyChar;
+                Enemies.Remove(enemy.Position);
+                continue;
+            }
+            
+            Vector2 position = enemy.Position;
+            if (enemy.ChooseMove(PlayerPosition))
+            {
+                Enemies.Remove(position);
+                Enemies.Add(enemy.Position, enemy);
+            }
+        }
+        
+        // Checking Victory/Defeat
+        if (Player.Health <= 0)
+        {
+            GameManager.CurrentGameState = GameState.Defeat;
+            return;
+        }
+        if (Enemies.Count == 0)
+        {
+            GameManager.CurrentGameState = GameState.Victory;
+            return;
+        }
+        
+        Player.Heal();
     }
 
     /// <summary>
