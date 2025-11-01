@@ -18,8 +18,12 @@ public class EndScreen(GameManager gameManager) : IScreen
         {
             GameManager.ColorConsoleWriteLine(ConsoleColor.Red, "You Lose! :c");
         }
-        Console.WriteLine("Press any key to continue...");
-        Console.ReadKey();
+        Console.WriteLine("Press ENTER key to continue...");
+        ConsoleKey key;
+        do
+        {
+            key = Console.ReadKey(true).Key;
+        } while (key != ConsoleKey.Enter);
         gameManager.CurrentGameState = GameState.Menu;
     }
 }
