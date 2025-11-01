@@ -16,9 +16,9 @@ public class GameManager
     public int GameHeight;
     public int EnemyCount;
 
-    public char PlayerChar = 'P';
     public char EmptyChar = '·';
-    public Enemy[] Enemies;
+    public Character Player { get; }
+    public Character[] Enemies { get; }
 
     public Random Seed = new Random();
 
@@ -42,10 +42,13 @@ public class GameManager
     /// </summary>
     public GameManager()
     {
-        // Enemies checked first
+        // Player checked
+        string playerJson = File.ReadAllText("./Data/Player.json");
+        Player = JsonSerializer.Deserialize<Character>(playerJson) ?? throw new NullReferenceException("Invalid Player JSON!");
+        
+        // Enemies checked
         string enemyJson = File.ReadAllText("./Data/Enemies.json");
-        Enemies = JsonSerializer.Deserialize<Enemy[]>(enemyJson) ?? throw new NullReferenceException("Invalid Enemies JSON!");
-        if (Enemies == null || Enemies.Length == 0) throw new Exception("No enemies found!");
+        Enemies = JsonSerializer.Deserialize<Character[]>(enemyJson) ?? throw new NullReferenceException("Invalid Enemies JSON!");
         
         MinGameWidth = 20;
         MaxGameWidth = 40;

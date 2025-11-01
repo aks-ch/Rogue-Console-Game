@@ -93,7 +93,7 @@ public class GameScreen(GameManager gameManager) : IScreen
         GameManager.ColorConsoleWrite(ConsoleColor.Cyan, "Please enter your name: ");
         string? name = Console.ReadLine();
         name = string.IsNullOrEmpty(name) ? "Player" : name;
-        Player = new Player(this, name, GameManager.PlayerChar, 10, 1);
+        Player = new Player(this, name, GameManager.Player.Symbol, GameManager.Player.MaxHealth, GameManager.Player.Strength);
         PlayerPosition = Player.Position;
         
         // Enemy initialization
