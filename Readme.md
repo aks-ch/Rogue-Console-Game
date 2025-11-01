@@ -1,7 +1,7 @@
 ﻿# Rogue Console Game
 This game is a basic console implementation of the game "Rogue" and is used as a learning experience for me in C#.
 
-# Controls
+# Gameplay
 Arrow keys for movement in game.
 
 In order to attack an enemy, you have to "move into" the enemy.
