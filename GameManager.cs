@@ -92,9 +92,11 @@ public class GameManager
                     GameScreen.Draw();
                     break;
                 case GameState.Victory:
+                    EndScreen.Victory = true;
                     EndScreen.Draw();
                     break;
                 case GameState.Defeat:
+                    EndScreen.Victory = false;
                     EndScreen.Draw();
                     break;
                 default:

@@ -70,11 +70,13 @@ public class GameScreen(GameManager gameManager) : IScreen
         // Checking Victory/Defeat
         if (Player.Health <= 0)
         {
+            _initialized = false;
             GameManager.CurrentGameState = GameState.Defeat;
             return;
         }
         if (Enemies.Count == 0)
         {
+            _initialized = false;
             GameManager.CurrentGameState = GameState.Victory;
             return;
         }

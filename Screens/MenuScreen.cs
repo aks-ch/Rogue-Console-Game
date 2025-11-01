@@ -94,10 +94,12 @@ public class MenuScreen(GameManager gameManager) : IScreen
         else if (_currentOption == MenuOption.Random)
         {
             RandomGameOptions();
+            _currentOption = MenuOption.None;
         }
         else if (_currentOption == MenuOption.Custom)
         {
             CustomGameOptions();
+            _currentOption = MenuOption.None;
         }
         else if (_currentOption == MenuOption.Exit)
         {
