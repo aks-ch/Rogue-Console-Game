@@ -1,7 +1,17 @@
 ﻿# Rogue Console Game
 This game is a basic console implementation of the game "Rogue" and is used as a learning experience for me in C#.
 
-# Information
+# Controls
+Arrow keys for movement in game.
+
+In order to attack an enemy, you have to "move into" the enemy.
+The enemy will attack the player if it tries to move into a space that is occupied by the player.
+
+To heal, the player must not interact with an enemy for `HealCooldown` turns.
+After the `HealCooldown` reaches `0`, the player will heal `HealFactor` health every turn.
+Interacting with an enemy resets the cooldown.
+
+# Additional Information
 The game offers 2 options to play:
 1. Random Settings
    - Seed is randomly chosen.
@@ -31,7 +41,12 @@ Each enemy declaration must be complete with the three fields as shown.
 The `Symbol` field may not include more than one character.
 You can declare negative numbers for `MaxHealth` and `Strength` though it can lead to unintended behavior.
 
-The player stats can also be modified using `Data/Player.json`. However, there can only be one player so the declaration can only contain one object. I suggest you to modify the default values only to modify player stats.
+The player stats can also be modified using `Data/Player.json`.
+However, there can only be one player so the declaration can only contain one object.
+I suggest you to modify the default values only to modify player stats.
+
+Any number that is represented as an integer in [defaults](#defaults) **must** be an integer.
+Decimals, where allowed, will be rounded to single decimal point.
 
 The following features use the seed for game initialization where applicable:
 - Game size
@@ -42,19 +57,15 @@ The following features use the seed for game initialization where applicable:
 
 A shorthand version of this guide can be viewed in the menu screen.
 
-# Controls
-Arrow keys for movement in game.
-
-In order to attack an enemy, you have to "move into" the enemy.
-The enemy will attack the player if it tries to move into a space that is occupied by the player.
-
 # Defaults
 Player:
 ```json
 {
   "Symbol": "P",
   "MaxHealth": 10,
-  "Strength": 1
+  "Strength": 1,
+  "HealCooldown": 5,
+  "HealFactor": 0.2
 }
 ```
 

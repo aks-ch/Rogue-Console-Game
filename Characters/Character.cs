@@ -9,7 +9,7 @@ public abstract class Character : IDamageable, IAttacker
     public Vector2 Position;
     
     public double Health { get; set; }
-    public double MaxHealth { get; }
+    public int MaxHealth { get; }
     public double Strength { get; }
     
     public char Symbol { get; }
@@ -24,7 +24,7 @@ public abstract class Character : IDamageable, IAttacker
     /// <param name="symbol">The symbol this character is represented as on the board.</param>
     /// <param name="maxHealth">The maximum health of the character.</param>
     /// <param name="strength">The strength of the character.</param>
-    public Character(GameScreen game, char symbol, float maxHealth, float strength)
+    public Character(GameScreen game, char symbol, int maxHealth, double strength)
     {
         Symbol = symbol;
         Health = maxHealth;

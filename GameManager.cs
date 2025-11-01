@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using RogueConsoleGame.Characters;
 using RogueConsoleGame.Enums;
 using RogueConsoleGame.Records;
 using RogueConsoleGame.Screens;
@@ -17,8 +18,8 @@ public class GameManager
     public int EnemyCount;
 
     public char EmptyChar = '·';
-    public Character Player { get; }
-    public Character[] Enemies { get; }
+    public PlayerData Player { get; }
+    public EnemyData[] Enemies { get; }
 
     public Random Seed = new Random();
 
@@ -44,11 +45,11 @@ public class GameManager
     {
         // Player checked
         string playerJson = File.ReadAllText("./Data/Player.json");
-        Player = JsonSerializer.Deserialize<Character>(playerJson) ?? throw new NullReferenceException("Invalid Player JSON!");
+        Player = JsonSerializer.Deserialize<PlayerData>(playerJson) ?? throw new NullReferenceException("Invalid Player JSON!");
         
         // Enemies checked
         string enemyJson = File.ReadAllText("./Data/Enemies.json");
-        Enemies = JsonSerializer.Deserialize<Character[]>(enemyJson) ?? throw new NullReferenceException("Invalid Enemies JSON!");
+        Enemies = JsonSerializer.Deserialize<EnemyData[]>(enemyJson) ?? throw new NullReferenceException("Invalid Enemies JSON!");
         
         MinGameWidth = 20;
         MaxGameWidth = 40;
@@ -112,6 +113,8 @@ public class GameManager
         ColorConsoleWriteLine(ConsoleColor.Green, $"- Symbol    : {gameManager.Player.Symbol}");
         ColorConsoleWriteLine(ConsoleColor.Green, $"- MaxHealth : {gameManager.Player.MaxHealth}");
         ColorConsoleWriteLine(ConsoleColor.Green, $"- Strength  : {gameManager.Player.Strength}");
+        ColorConsoleWriteLine(ConsoleColor.Green, $"- Heal Cooldown : {gameManager.Player.HealCooldown}");
+        ColorConsoleWriteLine(ConsoleColor.Green, $"- Heal Factor   : {gameManager.Player.HealFactor}");
         Console.WriteLine("Initialized Enemy stats:");
         int i = 0;
         foreach (var enemy in gameManager.Enemies)

@@ -14,14 +14,16 @@ public class Player : Character
     
     private bool _interacted = false;
     private int _healCooldown;
-    private readonly int _healCooldownMax = 5;
-    private readonly double _healFactor = 0.2;
+    private readonly int _healCooldownMax;
+    private readonly double _healFactor;
     
-    public Player(GameScreen game, string name, char symbol, float maxHealth, float strength) : base(game, symbol,
+    public Player(GameScreen game, string name, char symbol, int maxHealth, double strength) : base(game, symbol,
         maxHealth, strength)
     {
         Name = name;
+        _healCooldownMax = game.GameManager.Player.HealCooldown;
         _healCooldown = _healCooldownMax;
+        _healFactor = Math.Round(game.GameManager.Player.HealFactor, 1);
     }
 
     /// <summary>

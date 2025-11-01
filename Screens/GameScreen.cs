@@ -93,7 +93,7 @@ public class GameScreen(GameManager gameManager) : IScreen
         GameManager.ColorConsoleWrite(ConsoleColor.Cyan, "Please enter your name: ");
         string? name = Console.ReadLine();
         name = string.IsNullOrEmpty(name) ? "Player" : name;
-        Player = new Player(this, name, GameManager.Player.Symbol, GameManager.Player.MaxHealth, GameManager.Player.Strength);
+        Player = new Player(this, name, GameManager.Player.Symbol, GameManager.Player.MaxHealth, Math.Round(GameManager.Player.Strength, 1));
         PlayerPosition = Player.Position;
         
         // Enemy initialization
@@ -102,7 +102,7 @@ public class GameScreen(GameManager gameManager) : IScreen
         while (enemyCount > 0)
         {
             int r = GameManager.Seed.Next(0, GameManager.Enemies.Length);
-            Enemy newEnemy = new Enemy(this, GameManager.Enemies[r].Symbol, GameManager.Enemies[r].MaxHealth, GameManager.Enemies[r].Strength);
+            Enemy newEnemy = new Enemy(this, GameManager.Enemies[r].Symbol, GameManager.Enemies[r].MaxHealth, Math.Round(GameManager.Enemies[r].Strength, 1));
             Enemies.Add(newEnemy.Position, newEnemy);
             enemyCount--;
         }
@@ -139,7 +139,7 @@ public class GameScreen(GameManager gameManager) : IScreen
         // Border color based on player health and healing status
         if (Player.Health == Player.MaxHealth) borderColor = ConsoleColor.Blue;
         else if (Player.IsHealing) borderColor = ConsoleColor.Yellow;
-        else if (Player.Health < 5) borderColor = ConsoleColor.Red;
+        else if (Player.Health < 0.5 * Player.MaxHealth) borderColor = ConsoleColor.Red;
         else borderColor = ConsoleColor.Green;
         
         // Output map

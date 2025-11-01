@@ -7,7 +7,7 @@ namespace RogueConsoleGame.Characters;
 public class Enemy : Character
 {
     // Enemy Declaration
-    public Enemy(GameScreen game, char symbol, float maxHealth, float strength) : base(game, symbol, maxHealth, strength) {}
+    public Enemy(GameScreen game, char symbol, int maxHealth, double strength) : base(game, symbol, maxHealth, strength) {}
 
     /// <summary>
     /// Make the enemy move towards a target location.

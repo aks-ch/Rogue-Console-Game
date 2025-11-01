@@ -10,7 +10,7 @@ public interface IDamageable
     /// <summary>
     /// Maximum health of the damageable.
     /// </summary>
-    protected double MaxHealth { get; }
+    protected int MaxHealth { get; }
     
     /// <summary>
     /// Take damage.

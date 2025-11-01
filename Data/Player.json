@@ -1,5 +1,7 @@
 ﻿{
   "Symbol": "P",
   "MaxHealth": 10,
-  "Strength": 1
+  "Strength": 1,
+  "HealCooldown": 5,
+  "HealFactor": 0.2
 }
