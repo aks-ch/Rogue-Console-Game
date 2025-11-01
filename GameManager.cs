@@ -103,11 +103,26 @@ public class GameManager
     /// <summary>
     /// Output the guide of the game.
     /// </summary>
-    public static void DrawGuide()
+    public static void DrawGuide(GameManager gameManager)
     {
         Console.WriteLine();
-        ColorConsoleWriteLine(ConsoleColor.Cyan, "Incomplete Guide.");
-        // throw new NotImplementedException("Guide not implemented");
+        ColorConsoleWriteLine(ConsoleColor. Cyan, "Use arrow keys to move the player.");
+        ColorConsoleWriteLine(ConsoleColor. Cyan, "Moving into an enemy attacks the enemy. If an enemy tries to move into the player, it attacks the player.");
+        Console.WriteLine("Initialized Player stats:");
+        ColorConsoleWriteLine(ConsoleColor.Green, $"- Symbol    : {gameManager.Player.Symbol}");
+        ColorConsoleWriteLine(ConsoleColor.Green, $"- MaxHealth : {gameManager.Player.MaxHealth}");
+        ColorConsoleWriteLine(ConsoleColor.Green, $"- Strength  : {gameManager.Player.Strength}");
+        Console.WriteLine("Initialized Enemy stats:");
+        int i = 0;
+        foreach (var enemy in gameManager.Enemies)
+        {
+            i++;
+            ColorConsoleWriteLine(ConsoleColor.DarkRed, $"Enemy {i}");
+            ColorConsoleWriteLine(ConsoleColor.DarkRed, $"- Symbol    : {enemy.Symbol}");
+            ColorConsoleWriteLine(ConsoleColor.DarkRed, $"- MaxHealth : {enemy.MaxHealth}");
+            ColorConsoleWriteLine(ConsoleColor.DarkRed, $"- Strength  : {enemy.Strength}");
+        }
+        
     }
 
     /// <summary>

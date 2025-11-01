@@ -59,7 +59,7 @@ public class MenuScreen(GameManager gameManager) : IScreen
         }
 
         // The Guide
-        if (_viewGuide) GameManager.DrawGuide();
+        if (_viewGuide) GameManager.DrawGuide(gameManager);
         Console.WriteLine();
 
         // Invalid input
