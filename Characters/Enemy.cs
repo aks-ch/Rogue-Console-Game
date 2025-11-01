@@ -14,7 +14,8 @@ public class Enemy : Character
     /// </summary>
     /// <param name="target">The target location to move towards.</param>
     /// <exception cref="Exception">The target location is inside the enemy.</exception>
-    public void ChooseMove(Vector2 target)
+    /// <returns>True if I moved. False if I didn't.</returns>
+    public bool ChooseMove(Vector2 target)
     {
         Direction direction = 0;
         
@@ -58,19 +59,18 @@ public class Enemy : Character
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        ProcessMove(newPosition);
+        return ProcessMove(newPosition);
     }
     
     /// <summary>
     /// Process what to do about moving to a new position.
     /// </summary>
     /// <param name="newPosition">The new position.</param>
-    private void ProcessMove(Vector2 newPosition)
+    /// <returns>True if the enemy moved. Else false.</returns>
+    private bool ProcessMove(Vector2 newPosition)
     {
-        // new location outside map
-        if (PositionOutOfBounds(newPosition)) return;
-        // enemy in new location
-        if (Game.Enemies.ContainsKey(newPosition)) return;
+        // new location outside map or enemy in new location
+        if (PositionOutOfBounds(newPosition) || Game.Enemies.ContainsKey(newPosition)) return false;
 
         // player in new location
         if (Game.PlayerPosition == newPosition)
@@ -82,7 +82,10 @@ public class Enemy : Character
         else
         {
             Position = newPosition;
+            return true;
         }
+
+        return false;
     }
 
     /// <summary>
