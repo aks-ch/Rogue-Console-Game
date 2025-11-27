@@ -3,7 +3,7 @@
 namespace RogueConsoleGame.World.GameObjects;
 
 /// <summary>
-/// A wall object in the game world.
+/// Represents a wall object in the game world.
 /// </summary>
 public class Wall: IVisible
 {
