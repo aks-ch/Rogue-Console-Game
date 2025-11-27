@@ -39,7 +39,7 @@ public class Enemy : Character
             Direction.East  => Position with { X = Position.X + 1 },
             Direction.West  => Position with { X = Position.X - 1 },
 
-            // Your diagonal "random choice" logic
+            // diagonal directions
             Direction.North | Direction.East => random
                 ? Position with { Y = Position.Y - 1 } // North
                 : Position with { X = Position.X + 1 }, // East
