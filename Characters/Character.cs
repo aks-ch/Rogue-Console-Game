@@ -12,7 +12,7 @@ public abstract class Character : IDamageable, IAttacker, IVisible
     public int MaxHealth { get; }
     public double Strength { get; }
 
-    public bool IsVisible { get; private set; } = true;
+    public bool IsVisible { get; set; } = true;
     public char Symbol { get; }
     
     protected GameScreen Game;

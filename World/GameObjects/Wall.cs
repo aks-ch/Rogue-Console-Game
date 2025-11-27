@@ -7,7 +7,7 @@ namespace RogueConsoleGame.World.GameObjects;
 /// </summary>
 public class Wall: IVisible
 {
-    public bool IsVisible { get; private set; }
+    public bool IsVisible { get; set; }
     public char Symbol { get; private set; }
     
     private GameManager _gameManager;

@@ -5,6 +5,6 @@
 /// </summary>
 public interface IVisible
 {
-    public bool IsVisible { get; }
+    public bool IsVisible { get; set; }
     public char Symbol { get; }
 }

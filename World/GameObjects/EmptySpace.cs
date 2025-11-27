@@ -7,7 +7,7 @@ namespace RogueConsoleGame.World.GameObjects;
 /// </summary>
 public class EmptySpace: IVisible
 {
-    public bool IsVisible { get; private set; }
+    public bool IsVisible { get; set; }
     public char Symbol { get; }
     
     public EmptySpace(char symbol)
