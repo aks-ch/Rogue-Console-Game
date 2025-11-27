@@ -6,7 +6,6 @@ namespace RogueConsoleGame.Characters;
 
 public class Enemy : Character
 {
-    // Enemy Declaration
     public Enemy(GameScreen game, char symbol, int maxHealth, double strength) : base(game, symbol, maxHealth, strength) {}
 
     /// <summary>
