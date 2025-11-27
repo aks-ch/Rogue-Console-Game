@@ -4,14 +4,15 @@ using RogueConsoleGame.Screens;
 
 namespace RogueConsoleGame.Characters;
 
-public abstract class Character : IDamageable, IAttacker
+public abstract class Character : IDamageable, IAttacker, IVisible
 {
     public Vector2 Position;
     
     public double Health { get; set; }
     public int MaxHealth { get; }
     public double Strength { get; }
-    
+
+    public bool IsVisible { get; private set; } = true;
     public char Symbol { get; }
     
     protected GameScreen Game;
