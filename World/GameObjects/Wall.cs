@@ -21,34 +21,35 @@ public class Wall: IVisible
     /// <summary>
     /// Checks for adjacent walls and modifies its own symbol accordingly.
     /// </summary>
-    public void CheckSymbol(IVisible[,] grid, int row, int column)
+    public void CheckSymbol(Map map, int row, int column)
     {
         Direction adjecentWalls = 0;
+        IVisible[,] grid = map.Grid;
         
         // North
-        if (grid[row - 1, column].GetType() == this.GetType())
+        if (row - 1 >= 0 && grid[row - 1, column].GetType() == this.GetType())
         {
             adjecentWalls |= Direction.North;
         }
         
         // South
-        if (grid[row + 1, column].GetType() == this.GetType())
+        if (row + 1 < map.MapHeight && grid[row + 1, column].GetType() == this.GetType())
         {
             adjecentWalls |= Direction.South;
         }
         
         // East
-        if (grid[row, column + 1].GetType() == this.GetType())
+        if (column + 1 < map.MapWidth && grid[row, column + 1].GetType() == this.GetType())
         {
             adjecentWalls |= Direction.East;
         }
         
         // West
-        if (grid[row, column - 1].GetType() == this.GetType())
+        if (column - 1 >= 0 && grid[row, column - 1].GetType() == this.GetType())
         {
             adjecentWalls |= Direction.West;
         }
 
-        throw new NotImplementedException();
+        Symbol = _gameManager.WallChars[(int)adjecentWalls];
     }
 }

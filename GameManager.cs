@@ -22,7 +22,7 @@ public class GameManager
     public EnemyData[] Enemies { get; }
     
     // according to directionality
-    public char[] WallChars { get; } = ['║', '║', '║', '═', '╚', '╔', '╠', '═', '╝', '╗', '╣', '═', '╩', '╦', '╬'];
+    public char[] WallChars { get; } = [' ', '║', '║', '║', '═', '╚', '╔', '╠', '═', '╝', '╗', '╣', '═', '╩', '╦', '╬'];
 
     public Random Seed = new Random();
 

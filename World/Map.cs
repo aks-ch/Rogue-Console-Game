@@ -18,8 +18,8 @@ public class Map
     public Map(GameManager gameManager, int width, int height)
     {
         _gameManager = gameManager;
-        MapWidth = width;
-        MapHeight = height;
+        MapWidth = width + 2;
+        MapHeight = height + 2;
         
         Grid = new IVisible[MapHeight, MapWidth];
 
@@ -34,6 +34,19 @@ public class Map
                 else
                 {
                     Grid[i, j] = new EmptySpace(_gameManager.EmptyChar);
+                }
+            }
+        }
+
+        Wall? wall;
+        for (int i = 0; i < MapHeight; i++)
+        {
+            for (int j = 0; j < MapWidth; j++)
+            {
+                wall = Grid[i, j] as Wall;
+                if (wall != null)
+                {
+                    wall.CheckSymbol(this, i, j);
                 }
             }
         }
