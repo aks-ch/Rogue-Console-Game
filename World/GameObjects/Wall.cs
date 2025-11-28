@@ -1,4 +1,5 @@
-﻿using RogueConsoleGame.Interfaces;
+﻿using RogueConsoleGame.Enums;
+using RogueConsoleGame.Interfaces;
 
 namespace RogueConsoleGame.World.GameObjects;
 
@@ -20,8 +21,34 @@ public class Wall: IVisible
     /// <summary>
     /// Checks for adjacent walls and modifies its own symbol accordingly.
     /// </summary>
-    public void CheckSymbol()
+    public void CheckSymbol(IVisible[,] grid, int row, int column)
     {
+        Direction adjecentWalls = 0;
+        
+        // North
+        if (grid[row - 1, column].GetType() == this.GetType())
+        {
+            adjecentWalls |= Direction.North;
+        }
+        
+        // South
+        if (grid[row + 1, column].GetType() == this.GetType())
+        {
+            adjecentWalls |= Direction.South;
+        }
+        
+        // East
+        if (grid[row, column + 1].GetType() == this.GetType())
+        {
+            adjecentWalls |= Direction.East;
+        }
+        
+        // West
+        if (grid[row, column - 1].GetType() == this.GetType())
+        {
+            adjecentWalls |= Direction.West;
+        }
+
         throw new NotImplementedException();
     }
 }
