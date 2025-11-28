@@ -20,6 +20,9 @@ public class GameManager
     public char EmptyChar = '·';
     public PlayerData Player { get; }
     public EnemyData[] Enemies { get; }
+    
+    // according to directionality
+    public char[] WallChars { get; } = ['║', '║', '║', '═', '╚', '╔', '╠', '═', '╝', '╗', '╣', '═', '╩', '╦', '╬'];
 
     public Random Seed = new Random();
 
