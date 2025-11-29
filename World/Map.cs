@@ -127,34 +127,38 @@ public class Map
     /// <summary>
     /// Search for spaces in the 4 cardinal directions containing the specified type around the search location.
     /// </summary>
-    /// <param name="type">The type to search for. This type must be of interface IVisible.</param>
     /// <param name="y">The y-coordinate of the search location.</param>
     /// <param name="x">The x-coordinate of the search location.</param>
-    /// <returns>The count of the spaces found containing the type or outside map bounds. -1 if type is not of interface IVisible.</returns>
-    private int GetAdjacentCount(Type type, int y, int x)
+    /// <param name="results">Returns the classes associated with the spaces containing the required type.</param>
+    /// <typeparam name="T">The type to search for. Must inherit IVisible.</typeparam>
+    /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
+    private int GetAdjacentCount<T>(int y, int x, out List<T> results) where T : IVisible
     {
-        if (!typeof(IVisible).IsAssignableFrom(type)) return -1;
-        
         int count = 0;
+        results = [];
 
         int[][] directions =
-        {
-            new int[] { -1, 0 }, // north
-            new int[] { 1, 0 }, // south
-            new int[] { 0, 1 }, // east
-            new int[] { 0, -1 }, // west
-        };
+        [
+            [-1, 0], // north
+            [1, 0], // south
+            [0, 1], // east
+            [0, -1] // west
+        ];
 
         foreach (int[] direction in directions)
         {
             int adjY = y + direction[0];
             int adjX = x + direction[1];
+
+            if (adjY == y && adjX == x) continue; // Is not the required type
             
-            if (
-                (adjY != y || adjX != x) && // Not the search node
-                (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth || // Is outside map bounds
-                 type.IsInstanceOfType(Grid[adjY, adjX]))) // Is the required type
+            if (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth) // Is outside map bounds
             {
+                count++;
+            }
+            else if (Grid[adjY, adjX] is T match) // Is the required type
+            {
+                results.Add(match);
                 count++;
             }
         }
@@ -165,25 +169,29 @@ public class Map
     /// <summary>
     /// Search for spaces in all directions (including diagonals) containing the specified type around the search location.
     /// </summary>
-    /// <param name="type">The type to search for. This type must be of interface IVisible.</param>
     /// <param name="y">The y-coordinate of the search location.</param>
     /// <param name="x">The x-coordinate of the search location.</param>
-    /// <returns>The count of the spaces found containing the type or outside map bounds. -1 if type is not of interface IVisible.</returns>
-    private int GetSurroundingCount(Type type, int y, int x)
+    /// <param name="results">Returns the classes associated with the spaces containing the required type.</param>
+    /// <typeparam name="T">The type to search for. Must inherit IVisible.</typeparam>
+    /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
+    private int GetSurroundingCount<T>(int y, int x, out List<T> results) where T : IVisible
     {
-        if (!typeof(IVisible).IsAssignableFrom(type)) return -1;
-        
         int count = 0;
+        results = new List<T>();
 
         for (int adjY = y - 1; adjY <= y + 1; adjY++)
         {
             for (int adjX = x - 1; adjX <= x + 1; adjX++)
             {
-                if (
-                    (adjY != y || adjX != x) && // Not the search node
-                    (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth || // Is outside map bounds
-                     type.IsInstanceOfType(Grid[adjY, adjX]))) // Is the required type
+                if (adjY == y && adjX == x) continue; // Is not the required type
+                
+                if (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth) // Is outside map bounds
                 {
+                    count++;
+                }
+                else if (Grid[adjY, adjX] is T match) // Is the required type
+                {
+                    results.Add(match);
                     count++;
                 }
             }
