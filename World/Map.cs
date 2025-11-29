@@ -129,7 +129,7 @@ public class Map
     /// </summary>
     /// <param name="y">The y-coordinate of the search location.</param>
     /// <param name="x">The x-coordinate of the search location.</param>
-    /// <param name="results">Returns the classes associated with the spaces containing the required type.</param>
+    /// <param name="results">Returns the classes associated with the spaces containing the required type. (This list does not include out of bounds spaces)</param>
     /// <typeparam name="T">The type to search for. Must inherit IVisible.</typeparam>
     /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
     private int GetAdjacentCount<T>(int y, int x, out List<T> results) where T : IVisible
@@ -171,7 +171,7 @@ public class Map
     /// </summary>
     /// <param name="y">The y-coordinate of the search location.</param>
     /// <param name="x">The x-coordinate of the search location.</param>
-    /// <param name="results">Returns the classes associated with the spaces containing the required type.</param>
+    /// <param name="results">Returns the classes associated with the spaces containing the required type. (This list does not include out of bounds spaces)</param>
     /// <typeparam name="T">The type to search for. Must inherit IVisible.</typeparam>
     /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
     private int GetSurroundingCount<T>(int y, int x, out List<T> results) where T : IVisible
