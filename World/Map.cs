@@ -124,7 +124,7 @@ public class Map
     
 
     /// <summary>
-    /// Search for spaces in the 4 cardinal directions containing the specified type around the search location.
+    /// Search for spaces in all directions (including diagonals) containing the specified type around the search location.
     /// </summary>
     /// <param name="type">The type to search for. This type must be of interface IVisible.</param>
     /// <param name="y">The y-coordinate of the search location.</param>
