@@ -5,14 +5,10 @@ namespace RogueConsoleGame.World.GameObjects;
 /// <summary>
 /// Represents an empty space in the game world.
 /// </summary>
-public class EmptySpace: IVisible
+public class EmptySpace : GameObject
 {
-    public bool IsVisible { get; set; }
-    public char Symbol { get; }
-    
-    public EmptySpace(char symbol)
+    public EmptySpace(char symbol, int y, int x) : base(x, y)
     {
         Symbol = symbol;
     }
-    
 }

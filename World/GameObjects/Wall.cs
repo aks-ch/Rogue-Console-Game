@@ -6,14 +6,11 @@ namespace RogueConsoleGame.World.GameObjects;
 /// <summary>
 /// Represents a wall object in the game world.
 /// </summary>
-public class Wall: IVisible
+public class Wall: GameObject
 {
-    public bool IsVisible { get; set; }
-    public char Symbol { get; private set; }
-    
     private GameManager _gameManager;
 
-    public Wall(GameManager gameManager)
+    public Wall(GameManager gameManager, int y, int x) : base(y, x)
     {
         _gameManager = gameManager;
     }

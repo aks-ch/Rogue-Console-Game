@@ -10,9 +10,7 @@ public class Map
 {
     public int MapWidth { get; }
     public int MapHeight { get; }
-    
-    public int Noise { get; }
-    
+
     public IVisible[,] Grid { get; private set; }
     
     private GameManager _gameManager;
@@ -23,34 +21,17 @@ public class Map
     /// <param name="gameManager">Associated game manager.</param>
     /// <param name="height">Height of the map.</param>
     /// <param name="width">Width of the map.</param>
-    /// <param name="noise">Noise percentage (walls) of the map. Must be between 0 and 100 inclusive. Any number below 0 will be rounded to 0, and above 100 will be rounded to 100. (Too high values may result in an unusable map. Recommended range is 40-60) Default: 0</param>
-    public Map(GameManager gameManager, int height, int width, int? noise)
+    /// <param name="wallSegments">Number of wall segments to create for this map. Values less than 0 will be rounded to 0. Default: 0</param>
+    public Map(GameManager gameManager, int height, int width, int? wallSegments)
     {
         _gameManager = gameManager;
         MapHeight = height + 2;
         MapWidth = width + 2;
-
-        if (noise is { } value)
-        {
-            if (value < 0) Noise = 0;
-            else if (value > 100) Noise = 100;
-            else Noise = value;
-        }
-        else
-        {
-            Noise = 0;
-        }
         
         Grid = new IVisible[MapHeight, MapWidth];
-
-        GenerateMap();
-        if (Noise > 0)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                SmoothWalls();
-            }
-        }
+        
+        int count = wallSegments ?? 0;
+        GenerateMap(count);
         UpdateWalls();
         
     }
@@ -71,57 +52,29 @@ public class Map
     }
 
     /// <summary>
-    /// Generate the map with noise if it isn't 0. This map only contains empty spaces and walls.
+    /// Generate an empty map and attempt to generate the defined number of wall segments.
     /// </summary>
-    private void GenerateMap()
+    /// <param name="wallSegments">The number of wall segments to attempt to generate.</param>
+    private void GenerateMap(int wallSegments = 0)
     {
+        // Basic map with no wall segments
         for (int i = 0; i < MapHeight; i++)
         {
             for (int j = 0; j < MapWidth; j++)
             {
                 if (i == 0 || j == 0 || i == MapHeight - 1 || j == MapWidth - 1)
                 {
-                    Grid[i, j] = new Wall(_gameManager);
+                    Grid[i, j] = new Wall(_gameManager, i, j);
                 }
                 else
                 {
-                    // noise walls
-                    Grid[i, j] = _gameManager.Seed.Next(100) < Noise ? new Wall(_gameManager) : new EmptySpace(_gameManager.EmptyChar);
+                    Grid[i, j] = new EmptySpace(_gameManager.EmptyChar, i, j);
                 }
             }
         }
-    }
-
-    /// <summary>
-    /// Smoothen out random walls.
-    /// </summary>
-    private void SmoothWalls()
-    {
-        IVisible[,] newGrid = new IVisible[MapHeight, MapWidth];
         
-        // Copy border to favor edge walls
-        for (int i = 0; i < MapHeight; i++)
-        {
-            for (int j = 0; j < MapWidth; j++)
-            {
-                if (i == 0 || j == 0 || i == MapHeight - 1 || j == MapWidth - 1) newGrid[i, j] = Grid[i, j];
-            }
-        }
-
-        // Make modifications
-        for (int i = 1; i < MapHeight - 1; i++)
-        {
-            for (int j = 1; j < MapWidth - 1; j++)
-            {
-                int adjCount = GetSurroundingCount(typeof(Wall), i, j);
-
-                if (adjCount > 4) newGrid[i, j] = new Wall(_gameManager); // Replace with wall
-                else if (adjCount < 4) newGrid[i, j] = new EmptySpace(_gameManager.EmptyChar); // Replace with empty space
-                else  newGrid[i, j] = Grid[i, j]; // Keep what is currently there
-            }
-        }
-        
-        Grid = newGrid;
+        // Do wall segments
+        throw new NotImplementedException();
     }
 
     /// <summary>
