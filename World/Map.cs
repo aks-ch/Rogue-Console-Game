@@ -129,7 +129,7 @@ public class Map
     /// <param name="type">The type to search for. This type must be of interface IVisible.</param>
     /// <param name="y">The y-coordinate of the search location.</param>
     /// <param name="x">The x-coordinate of the search location.</param>
-    /// <returns>The count of the spaces found containing the type. -1 if type is not of interface IVisible.</returns>
+    /// <returns>The count of the spaces found containing the type or outside map bounds. -1 if type is not of interface IVisible.</returns>
     private int GetSurroundingCount(Type type, int y, int x)
     {
         if (!typeof(IVisible).IsAssignableFrom(type)) return -1;
@@ -142,8 +142,8 @@ public class Map
             {
                 if (
                     (adjY != y || adjX != x) && // Not the search node
-                    adjY > 0 && adjY < MapHeight && adjX > 0 && adjX < MapWidth && // Is within map bounds
-                    type.IsInstanceOfType(Grid[adjY, adjX])) // Is the required type
+                    (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth || // Is outside map bounds
+                     type.IsInstanceOfType(Grid[adjY, adjX]))) // Is the required type
                 {
                     count++;
                 }
