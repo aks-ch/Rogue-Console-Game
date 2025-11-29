@@ -55,6 +55,9 @@ public class Map
         
     }
 
+    /// <summary>
+    /// Output this map to the console.
+    /// </summary>
     public void OutputMap()
     {
         for (int i = 0; i < MapHeight; i++)
