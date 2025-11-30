@@ -217,9 +217,9 @@ public class Map
     /// <param name="position">The position of the search location.</param>
     /// <param name="results">Returns the classes associated with the spaces containing the required type. (This list does not include out of bounds spaces)</param>
     /// <param name="grid">The grid to check in.</param>
-    /// <typeparam name="T">The type to search for. Must inherit IVisible.</typeparam>
+    /// <typeparam name="T">The type to search for. Must inherit GameObject.</typeparam>
     /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
-    private int GetAdjacentCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : IVisible
+    private int GetAdjacentCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : GameObject
     {
         int count = 0;
         results = [];
@@ -259,9 +259,9 @@ public class Map
     /// <param name="position">The position of the search location.</param>
     /// <param name="results">Returns the classes associated with the spaces containing the required type. (This list does not include out of bounds spaces)</param>
     /// <param name="grid">The grid to check in.</param>
-    /// <typeparam name="T">The type to search for. Must inherit IVisible.</typeparam>
+    /// <typeparam name="T">The type to search for. Must inherit GameObject.</typeparam>
     /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
-    private int GetSurroundingCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : IVisible
+    private int GetSurroundingCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : GameObject
     {
         int count = 0;
         results = new List<T>();
