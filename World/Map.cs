@@ -74,8 +74,104 @@ public class Map
             }
         }
         
-        // Do wall segments
-        throw new NotImplementedException();
+        int maxWallsPerSegment = Math.Min(MapHeight, MapWidth) - 3;
+        
+        // Carving wall segments if needed
+        for (int i = 0; i < wallSegments; i++)
+        {
+            AttemptCreateWallSegment(4, maxWallsPerSegment);
+        }
+    }
+
+    /// <summary>
+    /// Attempt to create a wall segment in the map.
+    /// </summary>
+    /// <param name="minWalls">The minimum number of walls required to be placed in this attempt. Any value less than 1 will default to 1.</param>
+    /// <param name="maxWalls">The maximum number of walls that can be placed in this attempt. Any value less than 3 may result in 1 or 2 walls in this segment.</param>
+    private void AttemptCreateWallSegment(int minWalls, int maxWalls)
+    {
+        int count = 0;
+        int y = -1;
+        int x = -1;
+        int maxPasses = MapHeight * MapWidth;
+        bool flag = false;
+        IVisible[,] newGrid = (Grid.Clone() as IVisible[,])!;
+
+        // Find a wall for starting point
+        for (int j = 0; j < maxPasses; j++)
+        {
+            y = _gameManager.Seed.Next(0, MapHeight);
+            x = _gameManager.Seed.Next(0, MapWidth);
+
+            if (Grid[y, x] is Wall && GetAdjacentCount<Wall>(new Vector2(x, y), newGrid, out _) < 4)
+            {
+                flag = true;
+                break;
+            }
+        }
+
+        // Find any random starting point
+        for (int j = 0; j < maxPasses; j++)
+        {
+            y = _gameManager.Seed.Next(0, MapHeight);
+            x = _gameManager.Seed.Next(0, MapWidth);
+
+            if (GetAdjacentCount<Wall>(new Vector2(x, y), newGrid, out _) < 4)
+            {
+                newGrid[y, x] = new Wall(_gameManager, new Vector2(x, y));
+                count++;
+                flag = true;
+                break;
+            }
+        }
+
+        // Rare case, no valid starting point found
+        if (!flag) return;
+            
+        // Select a direction
+        GetAdjacentCount<EmptySpace>(new Vector2(x, y), newGrid, out List<EmptySpace> emptySpaces);
+        
+        // Ensure empty space availability
+        if (emptySpaces.Count == 0) return;
+        
+        GameObject nextWall = emptySpaces[_gameManager.Seed.Next(0, emptySpaces.Count)];
+        
+        if (GetAdjacentCount<Wall>(nextWall.Position, newGrid, out _) > 1) return;
+        
+        // Assign the next wall
+        nextWall = new Wall(_gameManager, nextWall.Position);
+        newGrid[nextWall.Position.Y, nextWall.Position.X] = nextWall;
+        count++;
+        
+        // Get the direction
+        y = nextWall.Position.Y - y;
+        x = nextWall.Position.X - x;
+        
+        // Complete the segment
+        while (count < maxWalls)
+        {
+            // Higher the segment length, lesser the chance of increasing length
+            if (count >= minWalls && _gameManager.Seed.Next(0, maxWalls) < count) break;
+                
+            Vector2 nextPosition = new Vector2(nextWall.Position.X + x, nextWall.Position.Y + y);
+
+            // Ensure empty space
+            if (!(newGrid[nextPosition.Y, nextPosition.X] is EmptySpace)) break;
+            
+            GetAdjacentCount<Wall>(nextPosition, newGrid, out List<Wall> walls);
+
+            if (walls.Count is 1 or 2)
+            {
+                nextWall = new Wall(_gameManager, nextPosition);
+                newGrid[nextWall.Position.Y, nextWall.Position.X] = nextWall;
+                count++;
+                if (walls.Count == 2) break;
+            }
+            else break;
+        }
+            
+        // Confirm segment if long enough
+        if (count >= minWalls) Grid = newGrid;
     }
 
     /// <summary>
