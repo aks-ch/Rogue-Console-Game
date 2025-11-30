@@ -84,6 +84,9 @@ public class Map
         
         // Clear diagonals
         FillDiagonalWalls();
+        
+        // Fill small regions
+        FillSmallRegions();
     }
 
     /// <summary>
@@ -206,6 +209,66 @@ public class Map
                 {
                     if (_gameManager.Seed.Next(0, 2) == 0) Grid[y, x] = new Wall(_gameManager, new Vector2(x, y));
                     else Grid[y + 1, x + 1] = new Wall(_gameManager, new Vector2(x + 1, y + 1));
+                }
+            }
+        }
+    }
+    
+    private void FillSmallRegions()
+    {
+        IVisible[,] newGrid = Grid.Clone() as IVisible[,] ?? throw new InvalidOperationException("Grid is not initialized yet!");
+        List<EmptySpace> remainingEmptySpaces = new List<EmptySpace>();
+        List<List<EmptySpace>> regions = new List<List<EmptySpace>>();
+        List<EmptySpace> selectedRegion = new List<EmptySpace>();
+        bool flag = false;
+        
+        // Collect all empty spaces
+        for (int y = 0; y < MapHeight; y++)
+        {
+            for (int x = 0; x < MapWidth; x++)
+            {
+                if (Grid[y, x] is EmptySpace space) remainingEmptySpaces.Add(space);
+            }
+        }
+        
+        // Collect all regions
+        while (remainingEmptySpaces.Count > 0)
+        {
+            List<EmptySpace> region = GetConnected(remainingEmptySpaces[0]);
+            
+            // Select the region that is larger than half the map's total space, if there
+            if (region.Count > ((MapHeight - 2) * (MapWidth - 2)) / 2) 
+            {
+                regions.Clear();
+                selectedRegion = region;
+                flag = true;
+                break;
+            }
+            
+            // Add region to list
+            regions.Add(region);
+            
+            // Remove region from search
+            foreach (EmptySpace space in region)
+            {
+                remainingEmptySpaces.Remove(space);
+            }
+        }
+
+        // Select the largest region as play area
+        if (!flag)
+        {
+            selectedRegion = regions.MaxBy(region => region.Count) ?? throw new InvalidOperationException("There is no region!");
+        }
+        
+        // Fill all other regions
+        for (int y = 0; y < MapHeight; y++)
+        {
+            for (int x = 0; x < MapWidth; x++)
+            {
+                if (Grid[y, x] is EmptySpace space && !selectedRegion.Contains(space))
+                {
+                    Grid[y, x] = new Wall(_gameManager, new Vector2(x, y));
                 }
             }
         }
