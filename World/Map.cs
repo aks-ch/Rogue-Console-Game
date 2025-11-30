@@ -91,6 +91,7 @@ public class Map
     /// </summary>
     /// <param name="minWalls">The minimum number of walls required to be placed in this attempt. Any value less than 1 will default to 1.</param>
     /// <param name="maxWalls">The maximum number of walls that can be placed in this attempt. Any value less than 3 may result in 1 or 2 walls in this segment.</param>
+    /// <exception cref="ArgumentNullException">Grid is not initialized yet.</exception>
     private void AttemptCreateWallSegment(int minWalls, int maxWalls)
     {
         int count = 0;
@@ -98,7 +99,7 @@ public class Map
         int x = -1;
         int maxPasses = MapHeight * MapWidth;
         bool flag = false;
-        IVisible[,] newGrid = (Grid.Clone() as IVisible[,])!;
+        IVisible[,] newGrid = Grid.Clone() as IVisible[,] ?? throw new ArgumentNullException();
 
         // Find a wall for starting point
         for (int j = 0; j < maxPasses; j++)
