@@ -195,16 +195,16 @@ public class Map
                 // EW
                 if (block[0] is Wall && block[1] is EmptySpace && block[2] is EmptySpace && block[3] is Wall)
                 {
-                    Grid[y, x + 1] = new Wall(_gameManager, new Vector2(x + 1, y));
-                    Grid[y + 1, x] = new Wall(_gameManager, new Vector2(x, y + 1));
+                    if (_gameManager.Seed.Next(0, 2) == 0) Grid[y, x + 1] = new Wall(_gameManager, new Vector2(x + 1, y));
+                    else Grid[y + 1, x] = new Wall(_gameManager, new Vector2(x, y + 1));
                 }
                 
                 // EW
                 // WE
                 if (block[0] is EmptySpace && block[1] is Wall && block[2] is Wall && block[3] is EmptySpace)
                 {
-                    Grid[y, x] = new Wall(_gameManager, new Vector2(x, y));
-                    Grid[y + 1, x + 1] = new Wall(_gameManager, new Vector2(x + 1, y + 1));
+                    if (_gameManager.Seed.Next(0, 2) == 0) Grid[y, x] = new Wall(_gameManager, new Vector2(x, y));
+                    else Grid[y + 1, x + 1] = new Wall(_gameManager, new Vector2(x + 1, y + 1));
                 }
             }
         }
