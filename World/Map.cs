@@ -212,6 +212,40 @@ public class Map
     }
 
     /// <summary>
+    /// Finds all connected types of from the starting space of the specified type.
+    /// </summary>
+    /// <param name="start">The starting space.</param>
+    /// <typeparam name="T">The type to search for.</typeparam>
+    /// <returns>A list of all connected spaces of the same type.</returns>
+    private List<T>? GetConnected<T>(T start) where T : GameObject
+    {
+        // Start node is not on the grid
+        if (Grid[start.Position.Y, start.Position.X] != start) return null;
+        
+        // Search definition
+        List<T> connected = new List<T>();
+        Queue<T> toSearch = new Queue<T>();
+        toSearch.Enqueue(start);
+        
+        // Begin Search
+        while (toSearch.Count > 0)
+        {
+            T next = toSearch.Dequeue();
+            
+            connected.Add(next);
+            GetAdjacentCount<T>(next.Position, Grid, out List<T> spaces);
+
+            foreach (T space in spaces)
+            {
+                if (!connected.Contains(space) && !toSearch.Contains(space)) toSearch.Enqueue(space);
+            }
+        }
+        
+        // Return all the spaces in the region
+        return connected;
+    }
+
+    /// <summary>
     /// Search for spaces in the 4 cardinal directions containing the specified type around the search location.
     /// </summary>
     /// <param name="position">The position of the search location.</param>
