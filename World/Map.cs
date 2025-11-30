@@ -91,7 +91,7 @@ public class Map
     /// </summary>
     /// <param name="minWalls">The minimum number of walls required to be placed in this attempt. Any value less than 1 will default to 1.</param>
     /// <param name="maxWalls">The maximum number of walls that can be placed in this attempt. Any value less than 3 may result in 1 or 2 walls in this segment.</param>
-    /// <exception cref="ArgumentNullException">Grid is not initialized yet.</exception>
+    /// <exception cref="InvalidOperationException">Grid is not initialized.</exception>
     private void AttemptCreateWallSegment(int minWalls, int maxWalls)
     {
         int count = 0;
@@ -99,7 +99,7 @@ public class Map
         int x = -1;
         int maxPasses = MapHeight * MapWidth;
         bool flag = false;
-        IVisible[,] newGrid = Grid.Clone() as IVisible[,] ?? throw new ArgumentNullException();
+        IVisible[,] newGrid = Grid.Clone() as IVisible[,] ?? throw new InvalidOperationException("Grid is not initialized!");
 
         // Find a wall for starting point
         for (int j = 0; j < maxPasses; j++)
@@ -217,10 +217,11 @@ public class Map
     /// <param name="start">The starting space.</param>
     /// <typeparam name="T">The type to search for.</typeparam>
     /// <returns>A list of all connected spaces of the same type.</returns>
-    private List<T>? GetConnected<T>(T start) where T : GameObject
+    /// <exception cref="ArgumentException">Start node is not in the grid.</exception>
+    private List<T> GetConnected<T>(T start) where T : GameObject
     {
         // Start node is not on the grid
-        if (Grid[start.Position.Y, start.Position.X] != start) return null;
+        if (Grid[start.Position.Y, start.Position.X] != start) throw new ArgumentException("Start node is not in the grid!");
         
         // Search definition
         List<T> connected = new List<T>();
