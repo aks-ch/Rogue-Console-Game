@@ -3,9 +3,13 @@ using RogueConsoleGame.Records;
 
 namespace RogueConsoleGame.World.GameObjects;
 
-public abstract class GameObject(int y, int x) : IVisible
+/// <summary>
+/// Default code for a game object.
+/// </summary>
+/// <param name="position">The position of the game object.</param>
+public abstract class GameObject(Vector2 position) : IVisible
 {
     public bool IsVisible { get; set; } = true;
     public char Symbol { get; protected set; }
-    public Vector2 Position { get; } = new Vector2(x, y);
+    public Vector2 Position { get; } = position;
 }

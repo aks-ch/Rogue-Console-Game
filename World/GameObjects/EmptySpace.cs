@@ -1,4 +1,5 @@
 ﻿using RogueConsoleGame.Interfaces;
+using RogueConsoleGame.Records;
 
 namespace RogueConsoleGame.World.GameObjects;
 
@@ -7,7 +8,12 @@ namespace RogueConsoleGame.World.GameObjects;
 /// </summary>
 public class EmptySpace : GameObject
 {
-    public EmptySpace(char symbol, int y, int x) : base(x, y)
+    /// <summary>
+    /// Initialize an empty space on the map.
+    /// </summary>
+    /// <param name="symbol">The symbol to use for the empty space.</param>
+    /// <param name="position">The position of the empty space on the map.</param>
+    public EmptySpace(char symbol, Vector2 position) : base(position)
     {
         Symbol = symbol;
     }

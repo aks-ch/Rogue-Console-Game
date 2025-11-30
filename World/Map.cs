@@ -1,4 +1,5 @@
 ﻿using RogueConsoleGame.Interfaces;
+using RogueConsoleGame.Records;
 using RogueConsoleGame.World.GameObjects;
 
 namespace RogueConsoleGame.World;
@@ -13,7 +14,7 @@ public class Map
 
     public IVisible[,] Grid { get; private set; }
     
-    private GameManager _gameManager;
+    private readonly GameManager _gameManager;
     
     /// <summary>
     /// Used to create maps for the game world.
@@ -58,17 +59,17 @@ public class Map
     private void GenerateMap(int wallSegments = 0)
     {
         // Basic map with no wall segments
-        for (int i = 0; i < MapHeight; i++)
+        for (int y = 0; y < MapHeight; y++)
         {
-            for (int j = 0; j < MapWidth; j++)
+            for (int x = 0; x < MapWidth; x++)
             {
-                if (i == 0 || j == 0 || i == MapHeight - 1 || j == MapWidth - 1)
+                if (y == 0 || x == 0 || y == MapHeight - 1 || x == MapWidth - 1)
                 {
-                    Grid[i, j] = new Wall(_gameManager, i, j);
+                    Grid[y, x] = new Wall(_gameManager, new Vector2(x, y));
                 }
                 else
                 {
-                    Grid[i, j] = new EmptySpace(_gameManager.EmptyChar, i, j);
+                    Grid[y, x] = new EmptySpace(_gameManager.EmptyChar, new Vector2(x, y));
                 }
             }
         }
@@ -80,12 +81,12 @@ public class Map
     /// <summary>
     /// Search for spaces in the 4 cardinal directions containing the specified type around the search location.
     /// </summary>
-    /// <param name="y">The y-coordinate of the search location.</param>
-    /// <param name="x">The x-coordinate of the search location.</param>
+    /// <param name="position">The position of the search location.</param>
     /// <param name="results">Returns the classes associated with the spaces containing the required type. (This list does not include out of bounds spaces)</param>
+    /// <param name="grid">The grid to check in.</param>
     /// <typeparam name="T">The type to search for. Must inherit IVisible.</typeparam>
     /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
-    private int GetAdjacentCount<T>(int y, int x, out List<T> results) where T : IVisible
+    private int GetAdjacentCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : IVisible
     {
         int count = 0;
         results = [];
@@ -100,16 +101,16 @@ public class Map
 
         foreach (int[] direction in directions)
         {
-            int adjY = y + direction[0];
-            int adjX = x + direction[1];
+            int adjY = position.Y + direction[0];
+            int adjX = position.X + direction[1];
 
-            if (adjY == y && adjX == x) continue; // Is not the required type
+            if (adjY == position.Y && adjX == position.X) continue; // Is not the required type
             
             if (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth) // Is outside map bounds
             {
                 count++;
             }
-            else if (Grid[adjY, adjX] is T match) // Is the required type
+            else if (grid[adjY, adjX] is T match) // Is the required type
             {
                 results.Add(match);
                 count++;
@@ -122,27 +123,27 @@ public class Map
     /// <summary>
     /// Search for spaces in all directions (including diagonals) containing the specified type around the search location.
     /// </summary>
-    /// <param name="y">The y-coordinate of the search location.</param>
-    /// <param name="x">The x-coordinate of the search location.</param>
+    /// <param name="position">The position of the search location.</param>
     /// <param name="results">Returns the classes associated with the spaces containing the required type. (This list does not include out of bounds spaces)</param>
+    /// <param name="grid">The grid to check in.</param>
     /// <typeparam name="T">The type to search for. Must inherit IVisible.</typeparam>
     /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
-    private int GetSurroundingCount<T>(int y, int x, out List<T> results) where T : IVisible
+    private int GetSurroundingCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : IVisible
     {
         int count = 0;
         results = new List<T>();
 
-        for (int adjY = y - 1; adjY <= y + 1; adjY++)
+        for (int adjY = position.Y - 1; adjY <= position.Y + 1; adjY++)
         {
-            for (int adjX = x - 1; adjX <= x + 1; adjX++)
+            for (int adjX = position.X - 1; adjX <= position.X + 1; adjX++)
             {
-                if (adjY == y && adjX == x) continue; // Is not the required type
+                if (adjY == position.Y && adjX == position.X) continue; // Is not the required type
                 
                 if (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth) // Is outside map bounds
                 {
                     count++;
                 }
-                else if (Grid[adjY, adjX] is T match) // Is the required type
+                else if (grid[adjY, adjX] is T match) // Is the required type
                 {
                     results.Add(match);
                     count++;
@@ -164,7 +165,7 @@ public class Map
             {
                 if (Grid[i, j] is Wall wall)
                 {
-                    wall.CheckSymbol(this, i, j);
+                    wall.CheckSymbol(this);
                 }
             }
         }

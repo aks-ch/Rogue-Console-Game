@@ -1,5 +1,6 @@
 ﻿using RogueConsoleGame.Enums;
 using RogueConsoleGame.Interfaces;
+using RogueConsoleGame.Records;
 
 namespace RogueConsoleGame.World.GameObjects;
 
@@ -10,7 +11,12 @@ public class Wall: GameObject
 {
     private GameManager _gameManager;
 
-    public Wall(GameManager gameManager, int y, int x) : base(y, x)
+    /// <summary>
+    /// Initialize a wall on the map.
+    /// </summary>
+    /// <param name="gameManager">The associated game manager.</param>
+    /// <param name="position">The position of the wall on the map.</param>
+    public Wall(GameManager gameManager, Vector2 position) : base(position)
     {
         _gameManager = gameManager;
     }
@@ -18,35 +24,36 @@ public class Wall: GameObject
     /// <summary>
     /// Checks for adjacent walls and modifies its own symbol accordingly.
     /// </summary>
-    public void CheckSymbol(Map map, int row, int column)
+    /// <param name="map">The map this wall is on.</param>
+    public void CheckSymbol(Map map)
     {
-        Direction adjecentWalls = 0;
+        Direction adjacentWalls = 0;
         IVisible[,] grid = map.Grid;
         
         // North
-        if (row - 1 >= 0 && grid[row - 1, column].GetType() == this.GetType())
+        if (Position.Y - 1 >= 0 && grid[Position.Y - 1, Position.X].GetType() == this.GetType())
         {
-            adjecentWalls |= Direction.North;
+            adjacentWalls |= Direction.North;
         }
         
         // South
-        if (row + 1 < map.MapHeight && grid[row + 1, column].GetType() == this.GetType())
+        if (Position.Y + 1 < map.MapHeight && grid[Position.Y + 1, Position.X].GetType() == this.GetType())
         {
-            adjecentWalls |= Direction.South;
+            adjacentWalls |= Direction.South;
         }
         
         // East
-        if (column + 1 < map.MapWidth && grid[row, column + 1].GetType() == this.GetType())
+        if (Position.X + 1 < map.MapWidth && grid[Position.Y, Position.X + 1].GetType() == this.GetType())
         {
-            adjecentWalls |= Direction.East;
+            adjacentWalls |= Direction.East;
         }
         
         // West
-        if (column - 1 >= 0 && grid[row, column - 1].GetType() == this.GetType())
+        if (Position.X - 1 >= 0 && grid[Position.Y, Position.X - 1].GetType() == this.GetType())
         {
-            adjecentWalls |= Direction.West;
+            adjacentWalls |= Direction.West;
         }
 
-        Symbol = _gameManager.WallChars[(int)adjecentWalls];
+        Symbol = _gameManager.WallChars[(int)adjacentWalls];
     }
 }
