@@ -81,6 +81,9 @@ public class Map
         {
             AttemptCreateWallSegment(4, maxWallsPerSegment);
         }
+        
+        // Clear diagonals
+        FillDiagonalWalls();
     }
 
     /// <summary>
@@ -172,6 +175,39 @@ public class Map
             
         // Confirm segment if long enough
         if (count >= minWalls) Grid = newGrid;
+    }
+
+    /// <summary>
+    /// Fills walls that look awkward due to a forming diagonal.
+    /// </summary>
+    private void FillDiagonalWalls()
+    {
+        // Loop 1 short to enable 2x2 block search
+        for (int y = 0; y < MapHeight - 1; y++)
+        {
+            for (int x = 0; x < MapWidth - 1; x++)
+            {
+                // Get the 2x2 block
+                IVisible[] block = [Grid[y, x], Grid[y, x + 1], Grid[y + 1, x], Grid[y + 1, x + 1]];
+                
+                // Check:
+                // WE
+                // EW
+                if (block[0] is Wall && block[1] is EmptySpace && block[2] is EmptySpace && block[3] is Wall)
+                {
+                    Grid[y, x + 1] = new Wall(_gameManager, new Vector2(x + 1, y));
+                    Grid[y + 1, x] = new Wall(_gameManager, new Vector2(x, y + 1));
+                }
+                
+                // EW
+                // WE
+                if (block[0] is EmptySpace && block[1] is Wall && block[2] is Wall && block[3] is EmptySpace)
+                {
+                    Grid[y, x] = new Wall(_gameManager, new Vector2(x, y));
+                    Grid[y + 1, x + 1] = new Wall(_gameManager, new Vector2(x + 1, y + 1));
+                }
+            }
+        }
     }
 
     /// <summary>
