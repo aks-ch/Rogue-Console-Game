@@ -33,8 +33,6 @@ public class Map
         
         int count = wallSegments ?? 0;
         GenerateMap(count);
-        UpdateWalls();
-        
     }
 
     /// <summary>
@@ -199,6 +197,9 @@ public class Map
         
         // Fill small regions
         FillSmallRegions();
+        
+        // Set walls' visibility & symbols
+        UpdateWalls();
     }
 
     /// <summary>
@@ -390,19 +391,34 @@ public class Map
     }
 
     /// <summary>
-    /// Checks all walls on the map and updates their symbols according to wall adjacency.
+    /// Checks all walls on the map and updates their visibility and symbols according to wall adjacency.
     /// </summary>
     private void UpdateWalls()
     {
+        List<Wall> walls = new List<Wall>();
+        
+        // Get all walls
         for (int y = 0; y < MapHeight; y++)
         {
             for (int x = 0; x < MapWidth; x++)
             {
                 if (Grid[y, x] is Wall wall)
                 {
-                    wall.CheckSymbol(this);
+                    walls.Add(wall);
                 }
             }
+        }
+        
+        // Check visibility
+        foreach (var wall in walls)
+        {
+            wall.CheckVisibility(this);
+        }
+        
+        // Check symbol
+        foreach (var wall in walls)
+        {
+            wall.CheckSymbol(this);
         }
     }
 }
