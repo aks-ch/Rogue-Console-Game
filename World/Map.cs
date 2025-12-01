@@ -53,6 +53,117 @@ public class Map
     }
 
     /// <summary>
+    /// Finds all connected types of from the starting space of the specified type.
+    /// </summary>
+    /// <param name="start">The starting space.</param>
+    /// <typeparam name="T">The type to search for.</typeparam>
+    /// <returns>A list of all connected spaces of the same type.</returns>
+    /// <exception cref="ArgumentException">Start node is not in the grid.</exception>
+    public List<T> GetConnected<T>(T start) where T : GameObject
+    {
+        // Start node is not on the grid
+        if (Grid[start.Position.Y, start.Position.X] != start) throw new ArgumentException("Start node is not in the grid!");
+        
+        // Search definition
+        List<T> connected = new List<T>();
+        Queue<T> toSearch = new Queue<T>();
+        toSearch.Enqueue(start);
+        
+        // Begin Search
+        while (toSearch.Count > 0)
+        {
+            T next = toSearch.Dequeue();
+            
+            connected.Add(next);
+            GetAdjacentCount<T>(next.Position, Grid, out List<T> spaces);
+
+            foreach (T space in spaces)
+            {
+                if (!connected.Contains(space) && !toSearch.Contains(space)) toSearch.Enqueue(space);
+            }
+        }
+        
+        // Return all the spaces in the region
+        return connected;
+    }
+
+    /// <summary>
+    /// Search for spaces in the 4 cardinal directions containing the specified type around the search location.
+    /// </summary>
+    /// <param name="position">The position of the search location.</param>
+    /// <param name="results">Returns the classes associated with the spaces containing the required type. (This list does not include out of bounds spaces)</param>
+    /// <param name="grid">The grid to check in.</param>
+    /// <typeparam name="T">The type to search for. Must inherit GameObject.</typeparam>
+    /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
+    public int GetAdjacentCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : GameObject
+    {
+        int count = 0;
+        results = [];
+
+        int[][] directions =
+        [
+            [-1, 0], // north
+            [1, 0], // south
+            [0, 1], // east
+            [0, -1] // west
+        ];
+
+        foreach (int[] direction in directions)
+        {
+            int adjY = position.Y + direction[0];
+            int adjX = position.X + direction[1];
+
+            if (adjY == position.Y && adjX == position.X) continue; // Is not the required type
+            
+            if (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth) // Is outside map bounds
+            {
+                count++;
+            }
+            else if (grid[adjY, adjX] is T match) // Is the required type
+            {
+                results.Add(match);
+                count++;
+            }
+        }
+        
+        return count;
+    }
+
+    /// <summary>
+    /// Search for spaces in all directions (including diagonals) containing the specified type around the search location.
+    /// </summary>
+    /// <param name="position">The position of the search location.</param>
+    /// <param name="results">Returns the classes associated with the spaces containing the required type. (This list does not include out of bounds spaces)</param>
+    /// <param name="grid">The grid to check in.</param>
+    /// <typeparam name="T">The type to search for. Must inherit GameObject.</typeparam>
+    /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
+    public int GetSurroundingCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : GameObject
+    {
+        int count = 0;
+        results = new List<T>();
+
+        for (int adjY = position.Y - 1; adjY <= position.Y + 1; adjY++)
+        {
+            for (int adjX = position.X - 1; adjX <= position.X + 1; adjX++)
+            {
+                if (adjY == position.Y && adjX == position.X) continue; // Is not the required type
+                
+                if (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth) // Is outside map bounds
+                {
+                    count++;
+                }
+                else if (grid[adjY, adjX] is T match) // Is the required type
+                {
+                    results.Add(match);
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+
+    /// <summary>
     /// Generate an empty map and attempt to generate the defined number of wall segments.
     /// </summary>
     /// <param name="wallSegments">The number of wall segments to attempt to generate.</param>
@@ -214,9 +325,12 @@ public class Map
         }
     }
     
+    /// <summary>
+    /// Fills small regions in the map with walls.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Encountered a region that is not there. Error should not occur.</exception>
     private void FillSmallRegions()
     {
-        IVisible[,] newGrid = Grid.Clone() as IVisible[,] ?? throw new InvalidOperationException("Grid is not initialized yet!");
         List<EmptySpace> remainingEmptySpaces = new List<EmptySpace>();
         List<List<EmptySpace>> regions = new List<List<EmptySpace>>();
         List<EmptySpace> selectedRegion = new List<EmptySpace>();
@@ -275,126 +389,15 @@ public class Map
     }
 
     /// <summary>
-    /// Finds all connected types of from the starting space of the specified type.
-    /// </summary>
-    /// <param name="start">The starting space.</param>
-    /// <typeparam name="T">The type to search for.</typeparam>
-    /// <returns>A list of all connected spaces of the same type.</returns>
-    /// <exception cref="ArgumentException">Start node is not in the grid.</exception>
-    private List<T> GetConnected<T>(T start) where T : GameObject
-    {
-        // Start node is not on the grid
-        if (Grid[start.Position.Y, start.Position.X] != start) throw new ArgumentException("Start node is not in the grid!");
-        
-        // Search definition
-        List<T> connected = new List<T>();
-        Queue<T> toSearch = new Queue<T>();
-        toSearch.Enqueue(start);
-        
-        // Begin Search
-        while (toSearch.Count > 0)
-        {
-            T next = toSearch.Dequeue();
-            
-            connected.Add(next);
-            GetAdjacentCount<T>(next.Position, Grid, out List<T> spaces);
-
-            foreach (T space in spaces)
-            {
-                if (!connected.Contains(space) && !toSearch.Contains(space)) toSearch.Enqueue(space);
-            }
-        }
-        
-        // Return all the spaces in the region
-        return connected;
-    }
-
-    /// <summary>
-    /// Search for spaces in the 4 cardinal directions containing the specified type around the search location.
-    /// </summary>
-    /// <param name="position">The position of the search location.</param>
-    /// <param name="results">Returns the classes associated with the spaces containing the required type. (This list does not include out of bounds spaces)</param>
-    /// <param name="grid">The grid to check in.</param>
-    /// <typeparam name="T">The type to search for. Must inherit GameObject.</typeparam>
-    /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
-    private int GetAdjacentCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : GameObject
-    {
-        int count = 0;
-        results = [];
-
-        int[][] directions =
-        [
-            [-1, 0], // north
-            [1, 0], // south
-            [0, 1], // east
-            [0, -1] // west
-        ];
-
-        foreach (int[] direction in directions)
-        {
-            int adjY = position.Y + direction[0];
-            int adjX = position.X + direction[1];
-
-            if (adjY == position.Y && adjX == position.X) continue; // Is not the required type
-            
-            if (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth) // Is outside map bounds
-            {
-                count++;
-            }
-            else if (grid[adjY, adjX] is T match) // Is the required type
-            {
-                results.Add(match);
-                count++;
-            }
-        }
-        
-        return count;
-    }
-
-    /// <summary>
-    /// Search for spaces in all directions (including diagonals) containing the specified type around the search location.
-    /// </summary>
-    /// <param name="position">The position of the search location.</param>
-    /// <param name="results">Returns the classes associated with the spaces containing the required type. (This list does not include out of bounds spaces)</param>
-    /// <param name="grid">The grid to check in.</param>
-    /// <typeparam name="T">The type to search for. Must inherit GameObject.</typeparam>
-    /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
-    private int GetSurroundingCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : GameObject
-    {
-        int count = 0;
-        results = new List<T>();
-
-        for (int adjY = position.Y - 1; adjY <= position.Y + 1; adjY++)
-        {
-            for (int adjX = position.X - 1; adjX <= position.X + 1; adjX++)
-            {
-                if (adjY == position.Y && adjX == position.X) continue; // Is not the required type
-                
-                if (adjY < 0 || adjY >= MapHeight || adjX < 0 || adjX >= MapWidth) // Is outside map bounds
-                {
-                    count++;
-                }
-                else if (grid[adjY, adjX] is T match) // Is the required type
-                {
-                    results.Add(match);
-                    count++;
-                }
-            }
-        }
-        
-        return count;
-    }
-
-    /// <summary>
     /// Checks all walls on the map and updates their symbols according to wall adjacency.
     /// </summary>
     private void UpdateWalls()
     {
-        for (int i = 0; i < MapHeight; i++)
+        for (int y = 0; y < MapHeight; y++)
         {
-            for (int j = 0; j < MapWidth; j++)
+            for (int x = 0; x < MapWidth; x++)
             {
-                if (Grid[i, j] is Wall wall)
+                if (Grid[y, x] is Wall wall)
                 {
                     wall.CheckSymbol(this);
                 }
