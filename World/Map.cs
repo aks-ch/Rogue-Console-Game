@@ -42,11 +42,12 @@ public class Map
     /// </summary>
     public void OutputMap()
     {
-        for (int i = 0; i < MapHeight; i++)
+        for (int y = 0; y < MapHeight; y++)
         {
-            for (int j = 0; j < MapWidth; j++)
+            for (int x = 0; x < MapWidth; x++)
             {
-                Console.Write(Grid[i, j].Symbol);
+                if (Grid[y, x].IsVisible) Console.Write(Grid[y, x].Symbol);
+                else Console.Write(" ");
             }
             Console.WriteLine();
         }
