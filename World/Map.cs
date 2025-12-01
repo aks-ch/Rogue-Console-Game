@@ -40,8 +40,10 @@ public class Map
     /// </summary>
     public void OutputMap()
     {
+        Console.WriteLine(); // margin
         for (int y = 0; y < MapHeight; y++)
         {
+            Console.Write(" "); // margin
             for (int x = 0; x < MapWidth; x++)
             {
                 if (Grid[y, x].IsVisible) Console.Write(Grid[y, x].Symbol);
