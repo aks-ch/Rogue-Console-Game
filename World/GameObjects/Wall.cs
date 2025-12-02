@@ -1,6 +1,6 @@
 ﻿using RogueConsoleGame.Enums;
 using RogueConsoleGame.Interfaces;
-using RogueConsoleGame.Records;
+using RogueConsoleGame.DataTypes;
 
 namespace RogueConsoleGame.World.GameObjects;
 
@@ -9,7 +9,7 @@ namespace RogueConsoleGame.World.GameObjects;
 /// </summary>
 public class Wall: GameObject
 {
-    private GameManager _gameManager;
+    private readonly GameManager _gameManager;
 
     /// <summary>
     /// Initialize a wall on the map.
@@ -28,7 +28,7 @@ public class Wall: GameObject
     public void CheckSymbol(Map map)
     {
         Direction adjacentWalls = 0;
-        IVisible[,] grid = map.Grid;
+        GameObject[,] grid = map.Grid;
         
         // North
         if (Position.Y - 1 >= 0 &&

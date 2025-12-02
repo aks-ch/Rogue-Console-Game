@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
-using RogueConsoleGame.Characters;
 using RogueConsoleGame.Enums;
-using RogueConsoleGame.Records;
+using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.Screens;
 
 namespace RogueConsoleGame;

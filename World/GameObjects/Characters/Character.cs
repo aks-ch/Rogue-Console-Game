@@ -1,19 +1,16 @@
+using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.Interfaces;
-using RogueConsoleGame.Records;
 using RogueConsoleGame.Screens;
 
-namespace RogueConsoleGame.Characters;
+namespace RogueConsoleGame.World.GameObjects.Characters;
 
-public abstract class Character : IDamageable, IAttacker, IVisible
+public abstract class Character : GameObject, IDamageable, IAttacker
 {
-    public Vector2 Position;
-    
     public double Health { get; set; }
     public int MaxHealth { get; }
     public double Strength { get; }
 
-    public bool IsVisible { get; set; } = true;
-    public char Symbol { get; }
+    public new Vector2 Position { get; set; }
     
     protected GameScreen Game;
     protected GameManager GameManager;
@@ -25,7 +22,7 @@ public abstract class Character : IDamageable, IAttacker, IVisible
     /// <param name="symbol">The symbol this character is represented as on the board.</param>
     /// <param name="maxHealth">The maximum health of the character.</param>
     /// <param name="strength">The strength of the character.</param>
-    public Character(GameScreen game, char symbol, int maxHealth, double strength)
+    public Character(GameScreen game, char symbol, int maxHealth, double strength) : base(new Vector2(0, 0))
     {
         Symbol = symbol;
         Health = maxHealth;
@@ -34,8 +31,6 @@ public abstract class Character : IDamageable, IAttacker, IVisible
         
         Game = game;
         GameManager = game.GameManager;
-        
-        Position = new Vector2(0, 0);
         RandomizePosition();
     }
     

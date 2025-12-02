@@ -1,8 +1,8 @@
-﻿using RogueConsoleGame.Enums;
-using RogueConsoleGame.Records;
+﻿using RogueConsoleGame.DataTypes;
+using RogueConsoleGame.Enums;
 using RogueConsoleGame.Screens;
 
-namespace RogueConsoleGame.Characters;
+namespace RogueConsoleGame.World.GameObjects.Characters;
 
 public class Enemy : Character
 {

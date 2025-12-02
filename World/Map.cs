@@ -1,5 +1,4 @@
-﻿using RogueConsoleGame.Interfaces;
-using RogueConsoleGame.Records;
+﻿using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.World.GameObjects;
 
 namespace RogueConsoleGame.World;
@@ -12,7 +11,7 @@ public class Map
     public int MapWidth { get; }
     public int MapHeight { get; }
 
-    public IVisible[,] Grid { get; private set; }
+    public GameObject[,] Grid { get; private set; }
     
     private readonly GameManager _gameManager;
     
@@ -29,7 +28,7 @@ public class Map
         MapHeight = height + 2;
         MapWidth = width + 2;
         
-        Grid = new IVisible[MapHeight, MapWidth];
+        Grid = new GameObject[MapHeight, MapWidth];
         
         int count = wallSegments ?? 0;
         GenerateMap(count);
@@ -96,7 +95,7 @@ public class Map
     /// <param name="grid">The grid to check in.</param>
     /// <typeparam name="T">The type to search for. Must inherit GameObject.</typeparam>
     /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
-    public int GetAdjacentCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : GameObject
+    public int GetAdjacentCount<T>(Vector2 position, GameObject[,] grid, out List<T> results) where T : GameObject
     {
         int count = 0;
         results = [];
@@ -138,7 +137,7 @@ public class Map
     /// <param name="grid">The grid to check in.</param>
     /// <typeparam name="T">The type to search for. Must inherit GameObject.</typeparam>
     /// <returns>The count of the spaces found containing the type or outside map bounds.</returns>
-    public int GetSurroundingCount<T>(Vector2 position, IVisible[,] grid, out List<T> results) where T : GameObject
+    public int GetSurroundingCount<T>(Vector2 position, GameObject[,] grid, out List<T> results) where T : GameObject
     {
         int count = 0;
         results = new List<T>();
@@ -217,7 +216,7 @@ public class Map
         int x = -1;
         int maxPasses = MapHeight * MapWidth;
         bool flag = false;
-        IVisible[,] newGrid = Grid.Clone() as IVisible[,] ?? throw new InvalidOperationException("Grid is not initialized!");
+        GameObject[,] newGrid = Grid.Clone() as GameObject[,] ?? throw new InvalidOperationException("Grid is not initialized!");
 
         // Find a wall for starting point
         for (int j = 0; j < maxPasses; j++)
@@ -307,7 +306,7 @@ public class Map
             for (int x = 0; x < MapWidth - 1; x++)
             {
                 // Get the 2x2 block
-                IVisible[] block = [Grid[y, x], Grid[y, x + 1], Grid[y + 1, x], Grid[y + 1, x + 1]];
+                GameObject[] block = [Grid[y, x], Grid[y, x + 1], Grid[y + 1, x], Grid[y + 1, x + 1]];
                 
                 // Check:
                 // WE
