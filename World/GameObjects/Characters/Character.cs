@@ -29,6 +29,8 @@ public abstract class Character : GameObject, IDamageable, IAttacker
         MaxHealth = maxHealth;
         Strength = strength;
         
+        Position = new Vector2(0, 0);
+        
         Game = game;
         GameManager = game.GameManager;
         RandomizePosition();
@@ -55,7 +57,7 @@ public abstract class Character : GameObject, IDamageable, IAttacker
         {
             Position = new Vector2(GameManager.Seed.Next(0, GameManager.GameWidth),
                 GameManager.Seed.Next(0, GameManager.GameHeight));
-        } while (Game.Enemies.ContainsKey(Position) || Position == Game.PlayerPosition);
+        } while (Game.Enemies.ContainsKey(Position) || Position == Game.Player?.Position);
     }
 
     /// <summary>

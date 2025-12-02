@@ -1,6 +1,5 @@
-﻿using RogueConsoleGame.Enums;
-using RogueConsoleGame.Interfaces;
-using RogueConsoleGame.DataTypes;
+﻿using RogueConsoleGame.DataTypes;
+using RogueConsoleGame.Enums;
 
 namespace RogueConsoleGame.World.GameObjects;
 

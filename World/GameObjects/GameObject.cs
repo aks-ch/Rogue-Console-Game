@@ -1,5 +1,5 @@
-﻿using RogueConsoleGame.Interfaces;
-using RogueConsoleGame.DataTypes;
+﻿using RogueConsoleGame.DataTypes;
+using RogueConsoleGame.Interfaces;
 
 namespace RogueConsoleGame.World.GameObjects;
 

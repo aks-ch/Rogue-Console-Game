@@ -10,9 +10,9 @@ public class Player : Character
     /// </summary>
     public string Name;
     
-    public bool IsHealing = false;
+    public bool IsHealing;
     
-    private bool _interacted = false;
+    private bool _interacted;
     private int _healCooldown;
     private readonly int _healCooldownMax;
     private readonly double _healFactor;

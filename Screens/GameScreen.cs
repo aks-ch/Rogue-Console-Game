@@ -1,6 +1,6 @@
-﻿using RogueConsoleGame.Enums;
+﻿using RogueConsoleGame.DataTypes;
+using RogueConsoleGame.Enums;
 using RogueConsoleGame.Interfaces;
-using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.World.GameObjects.Characters;
 
 namespace RogueConsoleGame.Screens;
@@ -11,7 +11,6 @@ public class GameScreen(GameManager gameManager) : IScreen
     
     public Dictionary<Vector2, Enemy> Enemies = new();
     public Player? Player { get; private set; }
-    public Vector2? PlayerPosition { get; private set; }
     
     private bool _initialized;
     private char[,] _map = new char[0, 0];
@@ -26,7 +25,7 @@ public class GameScreen(GameManager gameManager) : IScreen
             return;
         }
         
-        if (Player == null || PlayerPosition == null) throw new NullReferenceException("Player doesn't exist!");
+        if (Player == null) throw new NullReferenceException("Player doesn't exist!");
         
         OutputGame();
         
@@ -34,9 +33,9 @@ public class GameScreen(GameManager gameManager) : IScreen
         if (!Player.CheckKey()) return;
         
         // Player position
-        _map[PlayerPosition.Y, PlayerPosition.X] = GameManager.EmptyChar;
-        PlayerPosition = Player.Position;
-        _map[PlayerPosition.Y, PlayerPosition.X] = Player.Symbol;
+        _map[Player.Position.Y, Player.Position.X] = GameManager.EmptyChar;
+        Player.Position = Player.Position;
+        _map[Player.Position.Y, Player.Position.X] = Player.Symbol;
             
         // Enemies
         List<Enemy> localEnemies = new();
@@ -58,7 +57,7 @@ public class GameScreen(GameManager gameManager) : IScreen
             }
             
             Vector2 position = enemy.Position;
-            if (enemy.ChooseMove(PlayerPosition))
+            if (enemy.ChooseMove(Player.Position))
             {
                 Enemies.Remove(position);
                 Enemies.Add(enemy.Position, enemy);
@@ -93,7 +92,7 @@ public class GameScreen(GameManager gameManager) : IScreen
         string? name = Console.ReadLine();
         name = string.IsNullOrEmpty(name) ? "Player" : name;
         Player = new Player(this, name, GameManager.Player.Symbol, GameManager.Player.MaxHealth, Math.Round(GameManager.Player.Strength, 1));
-        PlayerPosition = Player.Position;
+        Player.Position = Player.Position;
         
         // Enemy initialization
         int enemyCount = GameManager.EnemyCount;
@@ -117,7 +116,7 @@ public class GameScreen(GameManager gameManager) : IScreen
             }
         }
         
-        _map[PlayerPosition.Y, PlayerPosition.X] = Player.Symbol;
+        _map[Player.Position.Y, Player.Position.X] = Player.Symbol;
         foreach (var enemyPair in Enemies)
         {
             _map[enemyPair.Key.Y, enemyPair.Key.X] = enemyPair.Value.Symbol;
@@ -186,7 +185,6 @@ public class GameScreen(GameManager gameManager) : IScreen
         Enemies.Clear();
         _map = new char[0, 0];
         Player = null;
-        PlayerPosition = null;
         _initialized = false;
     }
 }

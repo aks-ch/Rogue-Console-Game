@@ -4,10 +4,9 @@ using RogueConsoleGame.Screens;
 
 namespace RogueConsoleGame.World.GameObjects.Characters;
 
-public class Enemy : Character
+public class Enemy(GameScreen game, char symbol, int maxHealth, double strength)
+    : Character(game, symbol, maxHealth, strength)
 {
-    public Enemy(GameScreen game, char symbol, int maxHealth, double strength) : base(game, symbol, maxHealth, strength) {}
-
     /// <summary>
     /// Make the enemy move towards a target location.
     /// </summary>
@@ -72,7 +71,7 @@ public class Enemy : Character
         if (PositionOutOfBounds(newPosition) || Game.Enemies.ContainsKey(newPosition)) return false;
 
         // player in new location
-        if (Game.PlayerPosition == newPosition)
+        if (Game.Player?.Position == newPosition)
         {
             if (Game.Player == null) throw new NullReferenceException("The player doesn't exist!");
             Attack(Game.Player);
@@ -92,10 +91,10 @@ public class Enemy : Character
     /// </summary>
     protected override void RandomizePosition()
     {
-        if (Game.PlayerPosition == null) throw new NullReferenceException("The player position doesn't exist!");
+        if (Game.Player?.Position == null) throw new NullReferenceException("The player position doesn't exist!");
         do
         {
             base.RandomizePosition();
-        } while (Math.Abs(Game.PlayerPosition.X - Position.X) < 2 || Math.Abs(Game.PlayerPosition.Y - Position.Y) < 2);
+        } while (Math.Abs(Game.Player.Position.X - Position.X) < 2 || Math.Abs(Game.Player.Position.Y - Position.Y) < 2);
     }
 }
