@@ -31,32 +31,36 @@ public class Wall: GameObject
         
         // North
         if (Position.Y - 1 >= 0 &&
-            grid[Position.Y - 1, Position.X].IsVisible &&
-            grid[Position.Y - 1, Position.X].GetType() == GetType())
+            grid[Position.Y - 1, Position.X].GetType() == GetType() &&
+            grid[Position.Y - 1, Position.X].IsVisible)
         {
             adjacentWalls |= Direction.North;
         }
         
         // South
         if (Position.Y + 1 < map.MapHeight &&
-            grid[Position.Y + 1, Position.X].IsVisible &&
-            grid[Position.Y + 1, Position.X].GetType() == GetType())
+            grid[Position.Y + 1, Position.X].GetType() == GetType() &&
+            grid[Position.Y + 1, Position.X].IsVisible)
         {
             adjacentWalls |= Direction.South;
         }
         
         // East
-        if (Position.X + 1 < map.MapWidth &&
-            grid[Position.Y, Position.X + 1].IsVisible &&
-            grid[Position.Y, Position.X + 1].GetType() == GetType())
+        if ((Position.X + 1 < map.MapWidth &&
+             grid[Position.Y, Position.X + 1].GetType() == GetType() &&
+             grid[Position.Y, Position.X + 1].IsVisible) ||
+            (Position.Y + 1 < map.MapHeight && grid[Position.Y + 1, Position.X] is Hallway { IsParent: true }) ||
+            (Position.Y - 1 >= 0 && grid[Position.Y - 1, Position.X] is Hallway { IsParent: true }))
         {
             adjacentWalls |= Direction.East;
         }
         
         // West
-        if (Position.X - 1 >= 0 &&
-            grid[Position.Y, Position.X - 1].IsVisible &&
-            grid[Position.Y, Position.X - 1].GetType() == GetType())
+        if ((Position.X - 1 >= 0 &&
+             grid[Position.Y, Position.X - 1].GetType() == GetType() &&
+             grid[Position.Y, Position.X - 1].IsVisible) ||
+            (Position.Y + 1 < map.MapHeight && grid[Position.Y + 1, Position.X] is Hallway { IsParent: false }) ||
+            (Position.Y - 1 >= 0 && grid[Position.Y - 1, Position.X] is Hallway { IsParent: false }))
         {
             adjacentWalls |= Direction.West;
         }

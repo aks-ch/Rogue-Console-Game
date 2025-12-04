@@ -10,6 +10,6 @@ namespace RogueConsoleGame.World.GameObjects;
 public abstract class GameObject(Vector2 position) : IVisible
 {
     public bool IsVisible { get; set; } = true;
-    public char Symbol { get; protected set; }
+    public char Symbol { get; set; }
     public Vector2 Position { get; } = position;
 }

@@ -8,10 +8,14 @@ namespace RogueConsoleGame.World;
 /// </summary>
 public class Map
 {
+    public int Depth { get; }
     public int MapWidth { get; }
     public int MapHeight { get; }
 
     public GameObject[,] Grid { get; private set; }
+
+    public Hallway? Parent { get; private set; }
+    public List<Hallway> Children { get; } = [];
     
     private readonly GameManager _gameManager;
     
@@ -21,12 +25,14 @@ public class Map
     /// <param name="gameManager">Associated game manager.</param>
     /// <param name="height">Height of the map.</param>
     /// <param name="width">Width of the map.</param>
+    /// <param name="depth">Depth of the map in the tree it belongs to.</param>
     /// <param name="wallSegments">Number of wall segments to create for this map. Values less than 0 will be rounded to 0. Default: 0</param>
-    public Map(GameManager gameManager, int height, int width, int? wallSegments)
+    public Map(GameManager gameManager, int height, int width, int depth, int? wallSegments)
     {
         _gameManager = gameManager;
         MapHeight = height + 2;
         MapWidth = width + 2;
+        Depth = depth;
         
         Grid = new GameObject[MapHeight, MapWidth];
         
@@ -50,6 +56,102 @@ public class Map
             }
             Console.WriteLine();
         }
+    }
+
+    /// <summary>
+    /// Creates a new hallway that will serve as a path to get to another map once connected to a hallway on that map.
+    /// </summary>
+    /// <param name="map">The map that the hallway leads to.</param>
+    /// <param name="isParent">Whether the map this hallway is on is parent to the destination map.</param>
+    /// <returns>The created hallway. Null if hallway creation failed.</returns>
+    public Hallway? CreateHallway(Map map, bool isParent)
+    {
+        Vector2 shift;
+        Vector2 initialPosition;
+
+        // Determine whether hallway must be on left border (leads to parent) or right border (leads to child)
+        if (isParent)
+        {
+            shift = new Vector2(-1, 0);
+            initialPosition = new Vector2(MapWidth - 1, _gameManager.Seed.Next(1, MapHeight - 1));
+        }
+        else
+        {
+            if (Parent != null) return null;
+            shift = new Vector2(1, 0);
+            initialPosition = new Vector2(0, _gameManager.Seed.Next(1, MapHeight - 1));
+        }
+
+        var position = new Vector2(initialPosition.X, initialPosition.Y);
+
+        // Find a valid space for hallway
+        while (true)
+        {
+            Vector2 mustBeEmpty = position + shift;
+            if (Grid[mustBeEmpty.Y, mustBeEmpty.X] is EmptySpace &&
+                Grid[position.Y, position.X] is Wall &&
+                Grid[position.Y - 1, position.X] is Wall &&
+                Grid[position.Y + 1, position.X] is Wall) break;
+            
+            // Shift
+            position = mustBeEmpty;
+
+            // Move down a row if encountered an empty space
+            if (Grid[mustBeEmpty.Y, mustBeEmpty.X] is EmptySpace ||
+                Grid[mustBeEmpty.Y - 1, mustBeEmpty.X] is EmptySpace ||
+                Grid[mustBeEmpty.Y + 1, mustBeEmpty.X] is EmptySpace)
+            {
+                if (isParent) position = new Vector2(MapWidth - 1, position.Y + 1);
+                else position = new Vector2(0, position.Y + 1);
+            }
+            // Move down a row if reached end
+            else if (position.X + shift.X == 0) position = new Vector2(MapWidth - 1, position.Y + 1);
+            else if (position.X + shift.X == MapWidth - 1) position = new Vector2(0, position.Y + 1);
+            
+            // Move to top of map
+            if (position.Y == MapHeight - 1) position = position with { Y = 1 };
+
+            if (position == initialPosition) return null;
+        }
+
+        // Create hallway and return it
+        Hallway hallway = new Hallway(this, position, map, isParent);
+        Grid[position.Y, position.X] = hallway;
+        
+        if (isParent) Children.Add(hallway);
+        else Parent = hallway;
+        
+        // Update nearby walls
+        GetAdjacentCount(position, Grid, out List<Wall> walls);
+        foreach (var wall in walls)
+        {
+            wall.CheckSymbol(this);
+        }
+            
+        return hallway;
+    }
+
+    /// <summary>
+    /// Connect a hallway on this map with a hallway on another map.
+    /// </summary>
+    /// <param name="thisHallway">The hallway on this map.</param>
+    /// <param name="destinationHallway">The hallway on the other map.</param>
+    /// <returns>Whether the connection was successful. (Failed connection means the hallways are improperly configured or not meant to be connected)</returns>
+    public bool ConnectHallway(Hallway thisHallway, Hallway destinationHallway)
+    {
+        // Validate
+        if (thisHallway.Map != this ||
+            thisHallway.DestinationMap != destinationHallway.Map ||
+            thisHallway.Map != destinationHallway.DestinationMap ||
+            thisHallway.IsParent == destinationHallway.IsParent)
+        {
+            return false;
+        }
+        
+        // Connect
+        thisHallway.DestinationHallway = destinationHallway;
+        destinationHallway.DestinationHallway = thisHallway;
+        return true;
     }
 
     /// <summary>
