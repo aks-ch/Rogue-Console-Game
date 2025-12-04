@@ -32,26 +32,27 @@ public class MapTree
             _ => difficulty
         };
 
-        Map parent;
-        int depth;
-        List<Hallway> children;
+        int fails = 0;
         int mapCount = 5 + (difficulty * 2);
-        const int maxDepth = 4;
-        const int maxChildren = 5;
+        const int maxRandomDepth = 4;
+        const int maxActualDepth = 7;
+        const int maxChildren = 4;
+        const int maxFails = 20;
 
-        while (mapCount > 0)
+        // Generate all maps
+        while (mapCount > 0 && fails < maxFails)
         {
-            parent = Root;
-            children = parent.Children;
-            depth = 1;
+            var parent = Root;
+            var children = parent.Children;
+            var depth = 0;
             
             // Select a node which will get a new child map
-            while (depth < maxDepth)
+            while (depth < maxRandomDepth)
             {
                 // Closer to root = more children
                 if (children.Count == 0 ||
                     (children.Count < maxChildren - depth &&
-                     _gameManager.Seed.Next(0, maxDepth * (maxChildren - depth)) > depth * children.Count))
+                     _gameManager.Seed.Next(0, maxRandomDepth * (maxChildren - depth)) > depth * children.Count))
                 {
                     break;
                 }
@@ -62,14 +63,20 @@ public class MapTree
                 children = parent.Children;
             }
 
-            // At depth 4 and deeper, only 1 child allowed
-            if (depth == maxDepth)
+            // At maxDepth and deeper, only 1 child allowed
+            if (depth == maxRandomDepth)
             {
-                while (children.Count > 0)
+                while (children.Count > 0 && depth < maxActualDepth)
                 {
                     depth++;
                     parent = children[_gameManager.Seed.Next(0, children.Count)].DestinationMap;
                     children = parent.Children;
+                }
+
+                if (depth == maxActualDepth && children.Count > 0)
+                {
+                    fails++;
+                    continue;
                 }
             }
             
@@ -77,7 +84,6 @@ public class MapTree
             Map newMap = new Map(_gameManager, _gameManager.MaxGameHeight, _gameManager.MaxGameWidth, depth + 1, depth * _wallSegmentFactor);
             
             // Create and connect hallways
-
             try
             {
                 Hallway childHallway = newMap.CreateHallway(parent, false) ?? throw new InvalidOperationException();
@@ -86,13 +92,13 @@ public class MapTree
                 if (!newMap.ConnectHallway(childHallway, parentHallway) ||
                     !parent.ConnectHallway(parentHallway, childHallway))
                     throw new Exception("Hallway connection failed!");
-                
+
                 // Continue on success
                 mapCount--;
             }
             catch (InvalidOperationException)
             {
-                
+                fails++;
             }
         }
     }
