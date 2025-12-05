@@ -5,7 +5,7 @@ namespace RogueConsoleGame.World.GameObjects;
 /// <summary>
 /// Represents a pathway to another map.
 /// </summary>
-public class Hallway : GameObject
+public sealed class Hallway : GameObject
 {
     /// <summary>
     /// The map this hallway belongs to.
@@ -33,6 +33,18 @@ public class Hallway : GameObject
     public Vector2 Spawn { get; }
     
     /// <summary>
+    /// Whether this hallway is locked.
+    /// </summary>
+    public bool Locked => LockIds.Count > 0 ? true : false;
+
+    /// <summary>
+    /// What IDs are required to unlock this door.
+    /// </summary>
+    private List<string> LockIds { get; }
+    
+    public override char Symbol => Locked ? '|' : IsParent ? '→' : '←';
+    
+    /// <summary>
     /// Creates a new hallway connecting two maps.
     /// </summary>
     /// <param name="map">The map this hallway is on.</param>
@@ -47,5 +59,31 @@ public class Hallway : GameObject
         Spawn = IsParent ? Position + new Vector2(-1, 0) : Position + new Vector2(1, 0);
 
         Symbol = ' ';
+
+        LockIds = new List<string>();
+        if (isParent) LockIds.Add("enemy");
+    }
+
+    /// <summary>
+    /// Adds a new lockId to the lock.
+    /// </summary>
+    /// <param name="lockId">The lockId to add.</param>
+    /// <returns>True if added. False if lockId is already on this hallway.</returns>
+    public bool AddLock(string lockId)
+    {
+        if (LockIds.Contains(lockId)) return false;
+        
+        LockIds.Add(lockId);
+        return true;
+    }
+
+    /// <summary>
+    /// Unlock the defined lockId.
+    /// </summary>
+    /// <param name="lockId">The lockId to unlock.</param>
+    /// <returns>True if the unlock was successful. False if not.</returns>
+    public bool UnlockLock(string lockId)
+    {
+        return LockIds.Remove(lockId);
     }
 }
