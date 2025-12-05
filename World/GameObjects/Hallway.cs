@@ -7,10 +7,24 @@ namespace RogueConsoleGame.World.GameObjects;
 /// </summary>
 public class Hallway : GameObject
 {
-    
+    /// <summary>
+    /// The map this hallway belongs to.
+    /// </summary>
     public Map Map { get; }
+    
+    /// <summary>
+    /// The map this hallway leads to.
+    /// </summary>
     public Map DestinationMap { get; }
+    
+    /// <summary>
+    /// The map this hallway belongs to.
+    /// </summary>
     public Hallway? DestinationHallway { get; set; }
+    
+    /// <summary>
+    /// Whether this hallway's map is parent to the destination map.
+    /// </summary>
     public bool IsParent { get; }
     
     /// <summary>

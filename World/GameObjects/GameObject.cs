@@ -11,5 +11,5 @@ public abstract class GameObject(Vector2 position) : IVisible
 {
     public bool IsVisible { get; set; } = true;
     public char Symbol { get; protected set; }
-    public Vector2 Position { get; } = position;
+    public virtual Vector2 Position { get; set; } = position;
 }

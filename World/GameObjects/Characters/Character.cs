@@ -10,7 +10,7 @@ public abstract class Character : GameObject, IDamageable, IAttacker
     public int MaxHealth { get; }
     public double Strength { get; }
 
-    public new Vector2 Position { get; set; }
+    public override Vector2 Position { get; set; }
     
     protected GameScreen Game;
     protected GameManager GameManager;
