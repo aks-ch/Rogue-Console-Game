@@ -42,7 +42,7 @@ public sealed class Hallway : GameObject
     /// </summary>
     private List<string> LockIds { get; }
     
-    public override char Symbol => Locked ? '|' : IsParent ? '→' : '←';
+    public override char Symbol => Locked ? '|' : IsParent ? '>' : '<';
     
     /// <summary>
     /// Creates a new hallway connecting two maps.
