@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using RogueConsoleGame.DataTypes;
+using RogueConsoleGame.World.GameObjects.Characters;
 
 namespace RogueConsoleGame;
 
@@ -31,6 +32,11 @@ public class DataInitializer
         try
         {
             PlayerData = JsonSerializer.Deserialize<PlayerData>(PlayerJson) ?? throw new NullReferenceException();
+            PlayerData = PlayerData with
+            {
+                Strength = Math.Round(PlayerData.Strength, 1),
+                HealFactor = Math.Round(PlayerData.HealFactor, 1)
+            };
         }
         catch
         {
@@ -42,6 +48,10 @@ public class DataInitializer
         try
         {
             EnemyData = JsonSerializer.Deserialize<EnemyData[]>(EnemyJson) ?? throw new NullReferenceException();
+            for (int i = 0; i < EnemyData.Length; i++)
+            {
+                EnemyData[i] = EnemyData[i] with { Strength = Math.Round(EnemyData[i].Strength, 1) };
+            }
         }
         catch
         {
@@ -63,6 +73,11 @@ public class DataInitializer
             try
             {
                 PlayerData = JsonSerializer.Deserialize<PlayerData>(PlayerJson) ?? throw new NullReferenceException();
+                PlayerData = PlayerData with
+                {
+                    Strength = Math.Round(PlayerData.Strength, 1),
+                    HealFactor = Math.Round(PlayerData.HealFactor, 1)
+                };
             }
             catch
             {
@@ -76,6 +91,10 @@ public class DataInitializer
             try
             {
                 EnemyData = JsonSerializer.Deserialize<EnemyData[]>(EnemyJson) ?? throw new NullReferenceException();
+                for (int i = 0; i < EnemyData.Length; i++)
+                {
+                    EnemyData[i] = EnemyData[i] with { Strength = Math.Round(EnemyData[i].Strength, 1) };
+                }
             }
             catch
             {
