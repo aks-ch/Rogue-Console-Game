@@ -9,14 +9,14 @@ namespace RogueConsoleGame;
 /// </summary>
 public class DataInitializer
 {
-    public PlayerData PlayerData { get; private set; }
-    public EnemyData[] EnemyData { get; private set; }
+    public PlayerData Player { get; private set; }
+    public EnemyData[] Enemies { get; private set; }
     
-    public string PlayerJson { get; } = File.ReadAllText("./Data/Player.json");
-    public string EnemyJson { get; } = File.ReadAllText("./Data/Enemies.json");
+    public string PlayerFilePath { get; } = "./Data/Player.json";
+    public string EnemiesFilePath { get; } = "./Data/Enemies.json";
 
-    private PlayerData _defaultPlayerData { get; } = new PlayerData('P', 10, 1, 5, 0.2);
-    private EnemyData[] _defaultEnemyData { get; } =
+    private readonly PlayerData _defaultPlayerData = new PlayerData('P', 10, 1, 5, 0.2);
+    private readonly EnemyData[] _defaultEnemyData =
     [
         new EnemyData('S', 3, 0.2, 1),
         new EnemyData('K', 5, 0.5, 2),
@@ -31,32 +31,32 @@ public class DataInitializer
         // Player checked
         try
         {
-            PlayerData = JsonSerializer.Deserialize<PlayerData>(PlayerJson) ?? throw new NullReferenceException();
-            PlayerData = PlayerData with
+            Player = JsonSerializer.Deserialize<PlayerData>(File.ReadAllText(PlayerFilePath)) ?? throw new NullReferenceException();
+            Player = Player with
             {
-                Strength = Math.Round(PlayerData.Strength, 1),
-                HealFactor = Math.Round(PlayerData.HealFactor, 1)
+                Strength = Math.Round(Player.Strength, 1),
+                HealFactor = Math.Round(Player.HealFactor, 1)
             };
         }
         catch
         {
             Console.WriteLine("Invalid Player JSON! Reverting to default.");
-            PlayerData = _defaultPlayerData;
+            Player = _defaultPlayerData;
         }
         
         // Enemies checked
         try
         {
-            EnemyData = JsonSerializer.Deserialize<EnemyData[]>(EnemyJson) ?? throw new NullReferenceException();
-            for (int i = 0; i < EnemyData.Length; i++)
+            Enemies = JsonSerializer.Deserialize<EnemyData[]>(File.ReadAllText(EnemiesFilePath)) ?? throw new NullReferenceException();
+            for (int i = 0; i < Enemies.Length; i++)
             {
-                EnemyData[i] = EnemyData[i] with { Strength = Math.Round(EnemyData[i].Strength, 1) };
+                Enemies[i] = Enemies[i] with { Strength = Math.Round(Enemies[i].Strength, 1) };
             }
         }
         catch
         {
             Console.WriteLine("Invalid Enemies JSON! Reverting to default.");
-            EnemyData = _defaultEnemyData;
+            Enemies = _defaultEnemyData;
         }
     }
 
@@ -72,11 +72,11 @@ public class DataInitializer
         {
             try
             {
-                PlayerData = JsonSerializer.Deserialize<PlayerData>(PlayerJson) ?? throw new NullReferenceException();
-                PlayerData = PlayerData with
+                Player = JsonSerializer.Deserialize<PlayerData>(File.ReadAllText(PlayerFilePath)) ?? throw new NullReferenceException();
+                Player = Player with
                 {
-                    Strength = Math.Round(PlayerData.Strength, 1),
-                    HealFactor = Math.Round(PlayerData.HealFactor, 1)
+                    Strength = Math.Round(Player.Strength, 1),
+                    HealFactor = Math.Round(Player.HealFactor, 1)
                 };
             }
             catch
@@ -90,10 +90,10 @@ public class DataInitializer
         {
             try
             {
-                EnemyData = JsonSerializer.Deserialize<EnemyData[]>(EnemyJson) ?? throw new NullReferenceException();
-                for (int i = 0; i < EnemyData.Length; i++)
+                Enemies = JsonSerializer.Deserialize<EnemyData[]>(File.ReadAllText(EnemiesFilePath)) ?? throw new NullReferenceException();
+                for (int i = 0; i < Enemies.Length; i++)
                 {
-                    EnemyData[i] = EnemyData[i] with { Strength = Math.Round(EnemyData[i].Strength, 1) };
+                    Enemies[i] = Enemies[i] with { Strength = Math.Round(Enemies[i].Strength, 1) };
                 }
             }
             catch
@@ -110,7 +110,7 @@ public class DataInitializer
     /// <param name="enemyData">Reset enemy data. Default: true</param>
     public void ResetToDefault(bool playerData = true, bool enemyData = true)
     {
-        if (playerData) PlayerData = _defaultPlayerData;
-        if (enemyData) EnemyData = _defaultEnemyData;
+        if (playerData) Player = _defaultPlayerData;
+        if (enemyData) Enemies = _defaultEnemyData;
     }
 }
