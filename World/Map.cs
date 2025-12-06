@@ -378,18 +378,21 @@ public class Map
             }
         }
 
-        // Find any random starting point
-        for (int j = 0; j < maxPasses; j++)
+        if (!flag)
         {
-            y = GameManager.Seed.Next(0, MapHeight);
-            x = GameManager.Seed.Next(0, MapWidth);
-
-            if (GetAdjacentCount<Wall>(new Vector2(x, y), newGrid, out _) < 4)
+            // Find any random starting point
+            for (int j = 0; j < maxPasses; j++)
             {
-                newGrid[y, x] = new Wall(GameManager, new Vector2(x, y));
-                count++;
-                flag = true;
-                break;
+                y = GameManager.Seed.Next(0, MapHeight);
+                x = GameManager.Seed.Next(0, MapWidth);
+
+                if (GetAdjacentCount<Wall>(new Vector2(x, y), newGrid, out _) < 4)
+                {
+                    newGrid[y, x] = new Wall(GameManager, new Vector2(x, y));
+                    count++;
+                    flag = true;
+                    break;
+                }
             }
         }
 
