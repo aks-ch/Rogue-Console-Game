@@ -43,6 +43,7 @@ public sealed class Hallway : GameObject
     private List<string> LockIds { get; }
     
     public override char Symbol => Locked ? '|' : IsParent ? '>' : '<';
+    public override ConsoleColor? Color => Locked ? ConsoleColor.Red : ConsoleColor.Green;
     
     /// <summary>
     /// Creates a new hallway connecting two maps.

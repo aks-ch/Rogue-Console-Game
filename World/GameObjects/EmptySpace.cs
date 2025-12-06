@@ -5,7 +5,7 @@ namespace RogueConsoleGame.World.GameObjects;
 /// <summary>
 /// Represents an empty space in the game world.
 /// </summary>
-public class EmptySpace : GameObject
+public sealed class EmptySpace : GameObject
 {
     /// <summary>
     /// Initialize an empty space on the map.
@@ -15,5 +15,6 @@ public class EmptySpace : GameObject
     public EmptySpace(char symbol, Vector2 position) : base(position)
     {
         Symbol = symbol;
+        Color = ConsoleColor.DarkGray;
     }
 }
