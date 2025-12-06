@@ -175,33 +175,40 @@ public class Map
     }
 
     /// <summary>
-    /// Finds all connected types of from the starting space of the specified type.
+    /// Finds connected types of from the starting space of the specified type as far as the defined maxDistance (if any).
     /// </summary>
     /// <param name="start">The starting space.</param>
-    /// <typeparam name="T">The type to search for.</typeparam>
-    /// <returns>A list of all connected spaces of the same type.</returns>
+    /// <param name="maxDistance">The maximum distance to search for. 0 or less means no limit. Default: No limit</param>
+    /// <typeparam name="T">The type to search for. Must inherit GameObject.</typeparam>
+    /// <returns>A list of connected spaces of the same type.</returns>
     /// <exception cref="ArgumentException">Start node is not in the grid.</exception>
-    public List<T> GetConnected<T>(T start) where T : GameObject
+    public List<T> GetConnected<T>(T start, int maxDistance = 0) where T : GameObject
     {
         // Start node is not on the grid
         if (Grid[start.Position.Y, start.Position.X] != start) throw new ArgumentException("Start node is not in the grid!");
         
         // Search definition
         List<T> connected = new List<T>();
-        Queue<T> toSearch = new Queue<T>();
-        toSearch.Enqueue(start);
+        Queue<(int Depth, T Node)> toSearch = new Queue<(int Depth, T Node)>();
+        toSearch.Enqueue((0, start));
         
         // Begin Search
         while (toSearch.Count > 0)
         {
-            T next = toSearch.Dequeue();
+            var next = toSearch.Dequeue();
             
-            connected.Add(next);
-            GetAdjacentCount<T>(next.Position, Grid, out List<T> spaces);
+            connected.Add(next.Node);
+            GetAdjacentCount<T>(next.Node.Position, Grid, out List<T> spaces);
 
             foreach (T space in spaces)
             {
-                if (!connected.Contains(space) && !toSearch.Contains(space)) toSearch.Enqueue(space);
+                // Check for depth and if the space has already been considered
+                if ((maxDistance <= 0 || next.Depth < maxDistance) &&
+                    !connected.Contains(space) &&
+                    toSearch.All(item => item.Node != space))
+                {
+                    toSearch.Enqueue((next.Depth + 1, space));
+                }
             }
         }
         
