@@ -473,19 +473,10 @@ public class Map
     /// <exception cref="InvalidOperationException">Encountered a region that is not there. Error should not occur.</exception>
     private void FillSmallRegions()
     {
-        List<EmptySpace> remainingEmptySpaces = new List<EmptySpace>();
+        List<EmptySpace> remainingEmptySpaces = GetAll<EmptySpace>();
         List<List<EmptySpace>> regions = new List<List<EmptySpace>>();
         List<EmptySpace> selectedRegion = new List<EmptySpace>();
         bool flag = false;
-        
-        // Collect all empty spaces
-        for (int y = 0; y < MapHeight; y++)
-        {
-            for (int x = 0; x < MapWidth; x++)
-            {
-                if (Grid[y, x] is EmptySpace space) remainingEmptySpaces.Add(space);
-            }
-        }
         
         // Collect all regions
         while (remainingEmptySpaces.Count > 0)
