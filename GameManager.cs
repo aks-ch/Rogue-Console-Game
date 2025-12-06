@@ -143,6 +143,18 @@ public class GameManager
     }
 
     /// <summary>
+    /// Use Console.Write() with colored text without having to write three lines of code.
+    /// </summary>
+    /// <param name="color">The ConsoleColor you wish to use with your output.</param>
+    /// <param name="text">The output.</param>
+    public static void ColorConsoleWrite(ConsoleColor color, char text)
+    {
+        Console.ForegroundColor = color;
+        Console.Write(text);
+        Console.ResetColor();
+    }
+
+    /// <summary>
     /// Use Console.WriteLine() with colored text without having to write three lines of code.
     /// </summary>
     /// <param name="color">The ConsoleColor you wish to use with your output.</param>
