@@ -52,7 +52,11 @@ public class Map
             Console.Write(" "); // margin
             for (int x = 0; x < MapWidth; x++)
             {
-                if (Grid[y, x].IsVisible) Console.Write(Grid[y, x].Symbol);
+                if (Grid[y, x].IsVisible)
+                {
+                    if (Grid[y, x].Color != null) GameManager.ColorConsoleWrite((ConsoleColor)Grid[y, x].Color!, Grid[y, x].Symbol);
+                    else Console.Write(Grid[y, x].Symbol);
+                }
                 else Console.Write(" ");
             }
             Console.WriteLine();
