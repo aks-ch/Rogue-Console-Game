@@ -1,4 +1,5 @@
 ﻿using RogueConsoleGame.World.GameObjects;
+using RogueConsoleGame.World.GameObjects.Characters;
 
 namespace RogueConsoleGame.World;
 
@@ -9,9 +10,15 @@ public class MapTree
 {
     public Map Root { get; }
     public Map ActiveMap { get; private set; }
+    public int Difficulty { get; }
+    
+    public Player Player { get; }
+    
+    public readonly GameManager GameManager;
     
     private readonly int _wallSegmentFactor = 50;
-    private readonly GameManager _gameManager;
+    
+    // Need to add Update()
 
     /// <summary>
     /// Construct a new map tree.
@@ -20,12 +27,20 @@ public class MapTree
     /// <param name="difficulty">The difficulty level of this map tree (1 to 10). 1 is easiest, 10 is hardest.</param>
     public MapTree(GameManager gameManager, int difficulty)
     {
-        _gameManager = gameManager;
+        GameManager = gameManager;
         
-        Root = new Map(_gameManager, _gameManager.MinGameHeight, _gameManager.MinGameWidth, 1, 0);
+        Root = new Map(this, GameManager.MinGameHeight, GameManager.MinGameWidth, 0, 0);
         ActiveMap = Root;
+        
+        // Initialize Player
+        GameManager.ColorConsoleWrite(ConsoleColor.Cyan, "Please enter your name: ");
+        DataInitializer data = GameManager.DataInitializer;
+        string? name = Console.ReadLine();
+        name = string.IsNullOrEmpty(name) ? "Player" : name;
+        Player = new Player(ActiveMap, name, data.Player.Symbol, data.Player.MaxHealth, data.Player.Strength);
+        ActiveMap.SpawnPlayerHere(Player);
 
-        difficulty = difficulty switch
+        Difficulty = difficulty switch
         {
             < 1 => 1,
             > 10 => 10,
@@ -33,7 +48,7 @@ public class MapTree
         };
 
         int fails = 0;
-        int mapCount = 5 + (difficulty * 2);
+        int mapCount = 5 + (Difficulty * 2);
         const int maxRandomDepth = 4;
         const int maxActualDepth = 7;
         const int maxChildren = 4;
@@ -52,14 +67,14 @@ public class MapTree
                 // Closer to root = more children
                 if (children.Count == 0 ||
                     (children.Count < maxChildren - depth &&
-                     _gameManager.Seed.Next(0, maxRandomDepth * (maxChildren - depth)) > depth * children.Count))
+                     GameManager.Seed.Next(0, maxRandomDepth * (maxChildren - depth)) > depth * children.Count))
                 {
                     break;
                 }
                 
                 // Go deeper
                 depth++;
-                parent = children[_gameManager.Seed.Next(0, children.Count)].DestinationMap;
+                parent = children[GameManager.Seed.Next(0, children.Count)].DestinationMap;
                 children = parent.Children;
             }
 
@@ -69,7 +84,7 @@ public class MapTree
                 while (children.Count > 0 && depth < maxActualDepth)
                 {
                     depth++;
-                    parent = children[_gameManager.Seed.Next(0, children.Count)].DestinationMap;
+                    parent = children[GameManager.Seed.Next(0, children.Count)].DestinationMap;
                     children = parent.Children;
                 }
 
@@ -81,7 +96,7 @@ public class MapTree
             }
             
             // Create the new map
-            Map newMap = new Map(_gameManager, _gameManager.MaxGameHeight, _gameManager.MaxGameWidth, depth + 1, depth * _wallSegmentFactor);
+            Map newMap = new Map(this, GameManager.MaxGameHeight, GameManager.MaxGameWidth, depth + 1, (depth + 1) * _wallSegmentFactor);
             
             // Create and connect hallways
             try
@@ -101,5 +116,21 @@ public class MapTree
                 fails++;
             }
         }
+    }
+
+    /// <summary>
+    /// Switch to a different map.
+    /// </summary>
+    /// <param name="hallway"></param>
+    /// <returns>Whether the switch was successful.</returns>
+    public bool SwitchActiveMap(Hallway hallway)
+    {
+        if (hallway.DestinationHallway == null || hallway.DestinationHallway.Map != hallway.DestinationMap) throw new Exception("Impossible Error!");
+        if (hallway.Map != ActiveMap || hallway.Locked) return false;
+
+        // Update map
+        ActiveMap.Player = null;
+        ActiveMap = hallway.DestinationMap;
+        return ActiveMap.MovePlayerToThisMap(Player, hallway.DestinationHallway);
     }
 }

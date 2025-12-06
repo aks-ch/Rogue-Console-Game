@@ -11,28 +11,26 @@ public abstract class Character : GameObject, IDamageable, IAttacker
     public double Strength { get; }
 
     public override Vector2 Position { get; set; }
+    public Map Map;
     
-    protected GameScreen Game;
-    protected GameManager GameManager;
+    protected readonly GameManager GameManager;
     
     /// <summary>
     /// Constructor a new character.
     /// </summary>
-    /// <param name="game">The game manager that this character falls under.</param>
+    /// <param name="map">The map that this character falls under.</param>
     /// <param name="symbol">The symbol this character is represented as on the board.</param>
     /// <param name="maxHealth">The maximum health of the character.</param>
     /// <param name="strength">The strength of the character.</param>
-    public Character(GameScreen game, char symbol, int maxHealth, double strength) : base(new Vector2(0, 0))
+    public Character(Map map, char symbol, int maxHealth, double strength) : base(new Vector2(0, 0))
     {
         Symbol = symbol;
         Health = maxHealth;
         MaxHealth = maxHealth;
         Strength = strength;
         
-        Position = new Vector2(0, 0);
-        
-        Game = game;
-        GameManager = game.GameManager;
+        Map = map;
+        GameManager = map.GameManager;
         RandomizePosition();
     }
     
@@ -49,31 +47,29 @@ public abstract class Character : GameObject, IDamageable, IAttacker
     }
 
     /// <summary>
-    /// Randomize the position of the character so that it is not in a space already occupied.
+    /// Randomize the position of the character accounting for positions not allowed.
     /// </summary>
-    protected virtual void RandomizePosition()
+    /// <param name="bannedPositions">Any banned positions to pass by default.</param>
+    protected void RandomizePosition(List<EmptySpace>? bannedPositions = null)
     {
-        do
-        {
-            Position = new Vector2(GameManager.Seed.Next(0, GameManager.GameWidth),
-                GameManager.Seed.Next(0, GameManager.GameHeight));
-        } while (Game.Enemies.ContainsKey(Position) || Position == Game.Player?.Position);
-    }
+        List<EmptySpace> possiblePositions = Map.GetAll<EmptySpace>();
 
-    /// <summary>
-    /// Checks if a position is out of the map or not.
-    /// </summary>
-    /// <param name="position">The position to check.</param>
-    /// <returns>True if outside map. False if inside.</returns>
-    protected bool PositionOutOfBounds(Vector2 position)
-    {
-        if (position.X < 0 ||
-            position.X >= Game.GameManager.GameWidth ||
-            position.Y < 0 ||
-            position.Y >= Game.GameManager.GameHeight)
+        // Restrict positions near parent hallway spawn
+        if (Map.Parent != null && Map.Grid[Map.Parent.Spawn.Y, Map.Parent.Spawn.X] is EmptySpace space)
         {
-            return true;
+            var notAllowed = Map.GetConnected(space, 5);
+            
+            if (bannedPositions == null) bannedPositions = notAllowed;
+            else bannedPositions.AddRange(notAllowed);
         }
-        return false;
+
+        // Remove banned positions
+        if (bannedPositions is { Count: > 0 })
+        {
+            foreach (var bannedPosition in bannedPositions) possiblePositions.Remove(bannedPosition);
+        }
+
+        // Select random position
+        Position = possiblePositions[GameManager.Seed.Next(0, possiblePositions.Count)].Position;
     }
 }

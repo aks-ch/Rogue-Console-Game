@@ -2,16 +2,19 @@
   {
     "Symbol": "S",
     "MaxHealth": 3,
-    "Strength": 0.2
+    "Strength": 0.2,
+    "Points": 1
   },
   {
     "Symbol": "K",
     "MaxHealth": 5,
-    "Strength": 0.5
+    "Strength": 0.5,
+    "Points": 2
   },
   {
   "Symbol": "Q",
     "MaxHealth": 8,
-    "Strength": 1
+    "Strength": 1,
+    "Points": 4
   }
 ]

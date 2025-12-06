@@ -34,11 +34,12 @@ public class GameManager
     public int MinEnemyCount { get; }
     public int MaxEnemyCount { get; }
 
+    public GameState CurrentGameState { get; set; }
+    public DataInitializer DataInitializer { get; } = new DataInitializer();
+
     private MenuScreen MenuScreen { get; }
     private GameScreen GameScreen { get; }
     private EndScreen EndScreen { get; }
-
-    public GameState CurrentGameState { get; set; }
 
     /// <summary>
     /// Initialize this game manager's game.

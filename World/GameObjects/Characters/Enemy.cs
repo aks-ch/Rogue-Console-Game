@@ -1,19 +1,16 @@
 ﻿using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.Enums;
-using RogueConsoleGame.Screens;
 
 namespace RogueConsoleGame.World.GameObjects.Characters;
 
-public class Enemy(GameScreen game, char symbol, int maxHealth, double strength)
-    : Character(game, symbol, maxHealth, strength)
+public class Enemy(Map map, char symbol, int maxHealth, double strength)
+    : Character(map, symbol, maxHealth, strength)
 {
     /// <summary>
-    /// Make the enemy move towards a target location.
+    /// Make the enemy move towards a target location. (NEED TO MODIFY!)
     /// </summary>
     /// <param name="target">The target location to move towards.</param>
-    /// <exception cref="Exception">The target location is inside the enemy.</exception>
-    /// <returns>True if I moved. False if I didn't.</returns>
-    public bool ChooseMove(Vector2 target)
+    public void ChooseMove(Vector2 target)
     {
         Direction direction = 0;
         
@@ -24,7 +21,7 @@ public class Enemy(GameScreen game, char symbol, int maxHealth, double strength)
         if (target.X < Position.X) direction |= Direction.West;
 
         // Invalid direction
-        if (direction == 0) throw new Exception("Enemy's target location is inside itself");
+        if (direction == 0) return;
         
         bool random = new Random().Next(0, 2) == 1;
         
@@ -57,44 +54,6 @@ public class Enemy(GameScreen game, char symbol, int maxHealth, double strength)
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        return ProcessMove(newPosition);
-    }
-    
-    /// <summary>
-    /// Process what to do about moving to a new position.
-    /// </summary>
-    /// <param name="newPosition">The new position.</param>
-    /// <returns>True if the enemy moved. Else false.</returns>
-    private bool ProcessMove(Vector2 newPosition)
-    {
-        // new location outside map or enemy in new location
-        if (PositionOutOfBounds(newPosition) || Game.Enemies.ContainsKey(newPosition)) return false;
-
-        // player in new location
-        if (Game.Player?.Position == newPosition)
-        {
-            if (Game.Player == null) throw new NullReferenceException("The player doesn't exist!");
-            Attack(Game.Player);
-        }
-        // move to location
-        else
-        {
-            Position = newPosition;
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Enemy modified implementation of randomizing the position.
-    /// </summary>
-    protected override void RandomizePosition()
-    {
-        if (Game.Player?.Position == null) throw new NullReferenceException("The player position doesn't exist!");
-        do
-        {
-            base.RandomizePosition();
-        } while (Math.Abs(Game.Player.Position.X - Position.X) < 2 || Math.Abs(Game.Player.Position.Y - Position.Y) < 2);
+        Position = newPosition;
     }
 }

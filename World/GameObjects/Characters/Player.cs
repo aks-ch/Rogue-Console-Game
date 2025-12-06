@@ -17,20 +17,19 @@ public class Player : Character
     private readonly int _healCooldownMax;
     private readonly double _healFactor;
     
-    public Player(GameScreen game, string name, char symbol, int maxHealth, double strength) : base(game, symbol,
+    public Player(Map map, string name, char symbol, int maxHealth, double strength) : base(map, symbol,
         maxHealth, strength)
     {
         Name = name;
-        _healCooldownMax = game.GameManager.Player.HealCooldown;
+        _healCooldownMax = GameManager.Player.HealCooldown;
         _healCooldown = _healCooldownMax;
-        _healFactor = Math.Round(game.GameManager.Player.HealFactor, 1);
+        _healFactor = Math.Round(GameManager.Player.HealFactor, 1);
     }
 
     /// <summary>
     /// Check if input key is relevant.
     /// </summary>
-    /// <returns>True if the key input was valid and processed (even if nothing changed with the player). Else False.</returns>
-    public bool CheckKey()
+    public void CheckKey()
     {
         Vector2 newPosition;
 
@@ -46,10 +45,8 @@ public class Player : Character
                 _ => Position
             };
         } while (newPosition == Position);
-
-        // valid key
-        ProcessMove(newPosition);
-        return true;
+        
+        Position = newPosition;
     }
 
     /// <summary>
@@ -77,28 +74,6 @@ public class Player : Character
         else 
         {
             IsHealing = false;
-        }
-    }
-
-    /// <summary>
-    /// Process what to do about moving to a new position.
-    /// </summary>
-    /// <param name="newPosition">The new position.</param>
-    private void ProcessMove(Vector2 newPosition)
-    {
-        // new location outside map
-        if (PositionOutOfBounds(newPosition)) return;
-
-        // enemy in new location
-        if (Game.Enemies.ContainsKey(newPosition))
-        {
-            Attack(Game.Enemies[newPosition]);
-            _interacted = true;
-        }
-        // move to location
-        else
-        {
-            Position = newPosition;
         }
     }
 

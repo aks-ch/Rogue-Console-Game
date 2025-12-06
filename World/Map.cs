@@ -18,19 +18,26 @@ public class Map
     public Hallway? Parent { get; private set; }
     public List<Hallway> Children { get; } = [];
     
+    public Player? Player { get; set; }
+    public Vector2 PlayerPosition { get; set; } = new Vector2(0, 0);
+    
+    public List<Enemy> Enemies { get; } = [];
+    
+    public readonly MapTree MapTree;
     public readonly GameManager GameManager;
     
     /// <summary>
     /// Used to create maps for the game world.
     /// </summary>
-    /// <param name="gameManager">Associated game manager.</param>
+    /// <param name="mapTree">Associated map tree.</param>
     /// <param name="height">Height of the map.</param>
     /// <param name="width">Width of the map.</param>
     /// <param name="depth">Depth of the map in the tree it belongs to.</param>
     /// <param name="wallSegments">Number of wall segments to create for this map. Values less than 0 will be rounded to 0. Default: 0</param>
-    public Map(GameManager gameManager, int height, int width, int depth, int? wallSegments)
+    public Map(MapTree mapTree, int height, int width, int depth, int? wallSegments)
     {
-        GameManager = gameManager;
+        MapTree = mapTree;
+        GameManager = mapTree.GameManager;
         MapHeight = height + 2;
         MapWidth = width + 2;
         Depth = depth;
@@ -39,6 +46,111 @@ public class Map
         
         int count = wallSegments ?? 0;
         GenerateMap(count);
+        
+        // Need to spawn enemies
+    }
+
+    /// <summary>
+    /// Update this map based on new parameters.
+    /// </summary>
+    public void Update()
+    {
+        if (MapTree.ActiveMap != this) return; // Map isn't active
+        if (Player == null) throw new NullReferenceException("Player is null");
+        
+        // Player movement
+        Player.CheckKey();
+        switch (Grid[Player.Position.Y, Player.Position.X])
+        {
+            case EmptySpace empty:
+                // Move Empty
+                Grid[PlayerPosition.Y, PlayerPosition.X] = empty;
+                empty.Position = PlayerPosition;
+            
+                // Move Player
+                PlayerPosition = Player.Position;
+                Grid[PlayerPosition.Y, PlayerPosition.X] = Player;
+                break;
+            case Enemy enemy:
+                Player.Attack(enemy);
+                Player.Position = PlayerPosition;
+                break;
+            case Hallway { Locked: false } hallway:
+                if (MapTree.SwitchActiveMap(hallway)) return;
+                Player.Position = PlayerPosition;
+                break;
+            default:
+                Player.Position = PlayerPosition;
+                break;
+        }
+        
+        // Enemy movement
+        foreach (var enemy in Enemies)
+        {
+            var position = enemy.Position;
+            enemy.ChooseMove(PlayerPosition);
+            switch (Grid[enemy.Position.Y, enemy.Position.X])
+            {
+                case EmptySpace empty:
+                    // Move Empty
+                    Grid[position.Y, position.X] = empty;
+                    empty.Position = position;
+            
+                    // Move enemy
+                    Grid[enemy.Position.Y, enemy.Position.X] = enemy;
+                    break;
+                case Player player:
+                    enemy.Attack(player);
+                    enemy.Position = position;
+                    break;
+                default:
+                    enemy.Position = position;
+                    break;
+            }
+        }
+        
+        // Check Player healing
+        Player.Heal();
+        
+        // Unlock hallways if all enemies gone
+        if (Enemies.Count == 0)
+        {
+            foreach (var hallway in Children.Where(hallway => hallway.Locked))
+            {
+                hallway.UnlockLock("enemy");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Spawn the player on this map. Only to use for root spawn.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    public void SpawnPlayerHere(Player player)
+    {
+        if (MapTree.Root != this) return;
+        Player = player;
+        Player.Position = new Vector2(1, MapHeight / 2);
+        PlayerPosition = Player.Position;
+        Grid[Player.Position.Y, Player.Position.X] = Player;
+    }
+
+    /// <summary>
+    /// Move the player to this map.
+    /// </summary>
+    /// <param name="player">The player emerging.</param>
+    /// <param name="hallway">The hallway the player emerges through.</param>
+    /// <returns>True if successful. Else false.</returns>
+    public bool MovePlayerToThisMap(Player player, Hallway hallway)
+    {
+        if (hallway.Map != this) return false;
+        
+        PlayerPosition = hallway.Spawn;
+        Player = player;
+        Player.Map = this;
+        Player.Position = PlayerPosition;
+        Grid[PlayerPosition.Y, PlayerPosition.X] = Player;
+        return true;
     }
 
     /// <summary>
