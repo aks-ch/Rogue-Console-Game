@@ -155,6 +155,26 @@ public class Map
     }
 
     /// <summary>
+    /// Get all spaces of this type on the map.
+    /// </summary>
+    /// <typeparam name="T">The type to collect. Must inherit GameObject.</typeparam>
+    /// <returns>A list of all of this type in this map.</returns>
+    public List<T> GetAll<T>() where T : GameObject
+    {
+        List<T> result = new List<T>();
+        
+        for (int y = 0; y < MapHeight; y++)
+        {
+            for (int x = 0; x < MapWidth; x++)
+            {
+                if (Grid[y, x] is T space) result.Add(space);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Finds all connected types of from the starting space of the specified type.
     /// </summary>
     /// <param name="start">The starting space.</param>
