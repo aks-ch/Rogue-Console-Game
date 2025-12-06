@@ -284,6 +284,23 @@ public class Map
         
         return count;
     }
+    
+    /// <summary>
+    /// Checks if a position is out of the map or not.
+    /// </summary>
+    /// <param name="position">The position to check.</param>
+    /// <returns>True if outside map. False if inside.</returns>
+    public bool PositionOutOfBounds(Vector2 position)
+    {
+        if (position.X < 0 ||
+            position.X >= MapWidth ||
+            position.Y < 0 ||
+            position.Y >= MapHeight)
+        {
+            return true;
+        }
+        return false;
+    }
 
     /// <summary>
     /// Generate an empty map and attempt to generate the defined number of wall segments.
