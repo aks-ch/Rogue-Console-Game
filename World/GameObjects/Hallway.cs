@@ -35,12 +35,12 @@ public sealed class Hallway : GameObject
     /// <summary>
     /// Whether this hallway is locked.
     /// </summary>
-    public bool Locked => LockIds.Count > 0 ? true : false;
+    public bool Locked => LockIDs.Count > 0 ? true : false;
 
     /// <summary>
     /// What IDs are required to unlock this door.
     /// </summary>
-    private List<string> LockIds { get; }
+    private List<string> LockIDs { get; }
     
     public override char Symbol => Locked ? '|' : IsParent ? '>' : '<';
     public override ConsoleColor Color => Locked ? ConsoleColor.Red : ConsoleColor.Green;
@@ -61,8 +61,8 @@ public sealed class Hallway : GameObject
 
         Symbol = ' ';
 
-        LockIds = new List<string>();
-        if (isParent) LockIds.Add("enemy");
+        LockIDs = new List<string>();
+        if (isParent) LockIDs.Add("enemy");
     }
 
     /// <summary>
@@ -72,9 +72,9 @@ public sealed class Hallway : GameObject
     /// <returns>True if added. False if lockId is already on this hallway.</returns>
     public bool AddLock(string lockId)
     {
-        if (LockIds.Contains(lockId)) return false;
+        if (LockIDs.Contains(lockId)) return false;
         
-        LockIds.Add(lockId);
+        LockIDs.Add(lockId);
         return true;
     }
 
@@ -85,6 +85,6 @@ public sealed class Hallway : GameObject
     /// <returns>True if the unlock was successful. False if not.</returns>
     public bool UnlockLock(string lockId)
     {
-        return LockIds.Remove(lockId);
+        return LockIDs.Remove(lockId);
     }
 }
