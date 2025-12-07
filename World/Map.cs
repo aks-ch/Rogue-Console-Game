@@ -50,6 +50,9 @@ public class Map
         int count = wallSegments ?? 0;
         GenerateMap(count);
         
+        // Generate Previous Output (but leave empty)
+        PreviousOutput = new (char Symbol, ConsoleColor Color)[MapHeight, MapWidth];
+        
         // Need to spawn enemies
     }
 
@@ -553,9 +556,6 @@ public class Map
         
         // Set walls' visibility & symbols
         UpdateWalls();
-        
-        // Generate Previous Output (but leave empty)
-        PreviousOutput = new (char Symbol, ConsoleColor Color)[MapHeight, MapWidth];
     }
     
     /// <summary>
