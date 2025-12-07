@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
+using System.Text.Json;
 using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.Enums;
 using RogueConsoleGame.Screens;
@@ -76,6 +77,9 @@ public class GameManager
     /// </summary>
     public void Run()
     {
+        const int timePerFrame = 16;
+        Stopwatch stopwatch = new Stopwatch();
+        
         IsRunning = true;
         CurrentGameState = GameState.Menu;
         PreviousGameState = CurrentGameState;
@@ -83,6 +87,9 @@ public class GameManager
         // Execute the applicable screen
         while (IsRunning)
         {
+            // frame cap
+            stopwatch.Restart();
+            
             // Carry out correct clearing depending on current game state and previous state
             if (CurrentGameState == PreviousGameState && PreviousGameState == GameState.Game) Console.SetCursorPosition(0, 0);
             else Console.Clear();
@@ -110,6 +117,11 @@ public class GameManager
                 default:
                     throw new Exception("Invalid Game State!");
             }
+            
+            // frame cap
+            stopwatch.Stop();
+            int timeToSleep = timePerFrame - (int)stopwatch.ElapsedMilliseconds;
+            if (timeToSleep > 0) Thread.Sleep(timeToSleep);
         }
     }
 
