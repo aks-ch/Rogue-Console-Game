@@ -77,7 +77,7 @@ public class GameManager
     /// </summary>
     public void Run()
     {
-        const int timePerFrame = 16;
+        const int timePerFrame = 33;
         Stopwatch stopwatch = new Stopwatch();
         
         IsRunning = true;
