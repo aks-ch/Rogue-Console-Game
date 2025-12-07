@@ -15,9 +15,9 @@ public class MapTree
     public Player Player { get; }
     
     public readonly GameManager GameManager;
-    
-    private readonly int _wallSegmentFactor = 50;
-    
+
+    private const int WallSegmentFactor = 50;
+
     // Need to add Update()
 
     /// <summary>
@@ -96,7 +96,7 @@ public class MapTree
             }
             
             // Create the new map
-            Map newMap = new Map(this, GameManager.MaxGameHeight, GameManager.MaxGameWidth, depth + 1, (depth + 1) * _wallSegmentFactor);
+            Map newMap = new Map(this, GameManager.MaxGameHeight, GameManager.MaxGameWidth, depth + 1, (depth + 1) * WallSegmentFactor);
             
             // Create and connect hallways
             try
