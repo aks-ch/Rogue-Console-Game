@@ -73,6 +73,17 @@ public class Map
                 PlayerPosition = Player.Position;
                 Grid[PlayerPosition.Y, PlayerPosition.X] = Player;
                 break;
+            case Key key:
+                // Attempt unlock
+                MapTree.UnlockHallways(key.KeyID);
+                
+                // Add empty space behind player
+                Grid[PlayerPosition.Y, PlayerPosition.X] = new EmptySpace(this, PlayerPosition);
+                
+                // Move Player (removing the key)
+                PlayerPosition = Player.Position;
+                Grid[PlayerPosition.Y, PlayerPosition.X] = Player;
+                break;
             case Enemy enemy:
                 Player.Attack(enemy);
                 
