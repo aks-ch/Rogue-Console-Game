@@ -11,6 +11,7 @@ public class Player : Character
     public string Name;
     
     public bool IsHealing;
+    public int ExploreRange { get; private set; } = 5;
     
     private bool _interacted;
     private int _healCooldown;
@@ -100,5 +101,14 @@ public class Player : Character
     {
         base.TakeDamage(damage);
         _interacted = true;
+    }
+
+    /// <summary>
+    /// Increase the exploration range by a factor.
+    /// </summary>
+    /// <param name="factor">The factor to increase it by.</param>
+    public void IncreaseExploreRange(int factor)
+    {
+        ExploreRange += factor;
     }
 }
