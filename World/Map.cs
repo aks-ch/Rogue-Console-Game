@@ -1,6 +1,7 @@
 ﻿using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.World.GameObjects;
 using RogueConsoleGame.World.GameObjects.Characters;
+using RogueConsoleGame.World.GameObjects.Items;
 
 namespace RogueConsoleGame.World;
 
@@ -212,6 +213,55 @@ public class Map
         Player.Position = PlayerPosition;
         Grid[PlayerPosition.Y, PlayerPosition.X] = Player;
         return true;
+    }
+
+    /// <summary>
+    /// Hide a key in this map.
+    /// </summary>
+    /// <param name="keyID">The ID of the key.</param>
+    /// <param name="hidden">Whether the key should be hidden at first.</param>
+    /// <param name="hallway">The hallway this key unlocks.</param>
+    /// <returns></returns>
+    public bool AddKey(string keyID, bool hidden, Hallway hallway)
+    {
+        // Going back to a parent map should not require a key
+        if (!hallway.IsParent) return false;
+        
+        // Check if lock can even be applied to hallway
+        if (!hallway.AddLock(keyID)) return false;
+
+        List<EmptySpace> allEmptySpaces = GetAll<EmptySpace>();
+        List<EmptySpace> validEmptySpaces = new List<EmptySpace>();
+        List<Hallway> allHallways = new List<Hallway>(Children);
+
+        for (int i = 15; i > 5; i--)
+        {
+            validEmptySpaces.AddRange(allEmptySpaces);
+            List<EmptySpace> banned = new List<EmptySpace>();
+
+            // Get empty spaces near hallways
+            foreach (var aHallway in allHallways)
+            {
+                if (Grid[aHallway.Position.Y, aHallway.Position.X] is EmptySpace space) banned.AddRange(GetConnected(space, i));
+            }
+            
+            foreach (var space in banned)
+            {
+                validEmptySpaces.Remove(space);
+            }
+            
+            // Select a valid empty space if any
+            if (validEmptySpaces.Count > 0)
+            {
+                EmptySpace selected = validEmptySpaces[GameManager.Seed.Next(0, validEmptySpaces.Count)];
+                Grid[selected.Position.Y, selected.Position.X] = new Key(this, selected.Position, hidden, keyID);
+                return true;
+            }
+        }
+        
+        // Remove lock if failed and return
+        hallway.UnlockLock(keyID);
+        return false;
     }
 
     /// <summary>
