@@ -138,4 +138,25 @@ public class MapTree
         if (ActiveMap == Root) Console.Clear(); // clear console because root map is small
         return ActiveMap.MovePlayerToThisMap(Player, hallway.DestinationHallway);
     }
+
+    /// <summary>
+    /// Traverse the tree to find and unlock all hallways that can be unlocked with this key.
+    /// </summary>
+    /// <param name="keyID">The ID of the key.</param>
+    public void UnlockHallways(string keyID)
+    {
+        UnlockHallways(Root, keyID);
+    }
+
+    /// <summary>
+    /// Used to recursively traverse the tree to find and unlock all hallways that can be unlocked with this key.
+    /// </summary>
+    private void UnlockHallways(Map map, string keyID)
+    {
+        foreach (var child in map.Children)
+        {
+            if (child.Locked) child.UnlockLock(keyID);
+            UnlockHallways(child.Map, keyID);
+        }
+    }
 }
