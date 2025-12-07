@@ -27,6 +27,7 @@ public class MapTree
     /// <param name="difficulty">The difficulty level of this map tree (1 to 10). 1 is easiest, 10 is hardest.</param>
     public MapTree(GameManager gameManager, int difficulty)
     {
+        Console.CursorVisible = true;
         GameManager = gameManager;
         
         Root = new Map(this, GameManager.MinGameHeight, GameManager.MinGameWidth, 0, 0);
@@ -116,6 +117,9 @@ public class MapTree
                 fails++;
             }
         }
+        
+        // Clear the console of any input
+        Console.Clear();
     }
 
     /// <summary>
@@ -131,6 +135,7 @@ public class MapTree
         // Update map
         ActiveMap.Player = null;
         ActiveMap = hallway.DestinationMap;
+        if (ActiveMap == Root) Console.Clear(); // clear console because root map is small
         return ActiveMap.MovePlayerToThisMap(Player, hallway.DestinationHallway);
     }
 }

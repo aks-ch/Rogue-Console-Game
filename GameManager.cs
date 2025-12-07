@@ -35,6 +35,7 @@ public class GameManager
     public int MaxEnemyCount { get; }
 
     public GameState CurrentGameState { get; set; }
+    public GameState PreviousGameState { get; private set; }
     public DataInitializer DataInitializer { get; } = new DataInitializer();
 
     private MenuScreen MenuScreen { get; }
@@ -77,11 +78,19 @@ public class GameManager
     {
         IsRunning = true;
         CurrentGameState = GameState.Menu;
+        PreviousGameState = CurrentGameState;
 
         // Execute the applicable screen
         while (IsRunning)
         {
-            Console.Clear();
+            // Carry out correct clearing depending on current game state and previous state
+            if (CurrentGameState == PreviousGameState && PreviousGameState == GameState.Game) Console.SetCursorPosition(0, 0);
+            else Console.Clear();
+            Console.CursorVisible = false;
+            
+            // Update previous state
+            PreviousGameState = CurrentGameState;
+            
             switch (CurrentGameState)
             {
                 case GameState.Menu:

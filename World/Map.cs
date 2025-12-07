@@ -158,21 +158,27 @@ public class Map
     /// </summary>
     public void OutputMap()
     {
+        ConsoleColor activeColor = Console.ForegroundColor;
+        
         Console.WriteLine(); // margin
         for (int y = 0; y < MapHeight; y++)
         {
-            Console.Write(" "); // margin
+            Console.Write(' '); // margin
             for (int x = 0; x < MapWidth; x++)
             {
                 if (Grid[y, x].IsVisible)
                 {
-                    if (Grid[y, x].Color != null) GameManager.ColorConsoleWrite((ConsoleColor)Grid[y, x].Color!, Grid[y, x].Symbol);
-                    else Console.Write(Grid[y, x].Symbol);
+                    // Change color if needed
+                    if (Grid[y, x].Color != activeColor) Console.ForegroundColor = Grid[y, x].Color;
+                    Console.Write(Grid[y, x].Symbol);
                 }
-                else Console.Write(" ");
+                else Console.Write(' ');
             }
             Console.WriteLine();
         }
+        
+        // Reset color
+        Console.ResetColor();
     }
 
     /// <summary>
