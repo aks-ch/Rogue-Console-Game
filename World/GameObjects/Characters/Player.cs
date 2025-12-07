@@ -31,22 +31,37 @@ public class Player : Character
     /// </summary>
     public void CheckKey()
     {
-        Vector2 newPosition;
+        bool waitingForKey = true;
 
-        do
+        // Don't exit until a key that was processed by the player is entered
+        while (waitingForKey)
         {
-            newPosition = Console.ReadKey(true).Key switch
+            if (!Console.KeyAvailable) continue;
+            
+            ConsoleKeyInfo info = new ConsoleKeyInfo();
+
+            // Clear buffer
+            while (Console.KeyAvailable)
+            {
+                info = Console.ReadKey(true);
+            }
+
+            // Check for valid input
+            Vector2 newPosition = info.Key switch
             {
                 ConsoleKey.UpArrow => Position with { Y = Position.Y - 1 },
                 ConsoleKey.DownArrow => Position with { Y = Position.Y + 1 },
                 ConsoleKey.LeftArrow => Position with { X = Position.X - 1 },
                 ConsoleKey.RightArrow => Position with { X = Position.X + 1 },
-     
                 _ => Position
             };
-        } while (newPosition == Position);
-        
-        Position = newPosition;
+
+            // Process only if valid
+            if (newPosition == Position) continue;
+            
+            Position = newPosition;
+            waitingForKey = false;
+        }
     }
 
     /// <summary>
