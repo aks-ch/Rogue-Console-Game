@@ -224,7 +224,7 @@ public class Map
     /// <param name="keyID">The ID of the key.</param>
     /// <param name="hidden">Whether the key should be hidden at first.</param>
     /// <param name="hallway">The hallway this key unlocks.</param>
-    /// <returns></returns>
+    /// <returns>True if key was placed successfully. Else false.</returns>
     public bool AddKey(string keyID, bool hidden, Hallway hallway)
     {
         // Going back to a parent map should not require a key
