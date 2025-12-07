@@ -114,10 +114,6 @@ public class MenuScreen(GameManager gameManager) : IScreen
     {
         gameManager.Seed = new Random();
 
-        gameManager.GameWidth = gameManager.Seed.Next(gameManager.MinGameWidth, gameManager.MaxGameWidth + 1);
-        gameManager.GameHeight = gameManager.Seed.Next(gameManager.MinGameHeight, gameManager.MaxGameHeight + 1);
-        gameManager.EnemyCount = gameManager.Seed.Next(gameManager.MinEnemyCount, gameManager.MaxEnemyCount + 1);
-
         gameManager.CurrentGameState = GameState.Game;
     }
 
@@ -141,21 +137,6 @@ public class MenuScreen(GameManager gameManager) : IScreen
         {
             gameManager.Seed = new Random(convertedInput.GetHashCode());
         }
-        
-        // game width
-        string prompt =
-            $"Please enter the width of the game [{gameManager.MinGameWidth}, {gameManager.MaxGameWidth}] (Leave empty to randomize):";
-        gameManager.GameWidth = GetIntInput(prompt, gameManager.MinGameWidth, gameManager.MaxGameWidth);
-
-        // game height
-        prompt =
-            $"Please enter the height of the game [{gameManager.MinGameHeight}, {gameManager.MaxGameHeight}] (Leave empty to randomize):";
-        gameManager.GameHeight = GetIntInput(prompt, gameManager.MinGameHeight, gameManager.MaxGameHeight);
-
-        // enemy count
-        prompt =
-            $"Please enter the number of enemies [{gameManager.MinEnemyCount}, {gameManager.MaxEnemyCount}] (Leave empty to randomize):";
-        gameManager.EnemyCount = GetIntInput(prompt, gameManager.MinEnemyCount, gameManager.MaxEnemyCount);
         
         gameManager.CurrentGameState = GameState.Game;
     }

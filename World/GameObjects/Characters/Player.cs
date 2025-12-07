@@ -21,9 +21,9 @@ public class Player : Character
         maxHealth, strength)
     {
         Name = name;
-        _healCooldownMax = GameManager.Player.HealCooldown;
+        _healCooldownMax = GameManager.DataInitializer.Player.HealCooldown;
         _healCooldown = _healCooldownMax;
-        _healFactor = Math.Round(GameManager.Player.HealFactor, 1);
+        _healFactor = Math.Round(GameManager.DataInitializer.Player.HealFactor, 1);
     }
 
     /// <summary>

@@ -13,13 +13,7 @@ public class GameManager
 {
     public bool IsRunning;
 
-    public int GameWidth;
-    public int GameHeight;
-    public int EnemyCount;
-
     public char EmptyChar = '·';
-    public PlayerData Player { get; }
-    public EnemyData[] Enemies { get; }
     
     // according to directionality
     public char[] WallChars { get; } = ['╬', '║', '║', '║', '═', '╚', '╔', '╠', '═', '╝', '╗', '╣', '═', '╩', '╦', '╬'];
@@ -48,24 +42,12 @@ public class GameManager
     /// </summary>
     public GameManager()
     {
-        // Player checked
-        string playerJson = File.ReadAllText("./Data/Player.json");
-        Player = JsonSerializer.Deserialize<PlayerData>(playerJson) ?? throw new NullReferenceException("Invalid Player JSON!");
-        
-        // Enemies checked
-        string enemyJson = File.ReadAllText("./Data/Enemies.json");
-        Enemies = JsonSerializer.Deserialize<EnemyData[]>(enemyJson) ?? throw new NullReferenceException("Invalid Enemies JSON!");
-        
         MinGameWidth = 20;
         MaxGameWidth = 40;
         MinGameHeight = 15;
         MaxGameHeight = 24;
         MinEnemyCount = 3;
         MaxEnemyCount = 6;
-
-        GameWidth = MaxGameWidth;
-        GameHeight = MaxGameHeight;
-        EnemyCount = MaxEnemyCount;
 
         MenuScreen = new MenuScreen(this);
         GameScreen = new GameScreen(this);
@@ -134,14 +116,14 @@ public class GameManager
         ColorConsoleWriteLine(ConsoleColor. Cyan, "Use arrow keys to move the player.");
         ColorConsoleWriteLine(ConsoleColor. Cyan, "Moving into an enemy attacks the enemy. If an enemy tries to move into the player, it attacks the player.");
         Console.WriteLine("Initialized Player stats:");
-        ColorConsoleWriteLine(ConsoleColor.Green, $"- Symbol    : {gameManager.Player.Symbol}");
-        ColorConsoleWriteLine(ConsoleColor.Green, $"- MaxHealth : {gameManager.Player.MaxHealth}");
-        ColorConsoleWriteLine(ConsoleColor.Green, $"- Strength  : {gameManager.Player.Strength}");
-        ColorConsoleWriteLine(ConsoleColor.Green, $"- Heal Cooldown : {gameManager.Player.HealCooldown}");
-        ColorConsoleWriteLine(ConsoleColor.Green, $"- Heal Factor   : {gameManager.Player.HealFactor}");
+        ColorConsoleWriteLine(ConsoleColor.Green, $"- Symbol    : {gameManager.DataInitializer.Player.Symbol}");
+        ColorConsoleWriteLine(ConsoleColor.Green, $"- MaxHealth : {gameManager.DataInitializer.Player.MaxHealth}");
+        ColorConsoleWriteLine(ConsoleColor.Green, $"- Strength  : {gameManager.DataInitializer.Player.Strength}");
+        ColorConsoleWriteLine(ConsoleColor.Green, $"- Heal Cooldown : {gameManager.DataInitializer.Player.HealCooldown}");
+        ColorConsoleWriteLine(ConsoleColor.Green, $"- Heal Factor   : {gameManager.DataInitializer.Player.HealFactor}");
         Console.WriteLine("Initialized Enemy stats:");
         int i = 0;
-        foreach (var enemy in gameManager.Enemies)
+        foreach (var enemy in gameManager.DataInitializer.Enemies)
         {
             i++;
             ColorConsoleWriteLine(ConsoleColor.DarkRed, $"Enemy {i}");
