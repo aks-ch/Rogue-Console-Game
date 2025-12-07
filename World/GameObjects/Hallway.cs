@@ -76,7 +76,7 @@ public sealed class Hallway : GameObject
     /// Unlock the defined lockId.
     /// </summary>
     /// <param name="lockId">The lockId to unlock.</param>
-    /// <returns>True if the unlock was successful. False if not.</returns>
+    /// <returns>True if unlock was successful. False if not.</returns>
     public bool UnlockLock(string lockId)
     {
         return LockIDs.Remove(lockId);
