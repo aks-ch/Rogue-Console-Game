@@ -135,7 +135,7 @@ public class MenuScreen(GameManager gameManager) : IScreen
         }
         else
         {
-            gameManager.Seed = new Random(convertedInput.GetHashCode());
+            gameManager.Seed = new Random(input.GetHashCode());
         }
         
         gameManager.CurrentGameState = GameState.Game;
