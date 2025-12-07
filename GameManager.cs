@@ -102,6 +102,7 @@ public class GameManager
             
             // frame cap
             stopwatch.Stop();
+            if (timePerFrame - stopwatch.ElapsedMilliseconds <= 0) continue;
             int timeToSleep = timePerFrame - (int)stopwatch.ElapsedMilliseconds;
             if (timeToSleep > 0) Thread.Sleep(timeToSleep);
         }
