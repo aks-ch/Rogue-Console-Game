@@ -14,6 +14,8 @@ public class Map
     public int MapHeight { get; }
 
     public GameObject[,] Grid { get; private set; }
+    private (char Symbol, ConsoleColor Color)[,] PreviousOutput { get; set; }
+    private bool Outputted { get; set; }
 
     public Hallway? Parent { get; private set; }
     public List<Hallway> Children { get; } = [];
@@ -76,7 +78,11 @@ public class Map
                 Player.Position = PlayerPosition;
                 break;
             case Hallway { Locked: false } hallway:
-                if (MapTree.SwitchActiveMap(hallway)) return;
+                if (MapTree.SwitchActiveMap(hallway))
+                {
+                    Outputted = false;
+                    return;
+                }
                 Player.Position = PlayerPosition;
                 break;
             default:
@@ -158,27 +164,35 @@ public class Map
     /// </summary>
     public void OutputMap()
     {
-        ConsoleColor activeColor = Console.ForegroundColor;
-        
-        Console.WriteLine(); // margin
+        if (!Outputted) Console.WriteLine(); // margin
         for (int y = 0; y < MapHeight; y++)
         {
-            Console.Write(' '); // margin
+            if (!Outputted) Console.Write(' '); // margin
             for (int x = 0; x < MapWidth; x++)
             {
+                (char Symbol, ConsoleColor Color) output = (Grid[y, x].Symbol, Grid[y, x].Color);
+                
+                // If map was already outputted and previous output is as current
+                if (Outputted && PreviousOutput[y, x] == output) continue;
+                
                 if (Grid[y, x].IsVisible)
                 {
-                    // Change color if needed
-                    if (Grid[y, x].Color != activeColor) Console.ForegroundColor = Grid[y, x].Color;
-                    Console.Write(Grid[y, x].Symbol);
+                    Console.SetCursorPosition(x + 1, y + 1);
+                    if (output.Color != Console.ForegroundColor) Console.ForegroundColor = output.Color; // change color if needed
+                    Console.Write(output.Symbol);
                 }
                 else Console.Write(' ');
+                    
+                PreviousOutput[y, x] = output;
             }
             Console.WriteLine();
         }
         
-        // Reset color
+        // Reset console
+        Console.SetCursorPosition(0, MapHeight + 2);
         Console.ResetColor();
+        
+        Outputted = true;
     }
 
     /// <summary>
@@ -470,8 +484,11 @@ public class Map
         
         // Set walls' visibility & symbols
         UpdateWalls();
+        
+        // Generate Previous Output (but leave empty)
+        PreviousOutput = new (char Symbol, ConsoleColor Color)[MapHeight, MapWidth];
     }
-
+    
     /// <summary>
     /// Attempt to create a wall segment in the map.
     /// </summary>
