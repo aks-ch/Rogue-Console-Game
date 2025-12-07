@@ -151,7 +151,7 @@ public class MapTree
     }
 
     /// <summary>
-    /// Used to recursively traverse the tree to find and unlock all hallways that can be unlocked with this key.
+    /// Use tree traversal to recursively find and unlock all hallways that can be unlocked with this key.
     /// </summary>
     private void UnlockHallways(Map map, string keyID)
     {
