@@ -8,11 +8,6 @@ namespace RogueConsoleGame.World.GameObjects;
 public sealed class Hallway : GameObject
 {
     /// <summary>
-    /// The map this hallway belongs to.
-    /// </summary>
-    public Map Map { get; }
-    
-    /// <summary>
     /// The map this hallway leads to.
     /// </summary>
     public Map DestinationMap { get; }
@@ -52,9 +47,8 @@ public sealed class Hallway : GameObject
     /// <param name="position">The position of the hallway on its own map.</param>
     /// <param name="destination">The map this hallway points to.</param>
     /// <param name="isParent">Whether this map is parent to the destination map.</param>
-    public Hallway(Map map, Vector2 position, Map destination, bool isParent) : base(position)
+    public Hallway(Map map, Vector2 position, Map destination, bool isParent) : base(map, position)
     {
-        Map = map;
         DestinationMap = destination;
         IsParent = isParent;
         Spawn = IsParent ? Position + new Vector2(-1, 0) : Position + new Vector2(1, 0);

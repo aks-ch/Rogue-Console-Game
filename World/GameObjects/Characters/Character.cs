@@ -9,9 +9,6 @@ public abstract class Character : GameObject, IDamageable, IAttacker
     public double Health { get; set; }
     public int MaxHealth { get; }
     public double Strength { get; }
-
-    public override Vector2 Position { get; set; }
-    public Map Map;
     
     protected readonly GameManager GameManager;
     
@@ -22,14 +19,13 @@ public abstract class Character : GameObject, IDamageable, IAttacker
     /// <param name="symbol">The symbol this character is represented as on the board.</param>
     /// <param name="maxHealth">The maximum health of the character.</param>
     /// <param name="strength">The strength of the character.</param>
-    public Character(Map map, char symbol, int maxHealth, double strength) : base(new Vector2(0, 0))
+    public Character(Map map, char symbol, int maxHealth, double strength) : base(map, new Vector2(0, 0))
     {
         Symbol = symbol;
         Health = maxHealth;
         MaxHealth = maxHealth;
         Strength = strength;
         
-        Map = map;
         GameManager = map.GameManager;
         RandomizePosition();
     }

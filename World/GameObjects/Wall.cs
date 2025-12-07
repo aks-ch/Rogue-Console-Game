@@ -13,11 +13,11 @@ public class Wall: GameObject
     /// <summary>
     /// Initialize a wall on the map.
     /// </summary>
-    /// <param name="gameManager">The associated game manager.</param>
+    /// <param name="map">The associated map.</param>
     /// <param name="position">The position of the wall on the map.</param>
-    public Wall(GameManager gameManager, Vector2 position) : base(position)
+    public Wall(Map map, Vector2 position) : base(map, position)
     {
-        _gameManager = gameManager;
+        _gameManager = map.GameManager;
     }
 
     /// <summary>

@@ -80,7 +80,7 @@ public class Map
                 if (enemy.Health <= 0)
                 {
                     Enemies.Remove(enemy);
-                    Grid[enemy.Position.Y, enemy.Position.X] = new EmptySpace(GameManager.EmptyChar, enemy.Position);
+                    Grid[enemy.Position.Y, enemy.Position.X] = new EmptySpace(this, enemy.Position);
                 }
                 
                 Player.Position = PlayerPosition;
@@ -467,11 +467,11 @@ public class Map
             {
                 if (y == 0 || x == 0 || y == MapHeight - 1 || x == MapWidth - 1)
                 {
-                    Grid[y, x] = new Wall(GameManager, new Vector2(x, y));
+                    Grid[y, x] = new Wall(this, new Vector2(x, y));
                 }
                 else
                 {
-                    Grid[y, x] = new EmptySpace(GameManager.EmptyChar, new Vector2(x, y));
+                    Grid[y, x] = new EmptySpace(this, new Vector2(x, y));
                 }
             }
         }
@@ -535,7 +535,7 @@ public class Map
 
                 if (GetAdjacentCount<Wall>(new Vector2(x, y), newGrid, out _) < 4)
                 {
-                    newGrid[y, x] = new Wall(GameManager, new Vector2(x, y));
+                    newGrid[y, x] = new Wall(this, new Vector2(x, y));
                     count++;
                     flag = true;
                     break;
@@ -557,7 +557,7 @@ public class Map
         if (GetAdjacentCount<Wall>(nextWall.Position, newGrid, out _) > 1) return;
         
         // Assign the next wall
-        nextWall = new Wall(GameManager, nextWall.Position);
+        nextWall = new Wall(this, nextWall.Position);
         newGrid[nextWall.Position.Y, nextWall.Position.X] = nextWall;
         count++;
         
@@ -580,7 +580,7 @@ public class Map
 
             if (walls.Count is 1 or 2)
             {
-                nextWall = new Wall(GameManager, nextPosition);
+                nextWall = new Wall(this, nextPosition);
                 newGrid[nextWall.Position.Y, nextWall.Position.X] = nextWall;
                 count++;
                 if (walls.Count == 2) break;
@@ -610,16 +610,16 @@ public class Map
                 // EW
                 if (block[0] is Wall && block[1] is EmptySpace && block[2] is EmptySpace && block[3] is Wall)
                 {
-                    if (GameManager.Seed.Next(0, 2) == 0) Grid[y, x + 1] = new Wall(GameManager, new Vector2(x + 1, y));
-                    else Grid[y + 1, x] = new Wall(GameManager, new Vector2(x, y + 1));
+                    if (GameManager.Seed.Next(0, 2) == 0) Grid[y, x + 1] = new Wall(this, new Vector2(x + 1, y));
+                    else Grid[y + 1, x] = new Wall(this, new Vector2(x, y + 1));
                 }
                 
                 // EW
                 // WE
                 if (block[0] is EmptySpace && block[1] is Wall && block[2] is Wall && block[3] is EmptySpace)
                 {
-                    if (GameManager.Seed.Next(0, 2) == 0) Grid[y, x] = new Wall(GameManager, new Vector2(x, y));
-                    else Grid[y + 1, x + 1] = new Wall(GameManager, new Vector2(x + 1, y + 1));
+                    if (GameManager.Seed.Next(0, 2) == 0) Grid[y, x] = new Wall(this, new Vector2(x, y));
+                    else Grid[y + 1, x + 1] = new Wall(this, new Vector2(x + 1, y + 1));
                 }
             }
         }
@@ -673,7 +673,7 @@ public class Map
             {
                 if (Grid[y, x] is EmptySpace space && !selectedRegion.Contains(space))
                 {
-                    Grid[y, x] = new Wall(GameManager, new Vector2(x, y));
+                    Grid[y, x] = new Wall(this, new Vector2(x, y));
                 }
             }
         }

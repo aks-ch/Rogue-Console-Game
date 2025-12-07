@@ -10,11 +10,11 @@ public sealed class EmptySpace : GameObject
     /// <summary>
     /// Initialize an empty space on the map.
     /// </summary>
-    /// <param name="symbol">The symbol to use for the empty space.</param>
+    /// <param name="map">The map this empty space is on.</param>
     /// <param name="position">The position of the empty space on the map.</param>
-    public EmptySpace(char symbol, Vector2 position) : base(position)
+    public EmptySpace(Map map, Vector2 position) : base(map, position)
     {
-        Symbol = symbol;
+        Symbol = map.GameManager.EmptyChar;
         Color = ConsoleColor.DarkGray;
     }
 }
