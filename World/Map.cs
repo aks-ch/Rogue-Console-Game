@@ -75,6 +75,14 @@ public class Map
                 break;
             case Enemy enemy:
                 Player.Attack(enemy);
+                
+                // Check for dead enemy
+                if (enemy.Health <= 0)
+                {
+                    Enemies.Remove(enemy);
+                    Grid[enemy.Position.Y, enemy.Position.X] = new EmptySpace(GameManager.EmptyChar, enemy.Position);
+                }
+                
                 Player.Position = PlayerPosition;
                 break;
             case Hallway { Locked: false } hallway:
