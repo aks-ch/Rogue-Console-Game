@@ -137,37 +137,6 @@ public class Map
     }
 
     /// <summary>
-    /// Spawn the player on this map. Only to use for root spawn.
-    /// </summary>
-    /// <param name="player">The player.</param>
-    public void SpawnPlayerHere(Player player)
-    {
-        if (MapTree.Root != this) return;
-        Player = player;
-        Player.Position = new Vector2(1, MapHeight / 2);
-        PlayerPosition = Player.Position;
-        Grid[Player.Position.Y, Player.Position.X] = Player;
-    }
-
-    /// <summary>
-    /// Move the player to this map.
-    /// </summary>
-    /// <param name="player">The player emerging.</param>
-    /// <param name="hallway">The hallway the player emerges through.</param>
-    /// <returns>True if successful. Else false.</returns>
-    public bool MovePlayerToThisMap(Player player, Hallway hallway)
-    {
-        if (hallway.Map != this) return false;
-        
-        PlayerPosition = hallway.Spawn;
-        Player = player;
-        Player.Map = this;
-        Player.Position = PlayerPosition;
-        Grid[PlayerPosition.Y, PlayerPosition.X] = Player;
-        return true;
-    }
-
-    /// <summary>
     /// Output this map to the console.
     /// </summary>
     public void OutputMap()
@@ -201,6 +170,37 @@ public class Map
         Console.ResetColor();
         
         Outputted = true;
+    }
+
+    /// <summary>
+    /// Spawn the player on this map. Only to use for root spawn.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    public void SpawnPlayerHere(Player player)
+    {
+        if (MapTree.Root != this) return;
+        Player = player;
+        Player.Position = new Vector2(1, MapHeight / 2);
+        PlayerPosition = Player.Position;
+        Grid[Player.Position.Y, Player.Position.X] = Player;
+    }
+
+    /// <summary>
+    /// Move the player to this map.
+    /// </summary>
+    /// <param name="player">The player emerging.</param>
+    /// <param name="hallway">The hallway the player emerges through.</param>
+    /// <returns>True if successful. Else false.</returns>
+    public bool MovePlayerToThisMap(Player player, Hallway hallway)
+    {
+        if (hallway.Map != this) return false;
+        
+        PlayerPosition = hallway.Spawn;
+        Player = player;
+        Player.Map = this;
+        Player.Position = PlayerPosition;
+        Grid[PlayerPosition.Y, PlayerPosition.X] = Player;
+        return true;
     }
 
     /// <summary>
