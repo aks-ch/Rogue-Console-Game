@@ -16,7 +16,9 @@ public class MapTree
     
     public readonly GameManager GameManager;
 
-    private const int WallSegmentFactor = 50;
+    public const int MinDifficulty = 1;
+    public const int MaxDifficulty = 10;
+    public const int WallSegmentFactor = 50;
 
     // Need to add Update()
 
@@ -24,7 +26,7 @@ public class MapTree
     /// Construct a new map tree.
     /// </summary>
     /// <param name="gameManager">The associated game manager.</param>
-    /// <param name="difficulty">The difficulty level of this map tree (1 to 10). 1 is easiest, 10 is hardest.</param>
+    /// <param name="difficulty">The difficulty level of this map tree (this.MinDifficulty to this.MaxDifficulty). Min is easiest, Max is hardest.</param>
     public MapTree(GameManager gameManager, int difficulty)
     {
         Console.CursorVisible = true;
@@ -43,8 +45,8 @@ public class MapTree
 
         Difficulty = difficulty switch
         {
-            < 1 => 1,
-            > 10 => 10,
+            < MinDifficulty => MinDifficulty,
+            > MaxDifficulty => MaxDifficulty,
             _ => difficulty
         };
 
