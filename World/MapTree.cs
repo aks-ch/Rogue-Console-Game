@@ -64,7 +64,7 @@ public class MapTree
     /// <summary>
     /// Switch to a different map.
     /// </summary>
-    /// <param name="hallway"></param>
+    /// <param name="hallway">The hallway the player is entering through.</param>
     /// <returns>Whether the switch was successful.</returns>
     public bool SwitchActiveMap(Hallway hallway)
     {
@@ -72,10 +72,18 @@ public class MapTree
         if (hallway.Map != ActiveMap || hallway.Locked) return false;
 
         // Update map
-        ActiveMap.Player = null;
-        ActiveMap = hallway.DestinationMap;
-        if (ActiveMap == Root) Console.Clear(); // clear console because root map is small
-        return ActiveMap.MovePlayerToThisMap(Player, hallway.DestinationHallway);
+        if (hallway.DestinationMap.MovePlayerToThisMap(Player, hallway.DestinationHallway))
+        {
+            hallway.Used = true;
+            hallway.DestinationHallway.Used = true;
+            
+            ActiveMap.Player = null;
+            ActiveMap = hallway.DestinationMap;
+            if (ActiveMap == Root) Console.Clear(); // clear console because root map is small
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>

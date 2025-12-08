@@ -7,20 +7,10 @@ namespace RogueConsoleGame.World.GameObjects;
 /// </summary>
 public sealed class Hallway : GameObject
 {
-    /// <summary>
-    /// The map this hallway leads to.
-    /// </summary>
     public Map DestinationMap { get; }
-    
-    /// <summary>
-    /// The map this hallway belongs to.
-    /// </summary>
     public Hallway? DestinationHallway { get; set; }
-    
-    /// <summary>
-    /// Whether this hallway's map is parent to the destination map.
-    /// </summary>
     public bool IsParent { get; }
+    public bool Locked => LockIDs.Count > 0;
     
     /// <summary>
     /// Where you will spawn if you emerge through this hallway.
@@ -28,9 +18,9 @@ public sealed class Hallway : GameObject
     public Vector2 Spawn { get; }
     
     /// <summary>
-    /// Whether this hallway is locked.
+    /// Whether the player has gone through this hallway yet.
     /// </summary>
-    public bool Locked => LockIDs.Count > 0 ? true : false;
+    public bool Used { get; set; }
 
     /// <summary>
     /// What IDs are required to unlock this door.
@@ -38,7 +28,7 @@ public sealed class Hallway : GameObject
     private List<string> LockIDs { get; }
     
     public override char Symbol => Locked ? '|' : IsParent ? '>' : '<';
-    public override ConsoleColor Color => Locked ? ConsoleColor.Red : ConsoleColor.Green;
+    public override ConsoleColor Color => Locked ? ConsoleColor.Red : Used ? ConsoleColor.Blue : ConsoleColor.Cyan;
     
     /// <summary>
     /// Creates a new hallway connecting two maps.
