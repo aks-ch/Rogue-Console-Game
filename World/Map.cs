@@ -57,7 +57,8 @@ public class Map
         PreviousOutput = new (char Symbol, ConsoleColor Color)[MapHeight, MapWidth];
         
         // Enemy spawn
-        double difficultyFactor = 1 + Math.Round((double)((Depth * mapTree.Difficulty) / 10), 1);
+        double factor = (double)(Depth * mapTree.Difficulty) / 10;
+        double difficultyFactor = 1 + Math.Round(factor, 1);
         int enemyCount = GameManager.MaxEnemyCount - Depth;
         enemyCount = enemyCount < GameManager.MinEnemyCount ? GameManager.MinEnemyCount : enemyCount;
 
