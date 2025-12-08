@@ -53,7 +53,17 @@ public class Map
         // Generate Previous Output (but leave empty)
         PreviousOutput = new (char Symbol, ConsoleColor Color)[MapHeight, MapWidth];
         
-        // Need to spawn enemies
+        // Enemy spawn
+        double difficultyFactor = 1 + Math.Round((double)((Depth * mapTree.Difficulty) / 10), 1);
+        int enemyCount = GameManager.MaxEnemyCount - Depth;
+        enemyCount = enemyCount < GameManager.MinEnemyCount ? GameManager.MinEnemyCount : enemyCount;
+
+        // Spawn until can't or reached limit
+        while (enemyCount > 0)
+        {
+            if (SpawnEnemy(difficultyFactor) == null) break;
+            enemyCount--;
+        }
     }
 
     /// <summary>
@@ -81,6 +91,7 @@ public class Map
 
                 moved = true;
                 break;
+            
             case Key key:
                 // Attempt unlock
                 MapTree.UnlockHallways(key.KeyID);
@@ -94,6 +105,7 @@ public class Map
 
                 moved = true;
                 break;
+            
             case Enemy enemy:
                 Player.Attack(enemy);
                 
@@ -106,22 +118,32 @@ public class Map
                 
                 Player.Position = PlayerPosition;
                 break;
+            
             case Hallway { Locked: false } hallway:
                 if (MapTree.SwitchActiveMap(hallway))
                 {
                     Outputted = false;
                     return;
                 }
+                
                 Player.Position = PlayerPosition;
                 break;
+            
             default:
                 Player.Position = PlayerPosition;
                 break;
         }
         
         // Enemy movement
-        foreach (var enemy in Enemies)
+        foreach (var enemy in Enemies.ToList())
         {
+            // Check if dead
+            if (enemy.Health <= 0)
+            {
+                Enemies.Remove(enemy);
+                Grid[enemy.Position.Y, enemy.Position.X] = new EmptySpace(this, enemy.Position);
+            }
+            
             var position = enemy.Position;
             enemy.ChooseMove(PlayerPosition);
             switch (Grid[enemy.Position.Y, enemy.Position.X])
@@ -134,10 +156,21 @@ public class Map
                     // Move enemy
                     Grid[enemy.Position.Y, enemy.Position.X] = enemy;
                     break;
+                
+                case Item item:
+                    // Move item
+                    Grid[position.Y, position.X] = item;
+                    item.Position = position;
+            
+                    // Move enemy
+                    Grid[enemy.Position.Y, enemy.Position.X] = enemy;
+                    break;
+                
                 case Player player:
                     enemy.Attack(player);
                     enemy.Position = position;
                     break;
+                
                 default:
                     enemy.Position = position;
                     break;
@@ -151,7 +184,7 @@ public class Map
             foreach (var space in GetConnected<GameObject>(Player, Player.ExploreRange))
             {
                 if (space is Item item) item.Hidden = false;
-                else if (space is EmptySpace empty && !empty.Explored) empty.Explored = true;
+                else if (space is EmptySpace { Explored: false } empty) empty.Explored = true;
             }
         }
         
@@ -212,6 +245,84 @@ public class Map
         Player.Position = new Vector2(1, MapHeight / 2);
         PlayerPosition = Player.Position;
         Grid[Player.Position.Y, Player.Position.X] = Player;
+    }
+
+    /// <summary>
+    /// Spawn an enemy on this map
+    /// </summary>
+    /// <param name="difficultyFactor"></param>
+    /// <param name="minDistance"></param>
+    /// <returns></returns>
+    public Enemy? SpawnEnemy(double difficultyFactor, int minDistance = 10)
+    {
+        difficultyFactor = Math.Abs(difficultyFactor);
+        List<EmptySpace> validEmptySpaces = GetAll<EmptySpace>();
+        
+        // Remove spaces close to parent
+        List<EmptySpace> banned = [];
+        if (Parent != null && Grid[Parent.Spawn.Y, Parent.Spawn.X] is EmptySpace space)
+        {
+            banned = GetConnected(space, minDistance);
+        }
+        
+        foreach (var empty in banned)
+        {
+            validEmptySpaces.Remove(empty);
+        }
+        
+        // Return null if no valid space
+        if (validEmptySpaces.Count == 0) return null;
+        
+        // Select enemy
+        List<EnemyData> allEnemyData = new List<EnemyData>(GameManager.DataInitializer.Enemies);
+        EnemyData? selectedData = null;
+
+        // Root node gets easiest enemies only
+        if (Depth == 0) selectedData = allEnemyData[0];
+        else
+        {
+            // Set up enemy selection
+            int totalPoints = 0;
+            foreach (var enemyData in allEnemyData)
+            {
+                totalPoints += enemyData.Points;
+            }
+        
+            // Select enemy
+            int randomValue = GameManager.Seed.Next(0, totalPoints);
+            foreach (var enemyData in allEnemyData)
+            {
+                // Apply difficulty factor modification
+                if (randomValue < enemyData.Points)
+                {
+                    selectedData = enemyData with
+                    {
+                        MaxHealth = (int)Math.Round(enemyData.MaxHealth * difficultyFactor),
+                        Strength = Math.Round(enemyData.Strength * difficultyFactor, 1)
+                    };
+                    break;
+                }
+
+                randomValue -= enemyData.Points;
+            }
+        
+            // Choose the last one if for some reason none was selected
+            selectedData ??= allEnemyData[^1] with
+            {
+                MaxHealth = (int)Math.Round(allEnemyData[^1].MaxHealth * difficultyFactor),
+                Strength = Math.Round(allEnemyData[^1].Strength * difficultyFactor, 1)
+            };
+        }
+        
+        // Select a space for the enemy
+        EmptySpace selectedSpace = validEmptySpaces[GameManager.Seed.Next(0, validEmptySpaces.Count)];
+        
+        // Place the enemy
+        Enemy enemy = new Enemy(this, selectedSpace.Position, selectedData.Symbol, selectedData.MaxHealth, selectedData.Strength);
+        Grid[enemy.Position.Y, enemy.Position.X] = enemy;
+        Enemies.Add(enemy);
+        
+        return enemy;
     }
 
     /// <summary>
