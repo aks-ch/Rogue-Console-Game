@@ -64,6 +64,8 @@ public class Map
         if (MapTree.ActiveMap != this) return; // Map isn't active
         if (Player == null) throw new NullReferenceException("Player is null");
         
+        bool moved = false;
+        
         // Player movement
         Player.CheckKey();
         switch (Grid[Player.Position.Y, Player.Position.X])
@@ -76,6 +78,8 @@ public class Map
                 // Move Player
                 PlayerPosition = Player.Position;
                 Grid[PlayerPosition.Y, PlayerPosition.X] = Player;
+
+                moved = true;
                 break;
             case Key key:
                 // Attempt unlock
@@ -87,6 +91,8 @@ public class Map
                 // Move Player (removing the key)
                 PlayerPosition = Player.Position;
                 Grid[PlayerPosition.Y, PlayerPosition.X] = Player;
+
+                moved = true;
                 break;
             case Enemy enemy:
                 Player.Attack(enemy);
@@ -138,8 +144,16 @@ public class Map
             }
         }
         
-        // Check Player healing
+        // Check Player healing and exploration
         Player.Heal();
+        if (moved)
+        {
+            foreach (var space in GetConnected<GameObject>(Player, Player.ExploreRange))
+            {
+                if (space is Item item) item.Hidden = false;
+                else if (space is EmptySpace empty && !empty.Explored) empty.Explored = true;
+            }
+        }
         
         // Unlock hallways if all enemies gone
         if (Enemies.Count == 0)

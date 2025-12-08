@@ -7,6 +7,9 @@ namespace RogueConsoleGame.World.GameObjects;
 /// </summary>
 public sealed class EmptySpace : GameObject
 {
+    public override ConsoleColor Color => Explored ? ConsoleColor.Gray : ConsoleColor.DarkGray;
+    public bool Explored { get; set; }
+    
     /// <summary>
     /// Initialize an empty space on the map.
     /// </summary>
@@ -15,6 +18,5 @@ public sealed class EmptySpace : GameObject
     public EmptySpace(Map map, Vector2 position) : base(map, position)
     {
         Symbol = map.GameManager.EmptyChar;
-        Color = ConsoleColor.DarkGray;
     }
 }
