@@ -10,13 +10,13 @@ namespace RogueConsoleGame;
 public class DataInitializer
 {
     public PlayerData Player { get; private set; }
-    public EnemyData[] Enemies { get; private set; }
+    public List<EnemyData> Enemies { get; private set; }
     
-    public string PlayerFilePath { get; } = "./Data/Player.json";
-    public string EnemiesFilePath { get; } = "./Data/Enemies.json";
+    public string PlayerFilePath => "./Data/Player.json";
+    public string EnemiesFilePath => "./Data/Enemies.json";
 
     private readonly PlayerData _defaultPlayerData = new PlayerData('P', 10, 1, 5, 0.2);
-    private readonly EnemyData[] _defaultEnemyData =
+    private readonly List<EnemyData> _defaultEnemyData =
     [
         new EnemyData('S', 3, 0.2, 1),
         new EnemyData('K', 5, 0.5, 2),
@@ -31,32 +31,23 @@ public class DataInitializer
         // Player checked
         try
         {
-            Player = JsonSerializer.Deserialize<PlayerData>(File.ReadAllText(PlayerFilePath)) ?? throw new NullReferenceException();
-            Player = Player with
-            {
-                Strength = Math.Round(Player.Strength, 1),
-                HealFactor = Math.Round(Player.HealFactor, 1)
-            };
+            Player = FetchPlayerData() ?? throw new InvalidOperationException();
         }
         catch
         {
             Console.WriteLine("Invalid Player JSON! Reverting to default.");
-            Player = _defaultPlayerData;
+            Player = _defaultPlayerData with {};
         }
         
         // Enemies checked
         try
         {
-            Enemies = JsonSerializer.Deserialize<EnemyData[]>(File.ReadAllText(EnemiesFilePath)) ?? throw new NullReferenceException();
-            for (int i = 0; i < Enemies.Length; i++)
-            {
-                Enemies[i] = Enemies[i] with { Strength = Math.Round(Enemies[i].Strength, 1) };
-            }
+            Enemies = FetchEnemyData() ?? throw new InvalidOperationException();
         }
         catch
         {
             Console.WriteLine("Invalid Enemies JSON! Reverting to default.");
-            Enemies = _defaultEnemyData;
+            Enemies = [.._defaultEnemyData];
         }
     }
 
@@ -72,12 +63,7 @@ public class DataInitializer
         {
             try
             {
-                Player = JsonSerializer.Deserialize<PlayerData>(File.ReadAllText(PlayerFilePath)) ?? throw new NullReferenceException();
-                Player = Player with
-                {
-                    Strength = Math.Round(Player.Strength, 1),
-                    HealFactor = Math.Round(Player.HealFactor, 1)
-                };
+                Player = FetchPlayerData() ?? throw new InvalidOperationException();
             }
             catch
             {
@@ -90,11 +76,7 @@ public class DataInitializer
         {
             try
             {
-                Enemies = JsonSerializer.Deserialize<EnemyData[]>(File.ReadAllText(EnemiesFilePath)) ?? throw new NullReferenceException();
-                for (int i = 0; i < Enemies.Length; i++)
-                {
-                    Enemies[i] = Enemies[i] with { Strength = Math.Round(Enemies[i].Strength, 1) };
-                }
+                Enemies = FetchEnemyData() ?? throw new InvalidOperationException();
             }
             catch
             {
@@ -110,7 +92,45 @@ public class DataInitializer
     /// <param name="enemyData">Reset enemy data. Default: true</param>
     public void ResetToDefault(bool playerData = true, bool enemyData = true)
     {
-        if (playerData) Player = _defaultPlayerData;
-        if (enemyData) Enemies = _defaultEnemyData;
+        if (playerData) Player = _defaultPlayerData with {};
+        if (enemyData) Enemies = _defaultEnemyData.Select(enemy => enemy with {}).ToList();
+    }
+
+    private PlayerData? FetchPlayerData()
+    {
+        try
+        {
+            var playerData = JsonSerializer.Deserialize<PlayerData>(File.ReadAllText(PlayerFilePath)) ?? throw new NullReferenceException();
+            return playerData with
+            {
+                Strength = Math.Round(playerData.Strength, 1),
+                HealFactor = Math.Round(playerData.HealFactor, 1)
+            };
+        }
+        catch
+        {
+            return null;
+        }
+    }
+    
+    private List<EnemyData>? FetchEnemyData()
+    {
+        try
+        {
+            var enemiesData = JsonSerializer.Deserialize<List<EnemyData>>(File.ReadAllText(PlayerFilePath)) ?? throw new NullReferenceException();
+            for (int i = 0; i < enemiesData.Count; i++)
+            {
+                enemiesData[i] = enemiesData[i] with { Strength = Math.Round(enemiesData[i].Strength, 1) };
+            }
+            
+            // Sort data
+            enemiesData = enemiesData.OrderBy(x => x.Points).ToList();
+            
+            return enemiesData;
+        }
+        catch
+        {
+            return null;
+        }
     }
 }
