@@ -1,6 +1,5 @@
 using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.Interfaces;
-using RogueConsoleGame.Screens;
 
 namespace RogueConsoleGame.World.GameObjects.Characters;
 

@@ -10,6 +10,7 @@ namespace RogueConsoleGame.World;
 public class MapTree
 {
     public Map Root { get; }
+    public Map LastMap { get; private set; }
     public Map ActiveMap { get; private set; }
     public int Difficulty { get; }
     
@@ -28,7 +29,8 @@ public class MapTree
     /// </summary>
     /// <param name="gameManager">The associated game manager.</param>
     /// <param name="difficulty">The difficulty level of this map tree (this.MinDifficulty to this.MaxDifficulty). Min is easiest, Max is hardest.</param>
-    public MapTree(GameManager gameManager, int difficulty)
+    /// <param name="playerName">The player's name.</param>
+    public MapTree(GameManager gameManager, int difficulty, string playerName)
     {
         Console.CursorVisible = true;
         GameManager = gameManager;
@@ -37,11 +39,8 @@ public class MapTree
         ActiveMap = Root;
         
         // Initialize Player
-        GameManager.ColorConsoleWrite(ConsoleColor.Cyan, "Please enter your name: ");
         DataInitializer data = GameManager.DataInitializer;
-        string? name = Console.ReadLine();
-        name = string.IsNullOrEmpty(name) ? "Player" : name;
-        Player = new Player(ActiveMap, new Vector2(0, 0), name, data.Player.Symbol, data.Player.MaxHealth, data.Player.Strength);
+        Player = new Player(ActiveMap, new Vector2(0, 0), playerName, data.Player.Symbol, data.Player.MaxHealth, data.Player.Strength);
         ActiveMap.SpawnPlayerHere(Player);
 
         Difficulty = difficulty switch
@@ -57,9 +56,19 @@ public class MapTree
         // Generate locks
         List<Map> validMaps = new List<Map>();
         GenerateLocks(Root, validMaps);
+        LastMap = validMaps[^1];
         
         // Clear the console of any input
         Console.Clear();
+    }
+
+    /// <summary>
+    /// Update this map tree.
+    /// </summary>
+    public void Update()
+    {
+        ActiveMap.OutputMap();
+        ActiveMap.Update();
     }
 
     /// <summary>

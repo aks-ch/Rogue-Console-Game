@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using RogueConsoleGame.DataTypes;
-using RogueConsoleGame.World.GameObjects.Characters;
 
 namespace RogueConsoleGame;
 

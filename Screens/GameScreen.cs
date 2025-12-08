@@ -1,8 +1,6 @@
-﻿using RogueConsoleGame.DataTypes;
-using RogueConsoleGame.Enums;
+﻿using RogueConsoleGame.Enums;
 using RogueConsoleGame.Interfaces;
 using RogueConsoleGame.World;
-using RogueConsoleGame.World.GameObjects.Characters;
 
 namespace RogueConsoleGame.Screens;
 
@@ -15,24 +13,27 @@ public class GameScreen(GameManager gameManager) : IScreen
     // Execute the screen
     public void Draw()
     {
-        // To be modified
         if (MapTree == null)
         {
-            MapTree = new MapTree(GameManager, 1);
+            // Get player name
+            GameManager.ColorConsoleWrite(ConsoleColor.Cyan, "Please enter your name: ");
+            string? name = Console.ReadLine();
+            name = string.IsNullOrEmpty(name) ? "Player" : name;
+            
+            MapTree = new MapTree(GameManager, 1, name);
             return;
         }
         
-        MapTree.ActiveMap.OutputMap();
-        MapTree.ActiveMap.Update();
-        
-        // Checking Victory/Defeat
+        // Check for victory/defeat
         if (MapTree.Player.Health <= 0)
         {
             Clear();
             GameManager.CurrentGameState = GameState.Defeat;
-            return;
         }
-        // Need to add Victory or move this elsewhere
+        // missing victory
+        
+        // Continue if no change
+        MapTree.Update();
     }
 
     /// <summary>
