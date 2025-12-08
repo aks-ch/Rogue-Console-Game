@@ -120,6 +120,10 @@ public class MapTree
             }
         }
         
+        // Generate locks
+        List<Map> validMaps = new List<Map>();
+        GenerateLocks(Root, validMaps);
+        
         // Clear the console of any input
         Console.Clear();
     }
@@ -159,6 +163,37 @@ public class MapTree
         {
             if (child.Locked) child.UnlockLock(keyID);
             UnlockHallways(child.DestinationMap, keyID);
+        }
+    }
+
+    /// <summary>
+    /// Use tree traversal to generate locks on hallways recursively.
+    /// </summary>
+    private void GenerateLocks(Map currentMap, List<Map> validMaps)
+    {
+        foreach (var child in currentMap.Children)
+        {
+            // Decide whether to lock the hallway with a key or not
+            if (validMaps.Count > 0 && GameManager.Seed.Next(0, MaxDifficulty * 2) < (MaxDifficulty - 1) + Difficulty)
+            {
+                // Make a new ID
+                string id = child.GetHashCode().ToString();
+                
+                // Iterate locking until successful or out of available maps
+                List<Map> availableMaps = new List<Map>(validMaps);
+                Map selectedMap;
+                do
+                {
+                    // Select a map from validMaps to place the key in
+                    selectedMap = availableMaps[GameManager.Seed.Next(0, availableMaps.Count)];
+                    availableMaps.Remove(selectedMap);
+                    
+                } while (!selectedMap.AddKey(id, true, child) && availableMaps.Count > 0);
+            }
+            
+            // Continue the recursive call
+            validMaps.Add(child.DestinationMap);
+            GenerateLocks(child.DestinationMap, validMaps);
         }
     }
 }
