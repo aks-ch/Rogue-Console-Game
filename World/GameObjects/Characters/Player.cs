@@ -1,5 +1,4 @@
 ﻿using RogueConsoleGame.DataTypes;
-using RogueConsoleGame.Screens;
 
 namespace RogueConsoleGame.World.GameObjects.Characters;
 
@@ -11,13 +10,22 @@ public class Player : Character
     public string Name;
     
     public bool IsHealing;
-    public int ExploreRange { get; private set; } = 4;
+    public int ExploreRange { get; private set; } = 3;
     
     private bool _interacted;
     private int _healCooldown;
     private readonly int _healCooldownMax;
     private readonly double _healFactor;
-    
+
+    public override ConsoleColor Color =>
+        Health == MaxHealth
+            ? ConsoleColor.DarkCyan
+            : IsHealing
+                ? ConsoleColor.DarkYellow
+                : Health > MaxHealth / 4
+                    ? ConsoleColor.Green
+                    : ConsoleColor.Red;
+
     public Player(Map map, string name, char symbol, int maxHealth, double strength) : base(map, symbol,
         maxHealth, strength)
     {
