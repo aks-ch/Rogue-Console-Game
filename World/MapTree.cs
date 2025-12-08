@@ -49,76 +49,9 @@ public class MapTree
             > MaxDifficulty => MaxDifficulty,
             _ => difficulty
         };
-
-        int fails = 0;
-        int mapCount = 5 + (Difficulty * 2);
-        const int maxRandomDepth = 4;
-        const int maxActualDepth = 7;
-        const int maxChildren = 4;
-        const int maxFails = 20;
-
+        
         // Generate all maps
-        while (mapCount > 0 && fails < maxFails)
-        {
-            var parent = Root;
-            var children = parent.Children;
-            var depth = 0;
-            
-            // Select a node which will get a new child map
-            while (depth < maxRandomDepth)
-            {
-                // Closer to root = more children
-                if (children.Count == 0 ||
-                    (children.Count < maxChildren - depth &&
-                     GameManager.Seed.Next(0, maxRandomDepth * (maxChildren - depth)) > depth * children.Count))
-                {
-                    break;
-                }
-                
-                // Go deeper
-                depth++;
-                parent = children[GameManager.Seed.Next(0, children.Count)].DestinationMap;
-                children = parent.Children;
-            }
-
-            // At maxDepth and deeper, only 1 child allowed
-            if (depth == maxRandomDepth)
-            {
-                while (children.Count > 0 && depth < maxActualDepth)
-                {
-                    depth++;
-                    parent = children[GameManager.Seed.Next(0, children.Count)].DestinationMap;
-                    children = parent.Children;
-                }
-
-                if (depth == maxActualDepth && children.Count > 0)
-                {
-                    fails++;
-                    continue;
-                }
-            }
-            
-            // Create the new map
-            Map newMap = new Map(this, GameManager.MaxGameHeight, GameManager.MaxGameWidth, depth + 1, (depth + 1) * WallSegmentFactor);
-            
-            // Create and connect hallways
-            try
-            {
-                Hallway childHallway = newMap.CreateHallway(parent, false) ?? throw new InvalidOperationException();
-                Hallway parentHallway = parent.CreateHallway(newMap, true) ?? throw new InvalidOperationException();
-
-                if (!newMap.ConnectHallway(childHallway, parentHallway) ||
-                    !parent.ConnectHallway(parentHallway, childHallway))
-                    throw new Exception("Hallway connection failed!");
-
-                // Continue on success
-                mapCount--;
-            }
-            catch (InvalidOperationException)
-            {
-                fails++;
-            }
-        }
+        GenerateAllMaps();
         
         // Generate locks
         List<Map> validMaps = new List<Map>();
@@ -194,6 +127,81 @@ public class MapTree
             // Continue the recursive call
             validMaps.Add(child.DestinationMap);
             GenerateLocks(child.DestinationMap, validMaps);
+        }
+    }
+
+    /// <summary>
+    /// Generate all maps for this tree.
+    /// </summary>
+    private void GenerateAllMaps()
+    {
+        int fails = 0;
+        int mapCount = 5 + (Difficulty * 2);
+        const int maxRandomDepth = 4;
+        const int maxActualDepth = 7;
+        const int maxChildren = 4;
+        const int maxFails = 20;
+        
+        while (mapCount > 0 && fails < maxFails)
+        {
+            Map parent = Root;
+            List<Hallway> children = parent.Children;
+            int depth = 0;
+            
+            // Select a node which will get a new child map
+            while (depth < maxRandomDepth)
+            {
+                // Closer to root = more children
+                if (children.Count == 0 ||
+                    (children.Count < maxChildren - depth &&
+                     GameManager.Seed.Next(0, maxRandomDepth * (maxChildren - depth)) > depth * children.Count))
+                {
+                    break;
+                }
+                
+                // Go deeper
+                depth++;
+                parent = children[GameManager.Seed.Next(0, children.Count)].DestinationMap;
+                children = parent.Children;
+            }
+
+            // At maxDepth and deeper, only 1 child allowed
+            if (depth == maxRandomDepth)
+            {
+                while (children.Count > 0 && depth < maxActualDepth)
+                {
+                    depth++;
+                    parent = children[GameManager.Seed.Next(0, children.Count)].DestinationMap;
+                    children = parent.Children;
+                }
+
+                if (depth == maxActualDepth && children.Count > 0)
+                {
+                    fails++;
+                    continue;
+                }
+            }
+            
+            // Create the new map
+            Map newMap = new Map(this, GameManager.MaxGameHeight, GameManager.MaxGameWidth, depth + 1, (depth + 1) * WallSegmentFactor);
+            
+            // Create and connect hallways
+            try
+            {
+                Hallway childHallway = newMap.CreateHallway(parent, false) ?? throw new InvalidOperationException();
+                Hallway parentHallway = parent.CreateHallway(newMap, true) ?? throw new InvalidOperationException();
+
+                if (!newMap.ConnectHallway(childHallway, parentHallway) ||
+                    !parent.ConnectHallway(parentHallway, childHallway))
+                    throw new Exception("Hallway connection failed!");
+
+                // Continue on success
+                mapCount--;
+            }
+            catch (InvalidOperationException)
+            {
+                fails++;
+            }
         }
     }
 }
