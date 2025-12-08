@@ -18,8 +18,8 @@ public class DataInitializer
     private readonly PlayerData _defaultPlayerData = new PlayerData('P', 10, 1, 5, 0.2);
     private readonly List<EnemyData> _defaultEnemyData =
     [
-        new EnemyData('S', 3, 0.2, 1),
-        new EnemyData('K', 5, 0.5, 2),
+        new EnemyData('S', 3, 0.2, 2),
+        new EnemyData('K', 5, 0.5, 3),
         new EnemyData('Q', 8, 1, 4),
     ];
     
