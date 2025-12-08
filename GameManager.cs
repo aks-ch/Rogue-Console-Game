@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.Enums;
@@ -152,7 +153,7 @@ public class GameManager
     /// </summary>
     /// <param name="color">The ConsoleColor you wish to use with your output.</param>
     /// <param name="text">The output.</param>
-    public static void ColorConsoleWrite(ConsoleColor color, char text)
+    public static void ColorConsoleWrite(ConsoleColor color, StringBuilder text)
     {
         Console.ForegroundColor = color;
         Console.Write(text);

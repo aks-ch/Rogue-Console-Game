@@ -15,6 +15,7 @@ public class MenuScreen(GameManager gameManager) : IScreen
     {
         // Basic information
         GameManager.ColorConsoleWriteLine(ConsoleColor.Magenta, "Welcome to RogueConsoleGame!");
+        GameManager.ColorConsoleWriteLine(ConsoleColor.DarkGray, "Please increase the window size if you haven't already to avoid rendering issues.\n");
         string menuLine1 = "Please choose one of the listed options by entering the corresponding number:";
         string menuLine2 = "\t1. Start a new game with random settings.";
         string menuLine3 = "\t2. Start a new game with custom settings.";

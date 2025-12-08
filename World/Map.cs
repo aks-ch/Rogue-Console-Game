@@ -1,4 +1,5 @@
-﻿using RogueConsoleGame.DataTypes;
+﻿using System.Text;
+using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.World.GameObjects;
 using RogueConsoleGame.World.GameObjects.Characters;
 using RogueConsoleGame.World.GameObjects.Items;
@@ -28,6 +29,8 @@ public class Map
     
     public readonly MapTree MapTree;
     public readonly GameManager GameManager;
+
+    private int _enemyDied;
     
     /// <summary>
     /// Used to create maps for the game world.
@@ -114,6 +117,7 @@ public class Map
                 {
                     Enemies.Remove(enemy);
                     Grid[enemy.Position.Y, enemy.Position.X] = new EmptySpace(this, enemy.Position);
+                    _enemyDied++;
                 }
                 
                 Player.Position = PlayerPosition;
@@ -137,13 +141,6 @@ public class Map
         // Enemy movement
         foreach (var enemy in Enemies.ToList())
         {
-            // Check if dead
-            if (enemy.Health <= 0)
-            {
-                Enemies.Remove(enemy);
-                Grid[enemy.Position.Y, enemy.Position.X] = new EmptySpace(this, enemy.Position);
-            }
-            
             var position = enemy.Position;
             enemy.ChooseMove(PlayerPosition);
             switch (Grid[enemy.Position.Y, enemy.Position.X])
@@ -228,8 +225,28 @@ public class Map
         }
         
         // Reset console
-        Console.SetCursorPosition(0, MapHeight + 2);
+        Console.SetCursorPosition(0, MapHeight + 3);
         Console.ResetColor();
+        
+        // Player information
+        GameManager.ColorConsoleWriteLine(Player?.Color ?? ConsoleColor.White, $"{Player?.Name} (Strength {Player?.Strength}): {Player?.Health}/{Player?.MaxHealth}          ");
+        
+        // Enemy information
+        StringBuilder enemyInfo = new StringBuilder();
+        foreach (var enemy in Enemies)
+        {
+            enemyInfo.AppendLine($"Enemy {enemy?.Symbol} (Strength {enemy?.Strength}): {enemy?.Health}/{enemy?.MaxHealth}          ");
+        }
+        
+        // Output enemy info
+        GameManager.ColorConsoleWrite(ConsoleColor.Red, enemyInfo);
+        
+        // Dead enemies
+        while (_enemyDied > 0)
+        {
+            Console.WriteLine(new string(' ', Console.BufferWidth));
+            _enemyDied--;
+        }
         
         Outputted = true;
     }

@@ -80,7 +80,7 @@ public class MapTree
             
             ActiveMap.Player = null;
             ActiveMap = hallway.DestinationMap;
-            if (ActiveMap == Root) Console.Clear(); // clear console because root map is small
+            Console.Clear(); // clear console
             return true;
         }
 
