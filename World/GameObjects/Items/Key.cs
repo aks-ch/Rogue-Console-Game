@@ -4,7 +4,7 @@ namespace RogueConsoleGame.World.GameObjects.Items;
 
 public class Key(Map map, Vector2 position, bool hidden, string keyID) : Item(map, position, hidden)
 {
-    public override char Symbol { get => Hidden ? map.GameManager.EmptyChar : KeySymbol; protected set => KeySymbol = value; }
+    public override char Symbol { get => Hidden ? Map.GameManager.EmptyChar : KeySymbol; protected set => KeySymbol = value; }
     public override ConsoleColor Color { get => Hidden ? ConsoleColor.DarkGray : KeyColor; set => KeyColor = value; }
     
     private char KeySymbol { get; set; } = '!';
