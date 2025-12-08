@@ -7,7 +7,7 @@ namespace RogueConsoleGame.World.GameObjects;
 /// </summary>
 public sealed class EmptySpace : GameObject
 {
-    public override ConsoleColor Color => Explored ? ConsoleColor.Gray : ConsoleColor.DarkGray;
+    public override ConsoleColor Color => Explored ? ConsoleColor.DarkGray : ConsoleColor.Gray;
     public bool Explored { get; set; }
     
     /// <summary>
