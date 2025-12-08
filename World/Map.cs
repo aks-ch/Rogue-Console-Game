@@ -245,13 +245,10 @@ public class Map
             // Get empty spaces near hallways
             foreach (var aHallway in allHallways)
             {
-                if (Grid[aHallway.Position.Y, aHallway.Position.X] is EmptySpace space) banned.AddRange(GetConnected(space, i));
+                if (Grid[aHallway.Spawn.Y, aHallway.Spawn.X] is EmptySpace space) banned.AddRange(GetConnected(space, i));
             }
             
-            foreach (var space in banned)
-            {
-                validEmptySpaces.Remove(space);
-            }
+            validEmptySpaces.RemoveAll(space => banned.Contains(space));
             
             // Select a valid empty space if any
             if (validEmptySpaces.Count > 0)
