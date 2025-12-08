@@ -158,7 +158,7 @@ public class MapTree
         foreach (var child in map.Children)
         {
             if (child.Locked) child.UnlockLock(keyID);
-            UnlockHallways(child.Map, keyID);
+            UnlockHallways(child.DestinationMap, keyID);
         }
     }
 }
