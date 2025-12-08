@@ -11,7 +11,7 @@ public class Player : Character
     public string Name;
     
     public bool IsHealing;
-    public int ExploreRange { get; private set; } = 5;
+    public int ExploreRange { get; private set; } = 4;
     
     private bool _interacted;
     private int _healCooldown;
