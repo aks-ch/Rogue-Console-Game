@@ -40,10 +40,8 @@ public class Player : Character
     /// </summary>
     public void CheckKey()
     {
-        bool waitingForKey = true;
-
         // Don't exit until a key that was processed by the player is entered
-        while (waitingForKey)
+        while (true)
         {
             if (!Console.KeyAvailable) continue;
             
@@ -69,7 +67,7 @@ public class Player : Character
             if (newPosition == Position) continue;
             
             Position = newPosition;
-            waitingForKey = false;
+            break;
         }
     }
 
