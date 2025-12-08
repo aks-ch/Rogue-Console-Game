@@ -23,10 +23,10 @@ public class Player : Character
             : IsHealing
                 ? ConsoleColor.DarkYellow
                 : Health > MaxHealth / 4
-                    ? ConsoleColor.Green
-                    : ConsoleColor.Red;
+                    ? ConsoleColor.DarkGreen
+                    : ConsoleColor.DarkRed;
 
-    public Player(Map map, string name, char symbol, int maxHealth, double strength) : base(map, symbol,
+    public Player(Map map, Vector2 position, string name, char symbol, int maxHealth, double strength) : base(map, position, symbol,
         maxHealth, strength)
     {
         Name = name;

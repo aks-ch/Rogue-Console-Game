@@ -19,7 +19,7 @@ public abstract class Character : GameObject, IDamageable, IAttacker
     /// <param name="symbol">The symbol this character is represented as on the board.</param>
     /// <param name="maxHealth">The maximum health of the character.</param>
     /// <param name="strength">The strength of the character.</param>
-    public Character(Map map, char symbol, int maxHealth, double strength) : base(map, new Vector2(0, 0))
+    public Character(Map map, Vector2 position, char symbol, int maxHealth, double strength) : base(map, position)
     {
         Symbol = symbol;
         Health = maxHealth;
@@ -27,7 +27,6 @@ public abstract class Character : GameObject, IDamageable, IAttacker
         Strength = strength;
         
         GameManager = map.GameManager;
-        RandomizePosition();
     }
     
     // Take Damage
@@ -40,32 +39,5 @@ public abstract class Character : GameObject, IDamageable, IAttacker
     public void Attack(IDamageable damageable)
     {
         damageable.TakeDamage(Strength);
-    }
-
-    /// <summary>
-    /// Randomize the position of the character accounting for positions not allowed.
-    /// </summary>
-    /// <param name="bannedPositions">Any banned positions to pass by default.</param>
-    protected void RandomizePosition(List<EmptySpace>? bannedPositions = null)
-    {
-        List<EmptySpace> possiblePositions = Map.GetAll<EmptySpace>();
-
-        // Restrict positions near parent hallway spawn
-        if (Map.Parent != null && Map.Grid[Map.Parent.Spawn.Y, Map.Parent.Spawn.X] is EmptySpace space)
-        {
-            var notAllowed = Map.GetConnected(space, 5);
-            
-            if (bannedPositions == null) bannedPositions = notAllowed;
-            else bannedPositions.AddRange(notAllowed);
-        }
-
-        // Remove banned positions
-        if (bannedPositions is { Count: > 0 })
-        {
-            foreach (var bannedPosition in bannedPositions) possiblePositions.Remove(bannedPosition);
-        }
-
-        // Select random position
-        Position = possiblePositions[GameManager.Seed.Next(0, possiblePositions.Count)].Position;
     }
 }

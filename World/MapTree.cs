@@ -1,4 +1,5 @@
-﻿using RogueConsoleGame.World.GameObjects;
+﻿using RogueConsoleGame.DataTypes;
+using RogueConsoleGame.World.GameObjects;
 using RogueConsoleGame.World.GameObjects.Characters;
 
 namespace RogueConsoleGame.World;
@@ -40,7 +41,7 @@ public class MapTree
         DataInitializer data = GameManager.DataInitializer;
         string? name = Console.ReadLine();
         name = string.IsNullOrEmpty(name) ? "Player" : name;
-        Player = new Player(ActiveMap, name, data.Player.Symbol, data.Player.MaxHealth, data.Player.Strength);
+        Player = new Player(ActiveMap, new Vector2(0, 0), name, data.Player.Symbol, data.Player.MaxHealth, data.Player.Strength);
         ActiveMap.SpawnPlayerHere(Player);
 
         Difficulty = difficulty switch

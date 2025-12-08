@@ -3,8 +3,8 @@ using RogueConsoleGame.Enums;
 
 namespace RogueConsoleGame.World.GameObjects.Characters;
 
-public class Enemy(Map map, char symbol, int maxHealth, double strength)
-    : Character(map, symbol, maxHealth, strength)
+public class Enemy(Map map, Vector2 position, char symbol, int maxHealth, double strength)
+    : Character(map, position, symbol, maxHealth, strength)
 {
     /// <summary>
     /// Make the enemy move towards a target location. (NEED TO MODIFY!)
