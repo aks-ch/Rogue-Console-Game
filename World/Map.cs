@@ -538,7 +538,7 @@ public class Map
         
         // Search definition
         List<T> connected = new List<T>();
-        Queue<(int Depth, T Node)> toSearch = new Queue<(int Depth, T Node)>();
+        Queue<(int Depth, T Node)> toSearch = new Queue<(int, T)>();
         toSearch.Enqueue((0, start));
         
         // Begin Search
