@@ -7,6 +7,10 @@ namespace RogueConsoleGame.World.GameObjects.Characters;
 public class Enemy(Map map, Vector2 position, char symbol, int maxHealth, double strength)
     : Character(map, position, symbol, maxHealth, strength)
 {
+    /// <summary>
+    /// Whether the enemy should move next tick. Note: External purposes only.
+    /// </summary>
+    public bool ShouldMove { get; set; }
     
     private Queue<Vector2>? CurrentPath { get; set; }
     private Vector2? CurrentTarget { get; set; }
@@ -83,15 +87,13 @@ public class Enemy(Map map, Vector2 position, char symbol, int maxHealth, double
             Node current = possibleNodes.Dequeue();
             
             // Already evaluated
-            if (evaluated.Contains(current.Position)) continue;
+            if (!evaluated.Add(current.Position)) continue;
             
             // Path found
             if (current.Position == target)
             {
                 return RetracePath(current);
             }
-            
-            evaluated.Add(current.Position);
             
             // Get all neighbours
             if (Map.GetAdjacentCount(current.Position, Map.Grid, out List<GameObject> adjacent) == 0) continue;

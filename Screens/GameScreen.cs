@@ -24,13 +24,13 @@ public class GameScreen(GameManager gameManager) : IScreen
             return;
         }
         
-        // Check for victory/defeat
+        // Check for defeat
         if (MapTree.Player.Health <= 0)
         {
             Clear();
             GameManager.CurrentGameState = GameState.Defeat;
+            return;
         }
-        // missing victory
         
         // Continue if no change
         MapTree.Update();

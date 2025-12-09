@@ -11,6 +11,7 @@ public class Player : Character
     
     public bool IsHealing;
     public int ExploreRange { get; private set; } = 3;
+    public int AttractRange { get; private set; } = 10;
     
     private bool _interacted;
     private int _healCooldown;
@@ -68,6 +69,39 @@ public class Player : Character
             
             Position = newPosition;
             break;
+        }
+    }
+
+    /// <summary>
+    /// Attract enemies in a range.
+    /// </summary>
+    public void Attract()
+    {
+        Queue<(int Distance, Vector2 Position)> toSearch = [];
+        HashSet<Vector2> searched = [];
+        
+        toSearch.Enqueue((0, Position));
+
+        while (toSearch.Count > 0)
+        {
+            var next = toSearch.Dequeue();
+            
+            // Already searched
+            if (!searched.Add(next.Position)) continue;
+
+            if (next.Distance >= AttractRange) continue;
+            
+            Map.GetAdjacentCount(next.Position, Map.Grid, out List<GameObject> adjacent);
+            foreach (var space in adjacent)
+            {
+                if (space is Wall or Hallway) continue;
+                if (space is Enemy enemy) enemy.ShouldMove = true;
+                
+                if (next.Distance < AttractRange && !searched.Contains(space.Position))
+                {
+                    toSearch.Enqueue((next.Distance + 1, space.Position));
+                }
+            }
         }
     }
 

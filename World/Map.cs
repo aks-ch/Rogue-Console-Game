@@ -113,14 +113,6 @@ public class Map
             case Enemy enemy:
                 Player.Attack(enemy);
                 
-                // Check for dead enemy
-                if (enemy.Health <= 0)
-                {
-                    Enemies.Remove(enemy);
-                    Grid[enemy.Position.Y, enemy.Position.X] = new EmptySpace(this, enemy.Position);
-                    _enemyDied++;
-                }
-                
                 Player.Position = PlayerPosition;
                 break;
             
@@ -139,9 +131,23 @@ public class Map
                 break;
         }
         
+        Player.Attract();
+        
         // Enemy movement
         foreach (var enemy in Enemies.ToList())
         {
+            // Check for dead enemy
+            if (enemy.Health <= 0)
+            {
+                Enemies.Remove(enemy);
+                Grid[enemy.Position.Y, enemy.Position.X] = new EmptySpace(this, enemy.Position);
+                _enemyDied++;
+                continue;
+            }
+            
+            if (!enemy.ShouldMove) continue;
+            enemy.ShouldMove = false;
+            
             var position = enemy.Position;
             enemy.ChooseMove(PlayerPosition);
             switch (Grid[enemy.Position.Y, enemy.Position.X])
@@ -538,6 +544,7 @@ public class Map
         
         // Search definition
         List<T> connected = new List<T>();
+        HashSet<Vector2> searched = [];
         Queue<(int Depth, T Node)> toSearch = new Queue<(int, T)>();
         toSearch.Enqueue((0, start));
         
@@ -546,19 +553,17 @@ public class Map
         {
             var next = toSearch.Dequeue();
             
+            if (!searched.Add(next.Node.Position)) continue;
             connected.Add(next.Node);
-            GetAdjacentCount<T>(next.Node.Position, Grid, out List<T> spaces);
 
+            if (maxDistance > 0 && next.Depth >= maxDistance) continue;
+            
+            GetAdjacentCount<T>(next.Node.Position, Grid, out List<T> spaces);
             foreach (T space in spaces)
             {
-                // Check for depth and if the space has already been considered
-                if ((maxDistance <= 0 || next.Depth < maxDistance) &&
-                    !connected.Contains(space) &&
-                    toSearch.All(item => item.Node != space))
-                {
-                    toSearch.Enqueue((next.Depth + 1, space));
-                }
+                if (!searched.Contains(space.Position)) toSearch.Enqueue((next.Depth + 1, space));
             }
+
         }
         
         // Return all the spaces in the region
