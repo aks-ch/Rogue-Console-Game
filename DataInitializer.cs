@@ -125,6 +125,11 @@ public class DataInitializer
             // Sort data
             enemiesData = enemiesData.OrderBy(x => x.Points).ToList();
             
+            foreach (var enemyData in enemiesData)
+            {
+                if (enemyData.Points <= 0) return null;
+            }
+            
             return enemiesData;
         }
         catch
