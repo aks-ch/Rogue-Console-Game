@@ -7,6 +7,8 @@ To unlock a hallway to any given deeper map, you must defeat all enemies on the 
 Some hallways may even require you to collect `Keys` which look like `!` (colored yellow) in game.
 The higher the difficulty, the more the chance of a hallway requiring a key.
 To win the game, you must find and collect the item `%` (colored magenta).
+Items (including keys) are hidden by default and can be discovered through walls in a very small range.
+The empty spaces that have been "scanned" change their color to reflect being scanned.
 
 Arrow keys for movement in game.
 
