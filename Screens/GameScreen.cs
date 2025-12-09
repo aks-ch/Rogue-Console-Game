@@ -20,7 +20,7 @@ public class GameScreen(GameManager gameManager) : IScreen
             string? name = Console.ReadLine();
             name = string.IsNullOrEmpty(name) ? "Player" : name;
             
-            MapTree = new MapTree(GameManager, 1, name);
+            MapTree = new MapTree(GameManager, GameManager.Difficulty, name);
             return;
         }
         

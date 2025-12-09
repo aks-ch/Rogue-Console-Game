@@ -18,6 +18,7 @@ public class GameManager
     public char[] WallChars { get; } = ['╬', '║', '║', '║', '═', '╚', '╔', '╠', '═', '╝', '╗', '╣', '═', '╩', '╦', '╬'];
 
     public Random Seed = new Random();
+    public int Difficulty { get; set; }
 
     public int MinGameWidth { get; }
     public int MaxGameWidth { get; }

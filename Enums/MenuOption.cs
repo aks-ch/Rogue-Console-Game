@@ -3,7 +3,6 @@
 public enum MenuOption
 {
     None,
-    Random,
-    Custom,
+    Start,
     Exit
 }
