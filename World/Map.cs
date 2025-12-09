@@ -110,6 +110,19 @@ public class Map
                 moved = true;
                 break;
             
+            case WinItem item:
+                item.Update();
+                
+                // Add empty space behind player
+                Grid[PlayerPosition.Y, PlayerPosition.X] = new EmptySpace(this, PlayerPosition);
+                
+                // Move Player
+                PlayerPosition = Player.Position;
+                Grid[PlayerPosition.Y, PlayerPosition.X] = Player;
+
+                moved = true;
+                break;
+            
             case Enemy enemy:
                 Player.Attack(enemy);
                 
@@ -382,11 +395,27 @@ public class Map
         // Check if lock can even be applied to hallway
         if (!hallway.AddLock(keyID)) return false;
 
+        // Attempt place
+        if (!AddItem(new Key(this, new Vector2(0, 0), hidden, keyID)))
+        {
+            hallway.UnlockLock(keyID);
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to add an item to this map.
+    /// </summary>
+    /// <returns>True if succeeded, else false.</returns>
+    public bool AddItem(Item item)
+    {
         List<EmptySpace> allEmptySpaces = GetAll<EmptySpace>();
         List<EmptySpace> validEmptySpaces = new List<EmptySpace>();
         List<Hallway> allHallways = new List<Hallway>(Children);
 
-        for (int i = 15; i > 5; i--)
+        for (int i = 20; i > 5; i--)
         {
             validEmptySpaces.AddRange(allEmptySpaces);
             List<EmptySpace> banned = new List<EmptySpace>();
@@ -397,19 +426,20 @@ public class Map
                 if (Grid[aHallway.Spawn.Y, aHallway.Spawn.X] is EmptySpace space) banned.AddRange(GetConnected(space, i));
             }
             
+            banned = banned.Distinct().ToList();
             validEmptySpaces.RemoveAll(space => banned.Contains(space));
             
             // Select a valid empty space if any
             if (validEmptySpaces.Count > 0)
             {
                 EmptySpace selected = validEmptySpaces[GameManager.Seed.Next(0, validEmptySpaces.Count)];
-                Grid[selected.Position.Y, selected.Position.X] = new Key(this, selected.Position, hidden, keyID);
+                Grid[selected.Position.Y, selected.Position.X] = item;
+                item.Position = selected.Position;
                 return true;
             }
         }
         
-        // Remove lock if failed and return
-        hallway.UnlockLock(keyID);
+        // Failed
         return false;
     }
 

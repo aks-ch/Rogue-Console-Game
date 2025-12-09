@@ -16,24 +16,36 @@ public class GameScreen(GameManager gameManager) : IScreen
         if (MapTree == null)
         {
             // Get player name
+            Console.CursorVisible = true;
             GameManager.ColorConsoleWrite(ConsoleColor.Cyan, "Please enter your name: ");
             string? name = Console.ReadLine();
             name = string.IsNullOrEmpty(name) ? "Player" : name;
             
             MapTree = new MapTree(GameManager, GameManager.Difficulty, name);
-            return;
-        }
-        
-        // Check for defeat
-        if (MapTree.Player.Health <= 0)
-        {
-            Clear();
-            GameManager.CurrentGameState = GameState.Defeat;
+            
+            if (MapTree.Failed)
+            {
+                Clear();
+                GameManager.CurrentGameState = GameState.Menu;
+            }
+            
             return;
         }
         
         // Continue if no change
         MapTree.Update();
+        
+        // Check for victory/defeat
+        if (MapTree.Victory)
+        {
+            Clear();
+            GameManager.CurrentGameState = GameState.Victory;
+        }
+        else if (MapTree.Player.Health <= 0)
+        {
+            Clear();
+            GameManager.CurrentGameState = GameState.Defeat;
+        }
     }
 
     /// <summary>

@@ -1,6 +1,7 @@
 ﻿using RogueConsoleGame.DataTypes;
 using RogueConsoleGame.World.GameObjects;
 using RogueConsoleGame.World.GameObjects.Characters;
+using RogueConsoleGame.World.GameObjects.Items;
 
 namespace RogueConsoleGame.World;
 
@@ -9,6 +10,9 @@ namespace RogueConsoleGame.World;
 /// </summary>
 public class MapTree
 {
+    public bool Failed { get; }
+    public bool Victory { get; set; }
+    
     public Map Root { get; }
     public Map LastMap { get; private set; }
     public Map ActiveMap { get; private set; }
@@ -56,7 +60,23 @@ public class MapTree
         // Generate locks
         List<Map> validMaps = new List<Map>();
         GenerateLocks(Root, validMaps);
-        LastMap = validMaps[^1];
+        
+        // Attempt adding win item to last maps in order
+        bool success = false;
+        for (int i = 1; i <= validMaps.Count; i++)
+        {
+            LastMap = validMaps[^i];
+            success = LastMap.AddItem(new WinItem(LastMap, new Vector2(0, 0), true));
+            if (success) break;
+        }
+
+        // Should not happen (win item couldn't be placed)
+        if (!success)
+        {
+            Console.WriteLine("Map generation with this seed failed! Please try a new seed. Press any key to continue...");
+            Console.ReadKey();
+            Failed = true;
+        }
         
         // Clear the console of any input
         Console.Clear();
