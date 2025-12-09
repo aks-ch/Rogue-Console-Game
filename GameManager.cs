@@ -116,13 +116,19 @@ public class GameManager
         Console.WriteLine();
         ColorConsoleWriteLine(ConsoleColor. Cyan, "Use arrow keys to move the player.");
         ColorConsoleWriteLine(ConsoleColor. Cyan, "Moving into an enemy attacks the enemy. If an enemy tries to move into the player, it attacks the player.");
-        Console.WriteLine("Initialized Player stats:");
+        Console.Write("Collect keys (");
+        ColorConsoleWrite(ConsoleColor.Yellow, "!");
+        Console.WriteLine(") to unlock hallways not unlocked by defeating enemies.");
+        Console.Write("Collect (");
+        ColorConsoleWrite(ConsoleColor.Magenta, "%");
+        Console.WriteLine(") to win the game.\n");
+        Console.WriteLine("Initialized player stats:");
         ColorConsoleWriteLine(ConsoleColor.Green, $"- Symbol    : {gameManager.DataInitializer.Player.Symbol}");
         ColorConsoleWriteLine(ConsoleColor.Green, $"- MaxHealth : {gameManager.DataInitializer.Player.MaxHealth}");
         ColorConsoleWriteLine(ConsoleColor.Green, $"- Strength  : {gameManager.DataInitializer.Player.Strength}");
         ColorConsoleWriteLine(ConsoleColor.Green, $"- Heal Cooldown : {gameManager.DataInitializer.Player.HealCooldown}");
         ColorConsoleWriteLine(ConsoleColor.Green, $"- Heal Factor   : {gameManager.DataInitializer.Player.HealFactor}");
-        Console.WriteLine("Initialized Enemy stats:");
+        Console.WriteLine("Initialized (base) enemy stats:");
         int i = 0;
         foreach (var enemy in gameManager.DataInitializer.Enemies)
         {
