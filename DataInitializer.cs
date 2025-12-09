@@ -100,6 +100,7 @@ public class DataInitializer
         try
         {
             var playerData = JsonSerializer.Deserialize<PlayerData>(File.ReadAllText(PlayerFilePath)) ?? throw new NullReferenceException();
+            if (playerData.MaxHealth <= 0) return null;
             return playerData with
             {
                 Strength = Math.Round(playerData.Strength, 1),
@@ -127,7 +128,7 @@ public class DataInitializer
             
             foreach (var enemyData in enemiesData)
             {
-                if (enemyData.Points <= 0) return null;
+                if (enemyData.MaxHealth <= 0 || enemyData.Points <= 0) return null;
             }
             
             return enemiesData;
